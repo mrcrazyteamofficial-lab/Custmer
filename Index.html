@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MrCrazy Customer App</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #e0e5ec;
+            --text-color: #4a4a4a;
+            --shadow-light: #ffffff;
+            --shadow-dark: #a3b1c6;
+            --primary-color: #4caf50;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .mobile-container {
+            width: 100%;
+            max-width: 414px;
+            height: 100vh;
+            max-height: 896px;
+            background: var(--bg-color);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* 3D Elements (Neumorphism) */
+        .neu-box {
+            background: var(--bg-color);
+            border-radius: 15px;
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .neu-button {
+            border: none;
+            outline: none;
+            background: var(--bg-color);
+            border-radius: 15px;
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .neu-button:active {
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+        }
+
+        .neu-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: var(--bg-color);
+            border-radius: 10px;
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+            padding: 15px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+
+        /* Notifications */
+        .badge {
+            background: #ff4757;
+            color: white;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            display: none;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Profile Landscape Section */
+        .landscape-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: linear-gradient(145deg, #f0f5fa, #caced1);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 5px 5px 15px var(--shadow-dark), -5px -5px 15px var(--shadow-light);
+            margin-bottom: 30px;
+        }
+
+        .profile-img, .app-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--bg-color);
+            box-shadow: 3px 3px 6px var(--shadow-dark);
+        }
+
+        h2, h3, h4, p { margin: 0; padding: 0; }
+        .text-sm { font-size: 12px; color: #777; }
+        .text-success { color: var(--primary-color); }
+        .text-danger { color: #ff4757; }
+
+        .header-nav { display: flex; align-items: center; margin-bottom: 20px; gap: 15px; }
+        .back-btn { padding: 10px 15px; border-radius: 10px; }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div class="mobile-container">
+    
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="screen active">
+        <div style="text-align: center; margin-top: 100px;">
+            <i class="fas fa-crown fa-4x" style="color: #ff9f43; margin-bottom: 20px;"></i>
+            <h2 style="margin-bottom: 10px;">MrCrazy Customer</h2>
+            <p style="margin-bottom: 30px;">Welcome! Please enter your Project ID</p>
+            <input type="text" id="projectIdInput" class="neu-input" placeholder="Project ID (e.g., PROJ-001)">
+            <button class="neu-button" onclick="login()" style="justify-content: center;">Login <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></button>
+        </div>
+    </div>
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="screen">
+        <!-- Landscape Profile Section -->
+        <div class="landscape-header">
+            <img id="dash-user-image" src="https://via.placeholder.com/60" class="profile-img" alt="User">
+            <div style="flex: 1;">
+                <h3 id="dash-username">Loading...</h3>
+                <p class="text-sm" id="dash-phone">Loading...</p>
+            </div>
+        </div>
+
+        <div class="landscape-header" style="margin-bottom: 40px; padding: 10px 20px;">
+            <img id="dash-app-logo" src="https://via.placeholder.com/60" class="app-logo" alt="App">
+            <div style="flex: 1;">
+                <p class="text-sm">Your App Name</p>
+                <h3 id="dash-app-name">Loading...</h3>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <button class="neu-button" onclick="openScreen('bills-screen'); removeBadge('badge-bills')">
+            <span><i class="fas fa-file-invoice-dollar" style="color: #4caf50; margin-right:10px;"></i> Check Bills</span>
+            <i class="fas fa-chevron-right"></i>
+            <span class="badge" id="badge-bills">1 New</span>
+        </button>
+        
+        <button class="neu-button" onclick="openScreen('update-screen'); removeBadge('badge-update')">
+            <span><i class="fas fa-sync-alt" style="color: #0984e3; margin-right:10px;"></i> App Update Now</span>
+            <i class="fas fa-chevron-right"></i>
+            <span class="badge" id="badge-update">1 New</span>
+        </button>
+
+        <button class="neu-button" onclick="openScreen('complaint-screen'); removeBadge('badge-complaint')">
+            <span><i class="fas fa-headset" style="color: #e84393; margin-right:10px;"></i> Complaint</span>
+            <i class="fas fa-chevron-right"></i>
+            <span class="badge" id="badge-complaint">1 New</span>
+        </button>
+    </div>
+
+    <!-- BILLS SCREEN -->
+    <div id="bills-screen" class="screen">
+        <div class="header-nav">
+            <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
+            <h3>Billing Details</h3>
+        </div>
+
+        <div class="neu-box">
+            <h4 style="margin-bottom: 15px;">Current Bill</h4>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span class="text-sm">Amount:</span> <strong id="bill-amount">...</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span class="text-sm">Bill Date:</span> <span id="bill-date">...</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span class="text-sm">Status:</span> <span id="bill-status" class="text-success">...</span>
+            </div>
+            <hr style="border: 1px solid #d1d9e6; margin: 15px 0;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span class="text-sm">Next Bill Date:</span> <span id="next-bill-date">...</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span class="text-sm">Days Left:</span> <strong id="bill-days-left">...</strong>
+            </div>
+        </div>
+
+        <h4>Monthly Summary</h4>
+        <div id="monthly-summary-list" style="margin-top: 15px;">
+            <!-- Rendered via JS -->
+        </div>
+    </div>
+
+    <!-- UPDATE SCREEN -->
+    <div id="update-screen" class="screen">
+        <div class="header-nav">
+            <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
+            <h3>App Update</h3>
+        </div>
+
+        <div class="neu-box">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span class="text-sm">Your App:</span> <strong id="update-app-name">...</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span class="text-sm">Last Update:</span> <span id="update-last-date">...</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span class="text-sm">Total Users:</span> <span id="update-total-users">...</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span class="text-sm">Month:</span> <span id="update-month">...</span>
+            </div>
+        </div>
+
+        <div class="neu-box">
+            <h4>Request Update</h4>
+            <p class="text-sm" style="margin-bottom: 10px;">Please enter the details you want to update.</p>
+            <textarea id="update-details" class="neu-input" rows="4" placeholder="Enter required features..."></textarea>
+            <button class="neu-button" onclick="submitUpdate()" style="justify-content: center; background: #0984e3; color: white;">Submit Request</button>
+        </div>
+    </div>
+
+    <!-- COMPLAINT SCREEN -->
+    <div id="complaint-screen" class="screen">
+        <div class="header-nav">
+            <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
+            <h3>File a Complaint</h3>
+        </div>
+
+        <div class="neu-box">
+            <p class="text-sm" style="margin-bottom: 10px;">Select Issue Method</p>
+            <select id="issue-type" class="neu-input" onchange="toggleComplaintFields()">
+                <option value="none">-- Select Method --</option>
+                <option value="user">User issue</option>
+                <option value="deposit">Deposit issue</option>
+                <option value="withdraw">Withdraw issue</option>
+                <option value="plan">Plan issue</option>
+                <option value="other">Other issue</option>
+            </select>
+
+            <!-- Dynamic Fields -->
+            <div id="user-fields" class="hidden">
+                <input type="text" id="comp-username" class="neu-input" placeholder="Enter Username">
+                <input type="number" id="comp-number" class="neu-input" placeholder="Enter Number">
+            </div>
+
+            <div id="transaction-fields" class="hidden">
+                <input type="text" id="comp-trx-id" class="neu-input" placeholder="Enter Deposit/Withdraw ID">
+            </div>
+
+            <div id="common-details-field" class="hidden">
+                <textarea id="comp-details" class="neu-input" rows="4" placeholder="Apni complaint tafseel se bayaan karein..."></textarea>
+            </div>
+
+            <div id="image-upload-field" class="hidden">
+                <button class="neu-button" onclick="document.getElementById('fileInput').click()" style="justify-content: center; font-size: 14px;">
+                    <i class="fas fa-image" style="margin-right: 10px;"></i> Photo Upload Karein
+                </button>
+                <input type="file" id="fileInput" accept="image/*" style="display:none">
+                <p id="upload-status" class="text-sm text-success" style="text-align: center;"></p>
+            </div>
+
+            <button id="submit-complaint-btn" class="neu-button hidden" onclick="submitComplaint()" style="justify-content: center; background: #e84393; color: white; margin-top: 15px;">Submit to Admin</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Firebase & Scripts -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, get, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDUg33dZk0hsqTMK2l2r32QCHeOZB93w4w",
+        databaseURL: "https://website-create-ec499-default-rtdb.firebaseio.com",
+        projectId: "website-create-ec499",
+        storageBucket: "website-create-ec499.firebasestorage.app",
+        appId: "1:662033839999:android:99c07b1aaef1ee3fdc8c4a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Global State
+    window.currentProjectId = "";
+    window.uploadedImageUrl = "";
+
+    // Screen Management
+    window.openScreen = function(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    // Badge Management (Ghaib on click)
+    window.removeBadge = function(badgeId) {
+        document.getElementById(badgeId).style.display = 'none';
+        // In real app, update Firebase that user read it
+    }
+
+    // Login Logic
+    window.login = async function() {
+        const pId = document.getElementById('projectIdInput').value.trim();
+        if(!pId) return alert("Please enter Project ID");
+        
+        // Load data from Firebase: /users/{projectId}
+        const userRef = ref(db, 'users/' + pId);
+        get(userRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                window.currentProjectId = pId;
+                const data = snapshot.val();
+                
+                // Populating Dashboard Header
+                document.getElementById('dash-username').innerText = data.userName || 'No Name';
+                document.getElementById('dash-phone').innerText = data.phone || 'No Phone';
+                document.getElementById('dash-app-name').innerText = data.appName || 'No App Name';
+                if(data.userImage) document.getElementById('dash-user-image').src = data.userImage;
+                if(data.appLogo) document.getElementById('dash-app-logo').src = data.appLogo;
+
+                // Populating App Update Info
+                document.getElementById('update-app-name').innerText = data.appName || 'N/A';
+                document.getElementById('update-last-date').innerText = data.lastUpdate || 'N/A';
+                document.getElementById('update-total-users').innerText = data.totalUsers || '0';
+                document.getElementById('update-month').innerText = data.updateMonth || 'N/A';
+
+                // Badges (Check if admin marked them)
+                if(data.notifications) {
+                    if(data.notifications.bills) document.getElementById('badge-bills').style.display = 'block';
+                    if(data.notifications.update) document.getElementById('badge-update').style.display = 'block';
+                    if(data.notifications.complaint) document.getElementById('badge-complaint').style.display = 'block';
+                }
+
+                loadBills(pId);
+                openScreen('dashboard-screen');
+            } else {
+                alert("Project ID not found in database. Admin ne abhi add nahi kiya hoga.");
+            }
+        }).catch(err => {
+            console.error(err);
+            alert("Database Error!");
+        });
+    }
+
+    // Load Bills Logic
+    function loadBills(pId) {
+        const billsRef = ref(db, 'bills/' + pId);
+        onValue(billsRef, (snapshot) => {
+            if(snapshot.exists()) {
+                const data = snapshot.val();
+                document.getElementById('bill-amount').innerText = data.currentAmount || '0 PKR';
+                document.getElementById('bill-date').innerText = data.billDate || 'N/A';
+                
+                let statusEl = document.getElementById('bill-status');
+                statusEl.innerText = data.status || 'Pending';
+                statusEl.className = data.status === 'Paid' ? 'text-success' : 'text-danger';
+
+                document.getElementById('next-bill-date').innerText = data.nextDate || 'N/A';
+                document.getElementById('bill-days-left').innerText = data.daysLeft || 'N/A';
+
+                // Monthly Summary Loop
+                let summaryHTML = "";
+                if(data.summary) {
+                    for(let key in data.summary) {
+                        let mon = data.summary[key];
+                        summaryHTML += `
+                            <div class="neu-box" style="padding:10px; margin-bottom:10px; display:flex; justify-content:space-between;">
+                                <span>${mon.month}</span>
+                                <strong class="${mon.status === 'Paid' ? 'text-success' : 'text-danger'}">${mon.amount}</strong>
+                            </div>`;
+                    }
+                }
+                document.getElementById('monthly-summary-list').innerHTML = summaryHTML || '<p class="text-sm">No summary yet.</p>';
+            }
+        });
+    }
+
+    // Update Request Submission
+    window.submitUpdate = function() {
+        const details = document.getElementById('update-details').value;
+        if(!details) return alert("Please enter details!");
+
+        const trxId = "TRX-" + Math.floor(Math.random() * 100000000);
+        const reqRef = ref(db, `updateRequests/${window.currentProjectId}`);
+        const newReq = push(reqRef);
+        
+        set(newReq, {
+            details: details,
+            status: 'Pending',
+            trxId: trxId,
+            timestamp: Date.now()
+        }).then(() => {
+            alert(`Request Submitted to Admin!\nYour TRX ID: ${trxId}\nStatus: Pending`);
+            document.getElementById('update-details').value = '';
+            openScreen('dashboard-screen');
+        });
+    }
+
+    // Complaint UI Toggle
+    window.toggleComplaintFields = function() {
+        const type = document.getElementById('issue-type').value;
+        const uFields = document.getElementById('user-fields');
+        const tFields = document.getElementById('transaction-fields');
+        const cFields = document.getElementById('common-details-field');
+        const imgField = document.getElementById('image-upload-field');
+        const btn = document.getElementById('submit-complaint-btn');
+
+        uFields.classList.add('hidden');
+        tFields.classList.add('hidden');
+        cFields.classList.add('hidden');
+        imgField.classList.add('hidden');
+        btn.classList.add('hidden');
+
+        if(type === 'none') return;
+
+        btn.classList.remove('hidden');
+        cFields.classList.remove('hidden');
+
+        if(type === 'user') {
+            uFields.classList.remove('hidden');
+        } else if (type === 'deposit' || type === 'withdraw') {
+            tFields.classList.remove('hidden');
+            document.getElementById('comp-trx-id').placeholder = `Enter ${type} ID`;
+        } else if (type === 'other') {
+            imgField.classList.remove('hidden');
+        }
+    }
+
+    // Cloudinary Upload Logic
+    const CLOUD_NAME = "sjt8mlws";
+    const UPLOAD_PRESET = "Naeem786";
+    
+    document.getElementById('fileInput').addEventListener('change', async function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        document.getElementById('upload-status').innerText = "Uploading... please wait";
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', UPLOAD_PRESET);
+
+        try {
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                method: 'POST',
+                body: formData
+            });
+            const result = await res.json();
+            window.uploadedImageUrl = result.secure_url; 
+            document.getElementById('upload-status').innerText = "Image Uploaded Successfully!";
+        } catch(e) {
+            document.getElementById('upload-status').innerText = "Failed to upload image.";
+            document.getElementById('upload-status').className = "text-sm text-danger";
+        }
+    });
+
+    // Complaint Submission
+    window.submitComplaint = function() {
+        const type = document.getElementById('issue-type').value;
+        const details = document.getElementById('comp-details').value;
+
+        if(!details) return alert("Apni complaint tafseel se bayaan karein.");
+
+        let complaintData = {
+            type: type,
+            details: details,
+            status: 'Pending',
+            timestamp: Date.now()
+        };
+
+        if(type === 'user') {
+            complaintData.username = document.getElementById('comp-username').value;
+            complaintData.number = document.getElementById('comp-number').value;
+        } else if (type === 'deposit' || type === 'withdraw') {
+            complaintData.transactionId = document.getElementById('comp-trx-id').value;
+        } else if (type === 'other') {
+            complaintData.attachedImage = window.uploadedImageUrl;
+        }
+
+        const compRef = ref(db, `complaints/${window.currentProjectId}`);
+        const newComp = push(compRef);
+        
+        set(newComp, complaintData).then(() => {
+            alert("Complaint Pending mein chali gayi hai. Admin approve karega.");
+            // Reset fields
+            document.getElementById('comp-details').value = '';
+            document.getElementById('issue-type').value = 'none';
+            toggleComplaintFields();
+            window.uploadedImageUrl = "";
+            document.getElementById('upload-status').innerText = "";
+            openScreen('dashboard-screen');
+        });
+    }
+
+</script>
+</body>
+                  </html>
