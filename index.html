@@ -137,6 +137,695 @@
         .text-sm { font-size: 12px; color: #777; }
         .text-success { color: var(--primary-color); }
         .text-danger { color: #ff4757; }
+        .text-warning { color: #ff9f43; }
+
+        .header-nav { display: flex; align-items: center; margin-bottom: 20px; gap: 15px; }
+        .back-btn { padding: 10px 15px; border-radius: 10px; }
+        .hidden { display: none !important; }
+
+        /* Animated Status Badges */
+        .status-badge {
+            padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; color: white; display: inline-block;
+        }
+        .status-pending { background: #ff9f43; animation: pulse-orange 1.5s infinite; }
+        .status-working { background: #0984e3; animation: pulse-blue 1.5s infinite; }
+        .status-close { background: #e84393; }
+        .status-complete { background: #4caf50; animation: pulse-green 1.5s infinite; }
+
+        @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(255, 159, 67, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 159, 67, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 159, 67, 0); } }
+        @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0 rgba(9, 132, 227, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(9, 132, 227, 0); } 100% { box-shadow: 0 0 0 0 rgba(9, 132, 227, 0); } }
+        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); } 100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); } }
+
+        /* Slime Bot Button */
+        .slime-bot {
+            position: fixed; bottom: 20px; right: 20px;
+            background: linear-gradient(135deg, #00b09b, #96c93d);
+            color: white; border-radius: 50% 50% 30% 70% / 60% 40% 70% 40%;
+            width: 60px; height: 60px; display: flex;
+            align-items: center; justify-content: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            animation: slime 3s infinite ease-in-out;
+            cursor: pointer; z-index: 1000;
+            text-align: center; flex-direction: column;
+        }
+        .slime-bot span { font-size: 10px; font-weight: bold; margin-top: 2px;}
+        @keyframes slime {
+            0%, 100% { border-radius: 50% 50% 30% 70% / 60% 40% 70% 40%; transform: scale(1); }
+            50% { border-radius: 30% 70% 70% 30% / 40% 60% 40% 60%; transform: scale(1.05); }
+        }
+
+        /* Chat Box */
+        .chat-msg { margin-bottom: 15px; border-radius: 15px; padding: 12px; max-width: 80%; font-size: 14px; line-height: 1.5; }
+        .chat-bot { background: #e0f2f1; color: #00695c; float: left; border-bottom-left-radius: 0; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); }
+        .chat-user { background: #0984e3; color: white; float: right; border-bottom-right-radius: 0; text-align: right; box-shadow: -2px 2px 5px rgba(0,0,0,0.05); }
+        .clearfix::after { content: ""; clear: both; display: table; }
+    </style>
+</head>
+<body>
+
+<div class="mobile-container">
+    
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="screen active">
+        <div style="text-align: center; margin-top: 100px;">
+            <i class="fas fa-crown fa-4x" style="color: #ff9f43; margin-bottom: 20px;"></i>
+            <h2 style="margin-bottom: 10px;">MrCrazy Customer</h2>
+            <p style="margin-bottom: 30px;">Welcome! Please enter your Project ID</p>
+            <input type="text" id="projectIdInput" class="neu-input" placeholder="Project ID (e.g., PROJ-001)">
+            <button class="neu-button" onclick="login()" style="justify-content: center;">Login <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></button>
+        </div>
+    </div>
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="screen">
+        <div class="landscape-header">
+            <img id="dash-user-image" src="https://via.placeholder.com/60" class="profile-img" alt="User">
+            <div style="flex: 1;">
+                <h3 id="dash-username">Loading...</h3>
+                <p class="text-sm" id="dash-phone">Loading...</p>
+            </div>
+        </div>
+
+        <div class="landscape-header" style="margin-bottom: 40px; padding: 10px 20px;">
+            <img id="dash-app-logo" src="https://via.placeholder.com/60" class="app-logo" alt="App">
+            <div style="flex: 1;">
+                <p class="text-sm">Your App Name</p>
+                <h3 id="dash-app-name">Loading...</h3>
+            </div>
+        </div>
+
+        <!-- Buttons with dynamic status -->
+        <button class="neu-button" onclick="openScreen('bills-screen'); removeBadge('badge-bills')">
+            <div style="text-align: left; flex: 1;">
+                <span><i class="fas fa-file-invoice-dollar" style="color: #4caf50; margin-right:10px;"></i> Check Bills</span>
+                <div id="dash-bill-preview" style="font-size: 12px; margin-top: 5px; color: #777;">Current Bill: Loading...</div>
+            </div>
+            <i class="fas fa-chevron-right"></i>
+            <span class="badge" id="badge-bills">1 New</span>
+        </button>
+        
+        <button class="neu-button" onclick="openScreen('update-screen'); removeBadge('badge-update')">
+            <span><i class="fas fa-sync-alt" style="color: #0984e3; margin-right:10px;"></i> App Update Now</span>
+            <i class="fas fa-chevron-right"></i>
+            <span class="badge" id="badge-update">1 New</span>
+        </button>
+
+        <button class="neu-button" onclick="openScreen('complaint-screen'); removeBadge('badge-complaint')">
+            <span><i class="fas fa-headset" style="color: #e84393; margin-right:10px;"></i> Complaint</span>
+            <i class="fas fa-chevron-right"></i>
+            <span class="badge" id="badge-complaint">1 New</span>
+        </button>
+
+        <!-- Slime Bot Button -->
+        <div class="slime-bot" onclick="openScreen('help-screen')">
+            <i class="fas fa-robot"></i>
+            <span>Help</span>
+        </div>
+    </div>
+
+    <!-- BILLS SCREEN -->
+    <div id="bills-screen" class="screen">
+        <div class="header-nav">
+            <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
+            <h3>Billing Details</h3>
+        </div>
+
+        <div class="neu-box">
+            <h4 style="margin-bottom: 15px;">Current Bill</h4>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span class="text-sm">Amount:</span> <strong id="bill-amount">...</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span class="text-sm">Bill Date:</span> <span id="bill-date">...</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span class="text-sm">Status:</span> <span id="bill-status" class="text-success">...</span>
+            </div>
+            
+            <hr style="border: 1px solid #d1d9e6; margin: 15px 0;">
+            
+            <!-- Old Bill Section Added Here -->
+            <h4 style="margin-bottom: 10px; color: #777;">Old Bill</h4>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span class="text-sm">Amount:</span> <strong id="old-bill-amount">...</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span class="text-sm">Bill Date:</span> <span id="old-bill-date">...</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                <span class="text-sm">Status:</span> <span id="old-bill-status" class="text-success">...</span>
+            </div>
+
+            <hr style="border: 1px solid #d1d9e6; margin: 15px 0;">
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span class="text-sm">Next Bill Date:</span> <span id="next-bill-date">...</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span class="text-sm">Days Left:</span> <strong id="bill-days-left">...</strong>
+            </div>
+        </div>
+
+        <h4>Monthly Summary</h4>
+        <div id="monthly-summary-list" style="margin-top: 15px;">
+            <!-- Rendered via JS -->
+        </div>
+    </div>
+
+    <!-- UPDATE SCREEN -->
+    <div id="update-screen" class="screen">
+        <div class="header-nav">
+            <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
+            <h3>App Update</h3>
+        </div>
+
+        <div class="neu-box">
+            <h4>Request Update</h4>
+            <p class="text-sm" style="margin-bottom: 10px;">Please enter the details you want to update.</p>
+            <textarea id="update-details" class="neu-input" rows="4" placeholder="Enter required features..."></textarea>
+            <button class="neu-button" onclick="submitUpdate()" style="justify-content: center; background: #0984e3; color: white;">Submit Request</button>
+        </div>
+
+        <h4 style="margin-top: 10px;">Updates History</h4>
+        <div id="update-history-list" style="margin-top: 15px; padding-bottom: 20px;">
+            <!-- History Appears Here -->
+        </div>
+    </div>
+
+    <!-- COMPLAINT SCREEN -->
+    <div id="complaint-screen" class="screen">
+        <div class="header-nav">
+            <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
+            <h3>File a Complaint</h3>
+        </div>
+
+        <div class="neu-box">
+            <p class="text-sm" style="margin-bottom: 10px;">Select Issue Method</p>
+            <select id="issue-type" class="neu-input" onchange="toggleComplaintFields()">
+                <option value="none">-- Select Method --</option>
+                <option value="user">User issue</option>
+                <option value="deposit">Deposit issue</option>
+                <option value="withdraw">Withdraw issue</option>
+                <option value="plan">Plan issue</option>
+                <option value="other">Other issue</option>
+            </select>
+
+            <div id="user-fields" class="hidden">
+                <input type="text" id="comp-username" class="neu-input" placeholder="Enter Username">
+                <input type="number" id="comp-number" class="neu-input" placeholder="Enter Number">
+            </div>
+
+            <div id="transaction-fields" class="hidden">
+                <input type="text" id="comp-trx-id" class="neu-input" placeholder="Enter Deposit/Withdraw ID">
+            </div>
+
+            <div id="common-details-field" class="hidden">
+                <textarea id="comp-details" class="neu-input" rows="4" placeholder="Apni complaint tafseel se bayaan karein..."></textarea>
+            </div>
+
+            <div id="image-upload-field" class="hidden">
+                <button class="neu-button" onclick="document.getElementById('fileInput').click()" style="justify-content: center; font-size: 14px;">
+                    <i class="fas fa-image" style="margin-right: 10px;"></i> Photo Upload Karein
+                </button>
+                <input type="file" id="fileInput" accept="image/*" style="display:none">
+                <p id="upload-status" class="text-sm text-success" style="text-align: center;"></p>
+            </div>
+
+            <button id="submit-complaint-btn" class="neu-button hidden" onclick="submitComplaint()" style="justify-content: center; background: #e84393; color: white; margin-top: 15px;">Submit to Admin</button>
+        </div>
+
+        <h4 style="margin-top: 10px;">Your Complaints</h4>
+        <div id="complaint-history-list" style="margin-top: 15px; padding-bottom: 20px;">
+            <!-- History Appears Here -->
+        </div>
+    </div>
+
+    <!-- HELP/CHAT SCREEN -->
+    <div id="help-screen" class="screen">
+        <div class="header-nav" style="justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto; margin:0;"><i class="fas fa-arrow-left"></i></button>
+                <h3 style="margin: 0;">Help Center</h3>
+            </div>
+            <select id="chat-lang" class="neu-input" style="width: auto; padding: 5px 10px; margin: 0;" onchange="updateChatGreeting()">
+                <option value="urdu">Urdu</option>
+                <option value="english">English</option>
+            </select>
+        </div>
+        
+        <div id="chat-box" style="flex: 1; overflow-y: auto; background: var(--bg-color); border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);">
+            <div class="chat-msg chat-bot clearfix" id="chat-greeting">Hello! Main apki kya madad kar sakta hoon? Neechay diye gaye options mein se muntakhib karein.</div>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+            <button class="neu-button" style="width: 48%; padding: 10px; font-size: 13px; margin: 0; justify-content: center;" onclick="sendChatMsg('bill')">Bill Check/Pay</button>
+            <button class="neu-button" style="width: 48%; padding: 10px; font-size: 13px; margin: 0; justify-content: center;" onclick="sendChatMsg('update')">App Update</button>
+            <button class="neu-button" style="width: 100%; padding: 10px; font-size: 13px; margin: 0; justify-content: center;" onclick="sendChatMsg('complaint')">File a Complaint</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Firebase & Scripts -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, get, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDUg33dZk0hsqTMK2l2r32QCHeOZB93w4w",
+        databaseURL: "https://website-create-ec499-default-rtdb.firebaseio.com",
+        projectId: "website-create-ec499",
+        storageBucket: "website-create-ec499.firebasestorage.app",
+        appId: "1:662033839999:android:99c07b1aaef1ee3fdc8c4a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.currentProjectId = "";
+    window.uploadedImageUrl = "";
+
+    window.openScreen = function(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    window.removeBadge = function(badgeId) {
+        document.getElementById(badgeId).style.display = 'none';
+    }
+
+    // Login Logic
+    window.login = async function() {
+        const pId = document.getElementById('projectIdInput').value.trim();
+        if(!pId) return alert("Please enter Project ID");
+        
+        const userRef = ref(db, 'users/' + pId);
+        get(userRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                window.currentProjectId = pId;
+                const data = snapshot.val();
+                
+                document.getElementById('dash-username').innerText = data.userName || 'No Name';
+                document.getElementById('dash-phone').innerText = data.phone || 'No Phone';
+                document.getElementById('dash-app-name').innerText = data.appName || 'No App Name';
+                if(data.userImage) document.getElementById('dash-user-image').src = data.userImage;
+                if(data.appLogo) document.getElementById('dash-app-logo').src = data.appLogo;
+
+                loadBills(pId);
+                loadUpdatesHistory(pId);
+                loadComplaintsHistory(pId);
+                openScreen('dashboard-screen');
+            } else {
+                alert("Project ID not found in database.");
+            }
+        }).catch(err => {
+            console.error(err);
+            alert("Database Error!");
+        });
+    }
+
+    // Load Bills
+    function loadBills(pId) {
+        const billsRef = ref(db, 'bills/' + pId);
+        onValue(billsRef, (snapshot) => {
+            if(snapshot.exists()) {
+                const data = snapshot.val();
+                
+                // Current Bill Elements
+                let currAmt = data.currentAmount || '0 PKR';
+                let currStatus = data.status || 'Pending';
+                
+                document.getElementById('bill-amount').innerText = currAmt;
+                document.getElementById('bill-date').innerText = data.billDate || 'N/A';
+                
+                let statusEl = document.getElementById('bill-status');
+                statusEl.innerText = currStatus;
+                statusEl.className = currStatus === 'Paid' ? 'text-success' : 'text-warning';
+
+                // Dashboard Preview Update
+                let dashPreview = document.getElementById('dash-bill-preview');
+                dashPreview.innerHTML = `Current Bill: <strong>${currAmt}</strong> - <span class="${currStatus === 'Paid' ? 'text-success' : 'text-warning'}">${currStatus}</span>`;
+
+                // Old Bill Elements
+                document.getElementById('old-bill-amount').innerText = data.oldAmount || '0 PKR';
+                document.getElementById('old-bill-date').innerText = data.oldDate || 'N/A';
+                let oldStatusEl = document.getElementById('old-bill-status');
+                let oldStatus = data.oldStatus || 'Paid';
+                oldStatusEl.innerText = oldStatus;
+                oldStatusEl.className = oldStatus === 'Paid' ? 'text-success' : 'text-warning';
+
+                // Next Dates
+                document.getElementById('next-bill-date').innerText = data.nextDate || 'N/A';
+                document.getElementById('bill-days-left').innerText = data.daysLeft || 'N/A';
+
+                // Monthly Summary
+                let summaryHTML = "";
+                if(data.summary) {
+                    for(let key in data.summary) {
+                        let mon = data.summary[key];
+                        summaryHTML += `
+                            <div class="neu-box" style="padding:10px; margin-bottom:10px; display:flex; justify-content:space-between;">
+                                <span>${mon.month}</span>
+                                <strong class="${mon.status === 'Paid' ? 'text-success' : 'text-danger'}">${mon.amount}</strong>
+                            </div>`;
+                    }
+                }
+                document.getElementById('monthly-summary-list').innerHTML = summaryHTML || '<p class="text-sm">No summary yet.</p>';
+            }
+        });
+    }
+
+    // Submit Update
+    window.submitUpdate = function() {
+        const details = document.getElementById('update-details').value;
+        if(!details) return alert("Please enter details!");
+
+        const trxId = "TRX-" + Math.floor(Math.random() * 100000000);
+        const reqRef = ref(db, `updateRequests/${window.currentProjectId}`);
+        const newReq = push(reqRef);
+        
+        set(newReq, {
+            details: details,
+            status: 'Pending',
+            trxId: trxId,
+            timestamp: Date.now()
+        }).then(() => {
+            alert(`Request Submitted!\nTRX ID: ${trxId}`);
+            document.getElementById('update-details').value = '';
+        });
+    }
+
+    // Load Updates History & Auto Delete 24h Complete tasks
+    function loadUpdatesHistory(pId) {
+        const reqRef = ref(db, `updateRequests/${pId}`);
+        onValue(reqRef, (snapshot) => {
+            let html = "";
+            if(snapshot.exists()) {
+                const data = snapshot.val();
+                const now = Date.now();
+                const oneDay = 24 * 60 * 60 * 1000;
+
+                for(let key in data) {
+                    let req = data[key];
+                    let reqTime = new Date(req.timestamp);
+                    let formattedTime = reqTime.toLocaleDateString() + " " + reqTime.toLocaleTimeString();
+                    
+                    // 24 Hour Delete Logic for Complete Status
+                    if(req.status.toLowerCase() === 'complete' && (now - req.timestamp > oneDay)) {
+                        remove(ref(db, `updateRequests/${pId}/${key}`));
+                        continue;
+                    }
+
+                    // Badge Color Map
+                    let badgeClass = 'status-pending';
+                    if(req.status.toLowerCase() === 'working') badgeClass = 'status-working';
+                    if(req.status.toLowerCase() === 'close') badgeClass = 'status-close';
+                    if(req.status.toLowerCase() === 'complete') badgeClass = 'status-complete';
+
+                    html += `
+                        <div class="neu-box" style="padding:15px; margin-bottom:15px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                                <span class="text-sm" style="color: #0984e3; font-weight:bold;">${req.trxId}</span>
+                                <span class="status-badge ${badgeClass}">${req.status}</span>
+                            </div>
+                            <p class="text-sm" style="margin-bottom: 8px;"><i class="far fa-clock"></i> ${formattedTime}</p>
+                            <p style="font-size: 14px; color: #333;">${req.details}</p>
+                        </div>
+                    `;
+                }
+            }
+            document.getElementById('update-history-list').innerHTML = html || '<p class="text-sm">No history found.</p>';
+        });
+    }
+
+    // Toggle Complaint Fields
+    window.toggleComplaintFields = function() {
+        const type = document.getElementById('issue-type').value;
+        document.querySelectorAll('#complaint-screen .hidden').forEach(el => {
+            if(el.id !== 'submit-complaint-btn' && el.id !== 'common-details-field' && !el.id.includes('history')) {
+                el.classList.add('hidden');
+            }
+        });
+        
+        const btn = document.getElementById('submit-complaint-btn');
+        const cFields = document.getElementById('common-details-field');
+        btn.classList.add('hidden');
+        cFields.classList.add('hidden');
+
+        if(type === 'none') return;
+        btn.classList.remove('hidden');
+        cFields.classList.remove('hidden');
+
+        if(type === 'user') document.getElementById('user-fields').classList.remove('hidden');
+        else if (type === 'deposit' || type === 'withdraw') {
+            document.getElementById('transaction-fields').classList.remove('hidden');
+            document.getElementById('comp-trx-id').placeholder = `Enter ${type} ID`;
+        } else if (type === 'other') document.getElementById('image-upload-field').classList.remove('hidden');
+    }
+
+    // Upload Image
+    const CLOUD_NAME = "sjt8mlws";
+    const UPLOAD_PRESET = "Naeem786";
+    document.getElementById('fileInput').addEventListener('change', async function () {
+        const file = this.files[0];
+        if (!file) return;
+        document.getElementById('upload-status').innerText = "Uploading... please wait";
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', UPLOAD_PRESET);
+        try {
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
+            const result = await res.json();
+            window.uploadedImageUrl = result.secure_url; 
+            document.getElementById('upload-status').innerText = "Image Uploaded Successfully!";
+        } catch(e) {
+            document.getElementById('upload-status').innerText = "Failed to upload image.";
+            document.getElementById('upload-status').className = "text-sm text-danger";
+        }
+    });
+
+    // Submit Complaint
+    window.submitComplaint = function() {
+        const type = document.getElementById('issue-type').value;
+        const details = document.getElementById('comp-details').value;
+        if(!details) return alert("Apni complaint tafseel se bayaan karein.");
+
+        let complaintData = { type: type, details: details, status: 'Pending', timestamp: Date.now() };
+
+        if(type === 'user') {
+            complaintData.username = document.getElementById('comp-username').value;
+            complaintData.number = document.getElementById('comp-number').value;
+        } else if (type === 'deposit' || type === 'withdraw') {
+            complaintData.transactionId = document.getElementById('comp-trx-id').value;
+        } else if (type === 'other') {
+            complaintData.attachedImage = window.uploadedImageUrl;
+        }
+
+        const compRef = ref(db, `complaints/${window.currentProjectId}`);
+        set(push(compRef), complaintData).then(() => {
+            alert("Complaint submitted successfully.");
+            document.getElementById('comp-details').value = '';
+            document.getElementById('issue-type').value = 'none';
+            toggleComplaintFields();
+            window.uploadedImageUrl = "";
+            document.getElementById('upload-status').innerText = "";
+        });
+    }
+
+    // Load Complaints History
+    function loadComplaintsHistory(pId) {
+        const compRef = ref(db, `complaints/${pId}`);
+        onValue(compRef, (snapshot) => {
+            let html = "";
+            if(snapshot.exists()) {
+                const data = snapshot.val();
+                for(let key in data) {
+                    let comp = data[key];
+                    let compTime = new Date(comp.timestamp).toLocaleDateString() + " " + new Date(comp.timestamp).toLocaleTimeString();
+                    let badgeClass = comp.status.toLowerCase() === 'resolved' ? 'status-complete' : 'status-pending';
+
+                    html += `
+                        <div class="neu-box" style="padding:15px; margin-bottom:15px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                                <span class="text-sm" style="text-transform: capitalize; font-weight:bold;">${comp.type} Issue</span>
+                                <span class="status-badge ${badgeClass}">${comp.status}</span>
+                            </div>
+                            <p class="text-sm" style="margin-bottom: 8px;"><i class="far fa-clock"></i> ${compTime}</p>
+                            <p style="font-size: 14px; color: #333;">${comp.details}</p>
+                        </div>
+                    `;
+                }
+            }
+            document.getElementById('complaint-history-list').innerHTML = html || '<p class="text-sm">No complaints found.</p>';
+        });
+    }
+
+    // ---------------- CHAT BOT LOGIC ---------------- //
+    const botReplies = {
+        urdu: {
+            greeting: "Hello! Main apki kya madad kar sakta hoon? Neechay diye gaye options mein se muntakhib karein.",
+            bill: "Bill check karne ka tareeqa:\n1. Dashboard se 'Check Bills' wale button par click karein.\n2. Wahan aap apna naya (Current) aur purana (Old) bill tafseel se dekh sakte hain.\n3. Agar bill pay nahi hua toh 'Pending' likha hoga, aur pay hone ke baad wo automatically 'Paid' ho jayega.",
+            update: "App Update ki request bhejne ka tareeqa:\n1. Dashboard par 'App Update Now' button dabaein.\n2. Request Update ke box mein likhein ke aapko app mein kya naya chahiye.\n3. Submit karein! Apki history neechay animation wale status ke sath show hogi. Jab status 'Complete' hoga toh theek 24 ghante baad history se remove ho jayega.",
+            complaint: "Complaint file karne ka tareeqa:\n1. Dashboard se 'Complaint' option kholiye.\n2. Apna issue select karein (jaise Deposit, Withdraw, ya Other).\n3. Box mein apni pareshani tafseel se likhein, agar zaroorat ho toh tasveer (photo) bhi laga dein aur Submit daba dein."
+        },
+        english: {
+            greeting: "Hello! How can I assist you today? Please choose from the options below.",
+            bill: "How to check/pay your bill:\n1. Click on the 'Check Bills' button on the Dashboard.\n2. There you can view your Current and Old bills in detail.\n3. If unpaid, it shows 'Pending'. Once paid, the status automatically updates to 'Paid'.",
+            update: "How to request an App Update:\n1. Click 'App Update Now' on the Dashboard.\n2. Type your required features in the request box.\n3. Hit Submit! Your request will appear below with live animated status. Once marked 'Complete', it will auto-delete after 24 hours.",
+            complaint: "How to file a Complaint:\n1. Open the 'Complaint' screen from the Dashboard.\n2. Select your issue type from the dropdown (Deposit, Withdraw, etc.).\n3. Describe your issue in detail, attach a photo if necessary, and click Submit."
+        }
+    };
+
+    window.updateChatGreeting = function() {
+        const lang = document.getElementById('chat-lang').value;
+        document.getElementById('chat-greeting').innerText = botReplies[lang]['greeting'];
+    }
+
+    window.sendChatMsg = function(topic) {
+        const lang = document.getElementById('chat-lang').value;
+        const box = document.getElementById('chat-box');
+        
+        let userText = "";
+        if(topic==='bill') userText = lang === 'urdu' ? "Bill kaise check karun?" : "How to check my bill?";
+        if(topic==='update') userText = lang === 'urdu' ? "App update ki request kaise bhejun?" : "How to request an update?";
+        if(topic==='complaint') userText = lang === 'urdu' ? "Complaint kaise karun?" : "How to file a complaint?";
+
+        // Append User Message
+        const userDiv = document.createElement('div');
+        userDiv.className = "chat-msg chat-user clearfix";
+        userDiv.innerText = userText;
+        box.appendChild(userDiv);
+        box.scrollTop = box.scrollHeight;
+
+        // Bot Typing Placeholder
+        const botDiv = document.createElement('div');
+        botDiv.className = "chat-msg chat-bot clearfix";
+        botDiv.innerHTML = "<i class='fas fa-ellipsis-h fa-fade'></i> Typing...";
+        box.appendChild(botDiv);
+        box.scrollTop = box.scrollHeight;
+
+        // Typing Animation
+        setTimeout(() => {
+            botDiv.innerHTML = "";
+            const replyText = botReplies[lang][topic];
+            let i = 0;
+            
+            function type() {
+                if (i < replyText.length) {
+                    botDiv.innerHTML += replyText.charAt(i) === '\n' ? '<br>' : replyText.charAt(i);
+                    i++;
+                    box.scrollTop = box.scrollHeight;
+                    setTimeout(type, 25); // Animal fast typing speed
+                }
+            }
+            type();
+        }, 600);
+    }
+</script>
+</body>
+</html>            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* 3D Elements (Neumorphism) */
+        .neu-box {
+            background: var(--bg-color);
+            border-radius: 15px;
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .neu-button {
+            border: none;
+            outline: none;
+            background: var(--bg-color);
+            border-radius: 15px;
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .neu-button:active {
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+        }
+
+        .neu-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: var(--bg-color);
+            border-radius: 10px;
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+            padding: 15px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+
+        /* Notifications */
+        .badge {
+            background: #ff4757;
+            color: white;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            display: none;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Profile Landscape Section */
+        .landscape-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: linear-gradient(145deg, #f0f5fa, #caced1);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 5px 5px 15px var(--shadow-dark), -5px -5px 15px var(--shadow-light);
+            margin-bottom: 30px;
+        }
+
+        .profile-img, .app-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--bg-color);
+            box-shadow: 3px 3px 6px var(--shadow-dark);
+        }
+
+        h2, h3, h4, p { margin: 0; padding: 0; }
+        .text-sm { font-size: 12px; color: #777; }
+        .text-success { color: var(--primary-color); }
+        .text-danger { color: #ff4757; }
 
         .header-nav { display: flex; align-items: center; margin-bottom: 20px; gap: 15px; }
         .back-btn { padding: 10px 15px; border-radius: 10px; }
