@@ -5,26 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MrCrazy Customer App</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #e0e5ec;
-            --text-color: #4a4a4a;
+            --bg-color: #e7ecf3;
+            --text-color: #3b4252;
+            --text-muted: #7d8aa0;
             --shadow-light: #ffffff;
-            --shadow-dark: #a3b1c6;
-            --primary-color: #4caf50;
+            --shadow-dark: #a9b6c9;
+            --primary-color: #12877f;
+            --primary-dark: #0b5f59;
+            --accent-color: #f0973f;
+            --danger-color: #ef4562;
+            --info-color: #3567d6;
+            --pink-color: #d6337e;
         }
+
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at top left, #f2f5fa 0%, #dbe2ec 100%);
             color: var(--text-color);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
+
+        h2, h3, h4 { font-family: 'Poppins', 'Segoe UI', sans-serif; letter-spacing: -0.01em; }
 
         .mobile-container {
             width: 100%;
@@ -34,7 +46,8 @@
             background: var(--bg-color);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            box-shadow: 0 25px 60px rgba(20, 30, 50, 0.28);
+            border-radius: 28px;
         }
 
         .screen {
@@ -49,12 +62,18 @@
 
         .screen.active {
             display: flex;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* 3D Elements (Neumorphism) */
         .neu-box {
             background: var(--bg-color);
-            border-radius: 15px;
+            border-radius: 18px;
             box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
             padding: 20px;
             margin-bottom: 20px;
@@ -64,15 +83,16 @@
             border: none;
             outline: none;
             background: var(--bg-color);
-            border-radius: 15px;
+            border-radius: 16px;
             box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
-            padding: 15px;
+            padding: 15px 16px;
             margin-bottom: 15px;
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
             color: var(--text-color);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             position: relative;
             display: flex;
             align-items: center;
@@ -82,6 +102,28 @@
 
         .neu-button:active {
             box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+            transform: scale(0.99);
+        }
+
+        .neu-button.primary-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(18, 135, 127, 0.35);
+        }
+        .neu-button.primary-btn:active { box-shadow: 0 4px 10px rgba(18, 135, 127, 0.35); }
+
+        .neu-button.accent-btn {
+            background: linear-gradient(135deg, var(--pink-color), #a8215f);
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(214, 51, 126, 0.35);
+        }
+        .neu-button.accent-btn:active { box-shadow: 0 4px 10px rgba(214, 51, 126, 0.35); }
+
+        .neu-button.ghost-btn {
+            background: var(--bg-color);
+            color: var(--info-color);
+            border: 1.5px dashed #b7c2d4;
+            box-shadow: none;
         }
 
         .neu-input {
@@ -89,27 +131,29 @@
             border: none;
             outline: none;
             background: var(--bg-color);
-            border-radius: 10px;
+            border-radius: 12px;
             box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
-            padding: 15px;
+            padding: 14px;
             margin-bottom: 15px;
             box-sizing: border-box;
             font-size: 14px;
+            font-family: 'Inter', sans-serif;
             color: var(--text-color);
         }
 
         /* Notifications */
         .badge {
-            background: #ff4757;
+            background: linear-gradient(135deg, #ff5f6d, #d6337e);
             color: white;
-            font-size: 12px;
-            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 9px;
             border-radius: 20px;
             position: absolute;
-            top: -5px;
-            right: -5px;
+            top: -6px;
+            right: -6px;
             display: none;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.25);
         }
 
         /* Profile Landscape Section */
@@ -117,68 +161,142 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            background: linear-gradient(145deg, #f0f5fa, #caced1);
-            padding: 20px;
+            background: linear-gradient(150deg, #ffffff, #dde3ee);
+            padding: 18px 20px;
             border-radius: 20px;
-            box-shadow: 5px 5px 15px var(--shadow-dark), -5px -5px 15px var(--shadow-light);
-            margin-bottom: 30px;
+            box-shadow: 6px 6px 16px var(--shadow-dark), -6px -6px 16px var(--shadow-light);
+            margin-bottom: 22px;
         }
 
         .profile-img, .app-logo {
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid var(--bg-color);
-            box-shadow: 3px 3px 6px var(--shadow-dark);
+            border: 3px solid #fff;
+            box-shadow: 3px 3px 8px rgba(60,80,110,0.25);
         }
 
         h2, h3, h4, p { margin: 0; padding: 0; }
-        .text-sm { font-size: 12px; color: #777; }
-        .text-success { color: var(--primary-color); }
-        .text-danger { color: #ff4757; }
-        .text-warning { color: #ff9f43; }
+        .text-sm { font-size: 12px; color: var(--text-muted); }
+        .text-success { color: #1f9d67; font-weight: 600; }
+        .text-danger { color: var(--danger-color); font-weight: 600; }
+        .text-warning { color: var(--accent-color); font-weight: 600; }
+
+        .app-title-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+        .app-title-row i { color: var(--accent-color); }
 
         .header-nav { display: flex; align-items: center; margin-bottom: 20px; gap: 15px; }
-        .back-btn { padding: 10px 15px; border-radius: 10px; }
+        .back-btn { padding: 10px 15px; border-radius: 12px; }
         .hidden { display: none !important; }
 
         /* Animated Status Badges */
         .status-badge {
-            padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; color: white; display: inline-block;
+            padding: 4px 11px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; display: inline-block; letter-spacing: 0.02em;
         }
-        .status-pending { background: #ff9f43; animation: pulse-orange 1.5s infinite; }
-        .status-working { background: #0984e3; animation: pulse-blue 1.5s infinite; }
-        .status-close { background: #e84393; }
-        .status-complete { background: #4caf50; animation: pulse-green 1.5s infinite; }
+        .status-pending { background: linear-gradient(135deg, var(--accent-color), #d9761c); animation: pulse-orange 1.5s infinite; }
+        .status-working { background: linear-gradient(135deg, var(--info-color), #1f3f9c); animation: pulse-blue 1.5s infinite; }
+        .status-close { background: linear-gradient(135deg, var(--pink-color), #8f1a53); }
+        .status-complete { background: linear-gradient(135deg, #24b47e, #0f7a52); animation: pulse-green 1.5s infinite; }
 
-        @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(255, 159, 67, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 159, 67, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 159, 67, 0); } }
-        @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0 rgba(9, 132, 227, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(9, 132, 227, 0); } 100% { box-shadow: 0 0 0 0 rgba(9, 132, 227, 0); } }
-        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); } 100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); } }
+        @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(240, 151, 63, 0.6); } 70% { box-shadow: 0 0 0 9px rgba(240, 151, 63, 0); } 100% { box-shadow: 0 0 0 0 rgba(240, 151, 63, 0); } }
+        @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0 rgba(53, 103, 214, 0.6); } 70% { box-shadow: 0 0 0 9px rgba(53, 103, 214, 0); } 100% { box-shadow: 0 0 0 0 rgba(53, 103, 214, 0); } }
+        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(36, 180, 126, 0.6); } 70% { box-shadow: 0 0 0 9px rgba(36, 180, 126, 0); } 100% { box-shadow: 0 0 0 0 rgba(36, 180, 126, 0); } }
 
         /* Slime Bot Button */
         .slime-bot {
             position: fixed; bottom: 20px; right: 20px;
-            background: linear-gradient(135deg, #00b09b, #96c93d);
+            background: linear-gradient(135deg, #12877f, #0b5f59);
             color: white; border-radius: 50% 50% 30% 70% / 60% 40% 70% 40%;
-            width: 60px; height: 60px; display: flex;
+            width: 58px; height: 58px; display: flex;
             align-items: center; justify-content: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 22px rgba(11, 95, 89, 0.4);
             animation: slime 3s infinite ease-in-out;
             cursor: pointer; z-index: 1000;
             text-align: center; flex-direction: column;
         }
-        .slime-bot span { font-size: 10px; font-weight: bold; margin-top: 2px;}
+        .slime-bot span { font-size: 9px; font-weight: 700; margin-top: 2px;}
         @keyframes slime {
             0%, 100% { border-radius: 50% 50% 30% 70% / 60% 40% 70% 40%; transform: scale(1); }
             50% { border-radius: 30% 70% 70% 30% / 40% 60% 40% 60%; transform: scale(1.05); }
         }
 
         /* Chat Box */
-        .chat-msg { margin-bottom: 15px; border-radius: 15px; padding: 12px; max-width: 80%; font-size: 14px; line-height: 1.5; }
-        .chat-bot { background: #e0f2f1; color: #00695c; float: left; border-bottom-left-radius: 0; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); }
-        .chat-user { background: #0984e3; color: white; float: right; border-bottom-right-radius: 0; text-align: right; box-shadow: -2px 2px 5px rgba(0,0,0,0.05); }
+        .chat-msg { margin-bottom: 15px; border-radius: 15px; padding: 12px 14px; max-width: 80%; font-size: 14px; line-height: 1.5; }
+        .chat-bot { background: #dcf3f0; color: #0b5f59; float: left; border-bottom-left-radius: 2px; box-shadow: 2px 2px 6px rgba(0,0,0,0.05); }
+        .chat-user { background: linear-gradient(135deg, var(--info-color), #1f3f9c); color: white; float: right; border-bottom-right-radius: 2px; text-align: right; box-shadow: -2px 2px 6px rgba(0,0,0,0.08); }
         .clearfix::after { content: ""; clear: both; display: table; }
+
+        /* Screenshot attach preview */
+        .screenshot-preview {
+            position: relative;
+            width: 100%;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            display: none;
+        }
+        .screenshot-preview img { width: 100%; display: block; }
+        .screenshot-preview .remove-shot {
+            position: absolute; top: 8px; right: 8px;
+            background: rgba(20,20,20,0.55); color: #fff;
+            border: none; border-radius: 50%; width: 30px; height: 30px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+
+        /* Image Edit Modal (WhatsApp style annotation) */
+        .edit-modal-overlay {
+            position: fixed; inset: 0; background: #10151f;
+            display: none; flex-direction: column; z-index: 2000;
+            align-items: center; justify-content: center;
+        }
+        .edit-modal-overlay.active { display: flex; }
+        .edit-modal-inner {
+            width: 100%; max-width: 414px; height: 100%; max-height: 896px;
+            display: flex; flex-direction: column; background: #10151f; position: relative;
+        }
+        .edit-toolbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 16px; background: #171e2b;
+        }
+        .edit-toolbar .icon-btn {
+            background: rgba(255,255,255,0.08); border: none; color: #fff;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 16px;
+        }
+        .color-swatches { display: flex; gap: 8px; }
+        .color-swatch {
+            width: 26px; height: 26px; border-radius: 50%; cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        .color-swatch.active { border-color: #fff; transform: scale(1.15); }
+        .canvas-wrap {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden; background: #10151f;
+            touch-action: none;
+        }
+        #editCanvas { max-width: 100%; max-height: 100%; touch-action: none; border-radius: 4px; }
+        .edit-footer {
+            display: flex; gap: 12px; padding: 16px; background: #171e2b;
+        }
+        .edit-footer button {
+            flex: 1; border: none; border-radius: 14px; padding: 14px; font-weight: 700;
+            font-family: 'Inter', sans-serif; font-size: 14px; cursor: pointer;
+        }
+        .edit-footer .clear-btn { background: rgba(255,255,255,0.1); color: #fff; }
+        .edit-footer .done-btn { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: #fff; }
+
+        /* App footer credit */
+        .dev-credit {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            padding: 14px 0 4px 0;
+            letter-spacing: 0.02em;
+        }
+        .dev-credit i { color: var(--pink-color); }
+        .dev-credit strong { color: var(--primary-dark); font-weight: 700; }
     </style>
 </head>
 <body>
@@ -187,12 +305,15 @@
     
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="screen active">
-        <div style="text-align: center; margin-top: 100px;">
-            <i class="fas fa-crown fa-4x" style="color: #ff9f43; margin-bottom: 20px;"></i>
-            <h2 style="margin-bottom: 10px;">MrCrazy Customer</h2>
-            <p style="margin-bottom: 30px;">Welcome! Please enter your Project ID</p>
-            <input type="text" id="projectIdInput" class="neu-input" placeholder="Project ID (e.g., PROJ-001)">
-            <button class="neu-button" onclick="login()" style="justify-content: center;">Login <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></button>
+        <div style="text-align: center; margin-top: 90px; display:flex; flex-direction:column; flex:1;">
+            <div style="flex:1;">
+                <i class="fas fa-crown fa-4x" style="color: var(--accent-color); margin-bottom: 20px; filter: drop-shadow(0 6px 10px rgba(240,151,63,0.35));"></i>
+                <h2 style="margin-bottom: 8px; font-size: 24px; font-weight: 800; color: var(--primary-dark);">MrCrazy Customer</h2>
+                <p style="margin-bottom: 30px; color: var(--text-muted);">Welcome! Please enter your Project ID</p>
+                <input type="text" id="projectIdInput" class="neu-input" placeholder="Project ID (e.g., PROJ-001)">
+                <button class="neu-button primary-btn" onclick="login()" style="justify-content: center;">Login <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></button>
+            </div>
+            <div class="dev-credit"><i class="fas fa-code"></i> Developed by <strong>Muhammad Naeem</strong></div>
         </div>
     </div>
 
@@ -206,7 +327,7 @@
             </div>
         </div>
 
-        <div class="landscape-header" style="margin-bottom: 40px; padding: 10px 20px;">
+        <div class="landscape-header" style="margin-bottom: 34px; padding: 10px 20px;">
             <img id="dash-app-logo" src="https://via.placeholder.com/60" class="app-logo" alt="App">
             <div style="flex: 1;">
                 <p class="text-sm">Your App Name</p>
@@ -217,24 +338,26 @@
         <!-- Buttons with dynamic status -->
         <button class="neu-button" onclick="openScreen('bills-screen'); removeBadge('badge-bills')">
             <div style="text-align: left; flex: 1;">
-                <span><i class="fas fa-file-invoice-dollar" style="color: #4caf50; margin-right:10px;"></i> Check Bills</span>
-                <div id="dash-bill-preview" style="font-size: 12px; margin-top: 5px; color: #777;">Current Bill: Loading...</div>
+                <span><i class="fas fa-file-invoice-dollar" style="color: var(--primary-color); margin-right:10px;"></i> Check Bills</span>
+                <div id="dash-bill-preview" style="font-size: 12px; margin-top: 5px; color: var(--text-muted);">Current Bill: Loading...</div>
             </div>
             <i class="fas fa-chevron-right"></i>
             <span class="badge" id="badge-bills">1 New</span>
         </button>
         
         <button class="neu-button" onclick="openScreen('update-screen'); removeBadge('badge-update')">
-            <span><i class="fas fa-sync-alt" style="color: #0984e3; margin-right:10px;"></i> App Update Now</span>
+            <span><i class="fas fa-sync-alt" style="color: var(--info-color); margin-right:10px;"></i> App Update Now</span>
             <i class="fas fa-chevron-right"></i>
             <span class="badge" id="badge-update">1 New</span>
         </button>
 
         <button class="neu-button" onclick="openScreen('complaint-screen'); removeBadge('badge-complaint')">
-            <span><i class="fas fa-headset" style="color: #e84393; margin-right:10px;"></i> Complaint</span>
+            <span><i class="fas fa-headset" style="color: var(--pink-color); margin-right:10px;"></i> Complaint</span>
             <i class="fas fa-chevron-right"></i>
             <span class="badge" id="badge-complaint">1 New</span>
         </button>
+
+        <div class="dev-credit" style="margin-top: auto;"><i class="fas fa-code"></i> Developed by <strong>Muhammad Naeem</strong></div>
 
         <!-- Slime Bot Button -->
         <div class="slime-bot" onclick="openScreen('help-screen')">
@@ -262,10 +385,10 @@
                 <span class="text-sm">Status:</span> <span id="bill-status" class="text-success">...</span>
             </div>
             
-            <hr style="border: 1px solid #d1d9e6; margin: 15px 0;">
+            <hr style="border: none; border-top: 1px solid #ccd5e3; margin: 15px 0;">
             
             <!-- Old Bill Section Added Here -->
-            <h4 style="margin-bottom: 10px; color: #777;">Old Bill</h4>
+            <h4 style="margin-bottom: 10px; color: var(--text-muted);">Old Bill</h4>
             <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                 <span class="text-sm">Amount:</span> <strong id="old-bill-amount">...</strong>
             </div>
@@ -276,7 +399,7 @@
                 <span class="text-sm">Status:</span> <span id="old-bill-status" class="text-success">...</span>
             </div>
 
-            <hr style="border: 1px solid #d1d9e6; margin: 15px 0;">
+            <hr style="border: none; border-top: 1px solid #ccd5e3; margin: 15px 0;">
             
             <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                 <span class="text-sm">Next Bill Date:</span> <span id="next-bill-date">...</span>
@@ -303,7 +426,18 @@
             <h4>Request Update</h4>
             <p class="text-sm" style="margin-bottom: 10px;">Please enter the details you want to update.</p>
             <textarea id="update-details" class="neu-input" rows="4" placeholder="Enter required features..."></textarea>
-            <button class="neu-button" onclick="submitUpdate()" style="justify-content: center; background: #0984e3; color: white;">Submit Request</button>
+
+            <div class="screenshot-preview" id="update-shot-preview">
+                <img id="update-shot-img" src="" alt="Screenshot">
+                <button class="remove-shot" onclick="removeUpdateScreenshot()"><i class="fas fa-times"></i></button>
+            </div>
+
+            <button class="neu-button ghost-btn" id="attach-shot-btn" onclick="document.getElementById('updateFileInput').click()" style="justify-content: center; font-size: 14px;">
+                <i class="fas fa-camera" style="margin-right: 10px;"></i> Attach Screenshot
+            </button>
+            <input type="file" id="updateFileInput" accept="image/*" style="display:none">
+
+            <button class="neu-button primary-btn" onclick="submitUpdate()" style="justify-content: center;">Submit Request <i class="fas fa-paper-plane" style="margin-left:10px;"></i></button>
         </div>
 
         <h4 style="margin-top: 10px;">Updates History</h4>
@@ -351,7 +485,7 @@
                 <p id="upload-status" class="text-sm text-success" style="text-align: center;"></p>
             </div>
 
-            <button id="submit-complaint-btn" class="neu-button hidden" onclick="submitComplaint()" style="justify-content: center; background: #e84393; color: white; margin-top: 15px;">Submit to Admin</button>
+            <button id="submit-complaint-btn" class="neu-button accent-btn hidden" onclick="submitComplaint()" style="justify-content: center; margin-top: 15px;">Submit to Admin</button>
         </div>
 
         <h4 style="margin-top: 10px;">Your Complaints</h4>
@@ -386,6 +520,30 @@
 
 </div>
 
+<!-- Image Edit Modal (WhatsApp-style annotation before submitting a screenshot) -->
+<div class="edit-modal-overlay" id="image-edit-modal">
+    <div class="edit-modal-inner">
+        <div class="edit-toolbar">
+            <button class="icon-btn" onclick="closeImageEditor(false)"><i class="fas fa-times"></i></button>
+            <div class="color-swatches" id="color-swatches">
+                <div class="color-swatch active" style="background:#ff3b30;" data-color="#ff3b30"></div>
+                <div class="color-swatch" style="background:#ffcc00;" data-color="#ffcc00"></div>
+                <div class="color-swatch" style="background:#34c759;" data-color="#34c759"></div>
+                <div class="color-swatch" style="background:#0a84ff;" data-color="#0a84ff"></div>
+                <div class="color-swatch" style="background:#ffffff;" data-color="#ffffff"></div>
+            </div>
+            <button class="icon-btn" onclick="undoLastStroke()"><i class="fas fa-undo"></i></button>
+        </div>
+        <div class="canvas-wrap">
+            <canvas id="editCanvas"></canvas>
+        </div>
+        <div class="edit-footer">
+            <button class="clear-btn" onclick="clearAnnotations()"><i class="fas fa-eraser"></i> Clear</button>
+            <button class="done-btn" onclick="closeImageEditor(true)"><i class="fas fa-check"></i> Done</button>
+        </div>
+    </div>
+</div>
+
 <!-- Firebase & Scripts -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -404,6 +562,7 @@
 
     window.currentProjectId = "";
     window.uploadedImageUrl = "";
+    window.updateScreenshotDataUrl = ""; // annotated screenshot for the App Update request
 
     window.openScreen = function(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -495,24 +654,211 @@
         });
     }
 
+    // ---------------- IMAGE EDIT MODAL (WhatsApp-style annotate) ---------------- //
+    const editCanvas = document.getElementById('editCanvas');
+    const ctx = editCanvas.getContext('2d');
+    let baseImage = null;       // the original loaded image
+    let strokes = [];           // array of strokes, each is {color, points:[{x,y}]}
+    let currentStroke = null;
+    let drawing = false;
+    let activeColor = '#ff3b30';
+    let pendingCallback = null; // called with dataURL (or null if cancelled)
+
+    document.getElementById('color-swatches').addEventListener('click', (e) => {
+        const swatch = e.target.closest('.color-swatch');
+        if(!swatch) return;
+        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+        swatch.classList.add('active');
+        activeColor = swatch.dataset.color;
+    });
+
+    function openImageEditor(file, callback) {
+        pendingCallback = callback;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                baseImage = img;
+                strokes = [];
+                fitCanvasToImage();
+                redrawCanvas();
+                document.getElementById('image-edit-modal').classList.add('active');
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function fitCanvasToImage() {
+        // Constrain to viewport while keeping the image's native aspect ratio
+        const maxW = Math.min(window.innerWidth, 414) - 20;
+        const maxH = window.innerHeight - 220;
+        let w = baseImage.width, h = baseImage.height;
+        const ratio = Math.min(maxW / w, maxH / h, 1);
+        editCanvas.width = Math.round(w * ratio);
+        editCanvas.height = Math.round(h * ratio);
+    }
+
+    function redrawCanvas() {
+        ctx.clearRect(0, 0, editCanvas.width, editCanvas.height);
+        ctx.drawImage(baseImage, 0, 0, editCanvas.width, editCanvas.height);
+        strokes.forEach(drawStroke);
+    }
+
+    function drawStroke(stroke) {
+        if(stroke.points.length < 2) {
+            if(stroke.points.length === 1) {
+                ctx.beginPath();
+                ctx.fillStyle = stroke.color;
+                ctx.arc(stroke.points[0].x, stroke.points[0].y, 3, 0, Math.PI*2);
+                ctx.fill();
+            }
+            return;
+        }
+        ctx.strokeStyle = stroke.color;
+        ctx.lineWidth = 5;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+        for(let i = 1; i < stroke.points.length; i++) {
+            ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+        }
+        ctx.stroke();
+    }
+
+    function getPos(evt) {
+        const rect = editCanvas.getBoundingClientRect();
+        const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+        const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+        return {
+            x: (clientX - rect.left) * (editCanvas.width / rect.width),
+            y: (clientY - rect.top) * (editCanvas.height / rect.height)
+        };
+    }
+
+    function startDraw(evt) {
+        evt.preventDefault();
+        drawing = true;
+        currentStroke = { color: activeColor, points: [getPos(evt)] };
+        strokes.push(currentStroke);
+    }
+    function moveDraw(evt) {
+        if(!drawing) return;
+        evt.preventDefault();
+        currentStroke.points.push(getPos(evt));
+        redrawCanvas();
+    }
+    function endDraw(evt) {
+        drawing = false;
+        currentStroke = null;
+    }
+
+    editCanvas.addEventListener('mousedown', startDraw);
+    editCanvas.addEventListener('mousemove', moveDraw);
+    editCanvas.addEventListener('mouseup', endDraw);
+    editCanvas.addEventListener('mouseleave', endDraw);
+    editCanvas.addEventListener('touchstart', startDraw, { passive: false });
+    editCanvas.addEventListener('touchmove', moveDraw, { passive: false });
+    editCanvas.addEventListener('touchend', endDraw);
+
+    window.undoLastStroke = function() {
+        strokes.pop();
+        redrawCanvas();
+    }
+    window.clearAnnotations = function() {
+        strokes = [];
+        redrawCanvas();
+    }
+
+    window.closeImageEditor = function(save) {
+        document.getElementById('image-edit-modal').classList.remove('active');
+        if(save && baseImage) {
+            const dataUrl = editCanvas.toDataURL('image/png');
+            if(pendingCallback) pendingCallback(dataUrl);
+        } else {
+            if(pendingCallback) pendingCallback(null);
+        }
+        pendingCallback = null;
+        baseImage = null;
+        strokes = [];
+    }
+
+    // ---------------- App Update: Attach Screenshot ---------------- //
+    document.getElementById('updateFileInput').addEventListener('change', function() {
+        const file = this.files[0];
+        if(!file) return;
+        openImageEditor(file, function(dataUrl) {
+            if(dataUrl) {
+                window.updateScreenshotDataUrl = dataUrl;
+                const preview = document.getElementById('update-shot-preview');
+                document.getElementById('update-shot-img').src = dataUrl;
+                preview.style.display = 'block';
+                document.getElementById('attach-shot-btn').innerHTML = '<i class="fas fa-check" style="margin-right:10px; color:#1f9d67;"></i> Screenshot Marked';
+            }
+            // reset input so the same file can be re-selected later if needed
+            document.getElementById('updateFileInput').value = '';
+        });
+    });
+
+    window.removeUpdateScreenshot = function() {
+        window.updateScreenshotDataUrl = "";
+        document.getElementById('update-shot-preview').style.display = 'none';
+        document.getElementById('update-shot-img').src = '';
+        document.getElementById('attach-shot-btn').innerHTML = '<i class="fas fa-camera" style="margin-right: 10px;"></i> Attach Screenshot';
+    }
+
+    const CLOUD_NAME = "sjt8mlws";
+    const UPLOAD_PRESET = "Naeem786";
+
+    async function uploadDataUrlToCloudinary(dataUrl) {
+        const formData = new FormData();
+        formData.append('file', dataUrl);
+        formData.append('upload_preset', UPLOAD_PRESET);
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
+        const result = await res.json();
+        return result.secure_url;
+    }
+
     // Submit Update
-    window.submitUpdate = function() {
+    window.submitUpdate = async function() {
         const details = document.getElementById('update-details').value;
         if(!details) return alert("Please enter details!");
 
-        const trxId = "TRX-" + Math.floor(Math.random() * 100000000);
-        const reqRef = ref(db, `updateRequests/${window.currentProjectId}`);
-        const newReq = push(reqRef);
-        
-        set(newReq, {
-            details: details,
-            status: 'Pending',
-            trxId: trxId,
-            timestamp: Date.now()
-        }).then(() => {
+        const submitBtn = event.target.closest('button');
+        const originalHtml = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin:0 auto;"></i>';
+        submitBtn.disabled = true;
+
+        try {
+            let screenshotUrl = "";
+            if(window.updateScreenshotDataUrl) {
+                screenshotUrl = await uploadDataUrlToCloudinary(window.updateScreenshotDataUrl);
+            }
+
+            const trxId = "TRX-" + Math.floor(Math.random() * 100000000);
+            const reqRef = ref(db, `updateRequests/${window.currentProjectId}`);
+            const newReq = push(reqRef);
+
+            const payload = {
+                details: details,
+                status: 'Pending',
+                trxId: trxId,
+                timestamp: Date.now()
+            };
+            if(screenshotUrl) payload.screenshot = screenshotUrl;
+
+            await set(newReq, payload);
             alert(`Request Submitted!\nTRX ID: ${trxId}`);
             document.getElementById('update-details').value = '';
-        });
+            window.removeUpdateScreenshot();
+        } catch(e) {
+            console.error(e);
+            alert("Something went wrong while submitting. Please try again.");
+        } finally {
+            submitBtn.innerHTML = originalHtml;
+            submitBtn.disabled = false;
+        }
     }
 
     // Load Updates History & Auto Delete 24h Complete tasks
@@ -542,14 +888,19 @@
                     if(req.status.toLowerCase() === 'close') badgeClass = 'status-close';
                     if(req.status.toLowerCase() === 'complete') badgeClass = 'status-complete';
 
+                    const screenshotHtml = req.screenshot
+                        ? `<img src="${req.screenshot}" style="width:100%; border-radius:10px; margin-top:8px; display:block;">`
+                        : '';
+
                     html += `
                         <div class="neu-box" style="padding:15px; margin-bottom:15px;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                                <span class="text-sm" style="color: #0984e3; font-weight:bold;">${req.trxId}</span>
+                                <span class="text-sm" style="color: var(--info-color); font-weight:bold;">${req.trxId}</span>
                                 <span class="status-badge ${badgeClass}">${req.status}</span>
                             </div>
                             <p class="text-sm" style="margin-bottom: 8px;"><i class="far fa-clock"></i> ${formattedTime}</p>
                             <p style="font-size: 14px; color: #333;">${req.details}</p>
+                            ${screenshotHtml}
                         </div>
                     `;
                 }
@@ -583,9 +934,7 @@
         } else if (type === 'other') document.getElementById('image-upload-field').classList.remove('hidden');
     }
 
-    // Upload Image
-    const CLOUD_NAME = "sjt8mlws";
-    const UPLOAD_PRESET = "Naeem786";
+    // Upload Image (Complaint screen photo, unchanged behaviour)
     document.getElementById('fileInput').addEventListener('change', async function () {
         const file = this.files[0];
         if (!file) return;
@@ -665,13 +1014,13 @@
         urdu: {
             greeting: "Hello! Main apki kya madad kar sakta hoon? Neechay diye gaye options mein se muntakhib karein.",
             bill: "Bill check karne ka tareeqa:\n1. Dashboard se 'Check Bills' wale button par click karein.\n2. Wahan aap apna naya (Current) aur purana (Old) bill tafseel se dekh sakte hain.\n3. Agar bill pay nahi hua toh 'Pending' likha hoga, aur pay hone ke baad wo automatically 'Paid' ho jayega.",
-            update: "App Update ki request bhejne ka tareeqa:\n1. Dashboard par 'App Update Now' button dabaein.\n2. Request Update ke box mein likhein ke aapko app mein kya naya chahiye.\n3. Submit karein! Apki history neechay animation wale status ke sath show hogi. Jab status 'Complete' hoga toh theek 24 ghante baad history se remove ho jayega.",
+            update: "App Update ki request bhejne ka tareeqa:\n1. Dashboard par 'App Update Now' button dabaein.\n2. Request Update ke box mein likhein ke aapko app mein kya naya chahiye.\n3. Agar zaroorat ho toh 'Attach Screenshot' se tasveer lagayein aur oper mark/circle bhi laga sakte hain.\n4. Submit karein! Apki history neechay animation wale status ke sath show hogi. Jab status 'Complete' hoga toh theek 24 ghante baad history se remove ho jayega.",
             complaint: "Complaint file karne ka tareeqa:\n1. Dashboard se 'Complaint' option kholiye.\n2. Apna issue select karein (jaise Deposit, Withdraw, ya Other).\n3. Box mein apni pareshani tafseel se likhein, agar zaroorat ho toh tasveer (photo) bhi laga dein aur Submit daba dein."
         },
         english: {
             greeting: "Hello! How can I assist you today? Please choose from the options below.",
             bill: "How to check/pay your bill:\n1. Click on the 'Check Bills' button on the Dashboard.\n2. There you can view your Current and Old bills in detail.\n3. If unpaid, it shows 'Pending'. Once paid, the status automatically updates to 'Paid'.",
-            update: "How to request an App Update:\n1. Click 'App Update Now' on the Dashboard.\n2. Type your required features in the request box.\n3. Hit Submit! Your request will appear below with live animated status. Once marked 'Complete', it will auto-delete after 24 hours.",
+            update: "How to request an App Update:\n1. Click 'App Update Now' on the Dashboard.\n2. Type your required features in the request box.\n3. Optionally, tap 'Attach Screenshot', mark or circle the area you mean, then tap Done.\n4. Hit Submit! Your request will appear below with live animated status. Once marked 'Complete', it will auto-delete after 24 hours.",
             complaint: "How to file a Complaint:\n1. Open the 'Complaint' screen from the Dashboard.\n2. Select your issue type from the dropdown (Deposit, Withdraw, etc.).\n3. Describe your issue in detail, attach a photo if necessary, and click Submit."
         }
     };
