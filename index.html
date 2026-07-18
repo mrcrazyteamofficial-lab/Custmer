@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MrCrazy Customer App</title>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "a291449e-5e47-42c5-b575-ed24970d5c91",
+    });
+  });
+</script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -141,6 +150,44 @@
             color: var(--text-color);
         }
 
+        /* Create Project New Anim Button */
+        @keyframes pulse-btn {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(214, 51, 126, 0.5); }
+            70% { transform: scale(1.03); box-shadow: 0 0 0 10px rgba(214, 51, 126, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(214, 51, 126, 0); }
+        }
+        .create-btn-anim {
+            animation: pulse-btn 2s infinite;
+        }
+
+        /* Circular Loader */
+        .circle-loader-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px auto;
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+        .circle-loader {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 8px solid var(--shadow-light);
+            border-top: 8px solid var(--primary-color);
+            animation: spin 1s linear infinite;
+            box-shadow: 5px 5px 15px var(--shadow-dark), -5px -5px 15px var(--shadow-light);
+        }
+        .circle-percent {
+            position: absolute;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            font-family: 'Poppins', sans-serif;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         /* Notifications */
         .badge {
             background: linear-gradient(135deg, #ff5f6d, #d6337e);
@@ -245,7 +292,7 @@
             display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
 
-        /* Image Edit Modal (WhatsApp style annotation) */
+        /* Image Edit Modal */
         .edit-modal-overlay {
             position: fixed; inset: 0; background: #10151f;
             display: none; flex-direction: column; z-index: 2000;
@@ -297,6 +344,9 @@
         }
         .dev-credit i { color: var(--pink-color); }
         .dev-credit strong { color: var(--primary-dark); font-weight: 700; }
+        
+        .wizard-step { display: none; }
+        .wizard-step.active { display: block; animation: fadeIn 0.3s ease; }
     </style>
 </head>
 <body>
@@ -305,17 +355,141 @@
     
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="screen active">
-        <div style="text-align: center; margin-top: 90px; display:flex; flex-direction:column; flex:1;">
+        <div style="text-align: center; margin-top: 50px; display:flex; flex-direction:column; flex:1;">
             <div style="flex:1;">
                 <i class="fas fa-crown fa-4x" style="color: var(--accent-color); margin-bottom: 20px; filter: drop-shadow(0 6px 10px rgba(240,151,63,0.35));"></i>
                 <h2 style="margin-bottom: 8px; font-size: 24px; font-weight: 800; color: var(--primary-dark);">MrCrazy Customer</h2>
                 <p style="margin-bottom: 30px; color: var(--text-muted);">Welcome! Please enter your Project ID</p>
                 <input type="text" id="projectIdInput" class="neu-input" placeholder="Project ID (e.g., PROJ-001)">
                 <button class="neu-button primary-btn" onclick="login()" style="justify-content: center;">Login <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></button>
+
+                <!-- NEW UPDATE: Create Project Section -->
+                <div style="margin-top: 40px; padding: 20px; background: rgba(255,255,255,0.4); border-radius: 20px; border: 1px solid rgba(255,255,255,0.6);">
+                    <p style="font-size: 13px; color: var(--text-color); font-weight: 600; margin-bottom: 15px; line-height: 1.5;">
+                        If you want to get a new app or website made, then get your new project developed below..
+                    </p>
+اگر آپ نئی ایپ یا ویب سائٹ بنوانا چاہتے ہیں تو نیچے اپنا نیا پروجیکٹ بنوائیں۔
+                    <button class="neu-button accent-btn create-btn-anim" onclick="openScreen('create-project-screen')" style="justify-content: center;">
+                        <i class="fas fa-plus-circle" style="margin-right: 8px;"></i> Create new project
+                    </button>
+                </div>
             </div>
             <div class="dev-credit"><i class="fas fa-code"></i> Developed by <strong>Muhammad Naeem</strong></div>
         </div>
     </div>
+
+    <!-- CREATE PROJECT WIZARD SCREEN -->
+    <div id="create-project-screen" class="screen">
+        <div class="header-nav">
+            <button class="neu-button back-btn" onclick="openScreen('login-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
+            <h3>Start New Project</h3>
+        </div>
+
+        <div class="neu-box">
+            <!-- STEP 1 -->
+            <div id="step-1" class="wizard-step active">
+                <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 1: Project Details</h4>
+                <label class="text-sm">Please Enter your Project name *</label>
+                <input type="text" id="new-proj-name" class="neu-input" placeholder="e.g. My Online Store">
+
+                <label class="text-sm">Please upload your App & website Logo (Optional / Skip)</label>
+                <input type="file" id="new-proj-logo" class="neu-input" accept="image/*" style="padding: 10px;">
+                
+                <label class="text-sm">Please Enter your details (آپ کیسا ایپ بنوانا چاہتے ہیں؟) *</label>
+                <textarea id="new-proj-desc" class="neu-input" rows="4" placeholder="Detail se bayaan karein..."></textarea>
+                
+                <button class="neu-button primary-btn" onclick="nextStep(2)" style="justify-content: center;">Next <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></button>
+            </div>
+
+            <!-- STEP 2 -->
+            <div id="step-2" class="wizard-step">
+                <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 2: Time & Documents</h4>
+                <label class="text-sm">Deadline kab tak chahiye (Select Date & Time) *</label>
+                <input type="datetime-local" id="new-proj-deadline" class="neu-input">
+
+                <label class="text-sm">Kia aap apna Designs bnwana chahty han? (Add PDF / Skip)</label>
+                <input type="file" id="new-proj-pdf" class="neu-input" accept=".pdf" style="padding: 10px;">
+
+                <label class="text-sm">Kia aap kisi Website/App jaisa Design bnwana chahty hain? (Add Link / Skip)</label>
+                <input type="url" id="new-proj-link" class="neu-input" placeholder="https://example.com">
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="neu-button" onclick="nextStep(1)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button>
+                    <button class="neu-button primary-btn" onclick="nextStep(3)" style="justify-content: center;">Next <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></button>
+                </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div id="step-3" class="wizard-step">
+                <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 3: Contact Info</h4>
+                <label class="text-sm">Please Enter Call number *</label>
+                <input type="number" id="new-proj-call" class="neu-input" placeholder="e.g. 03001234567">
+
+                <label class="text-sm">Secondary number (Optional)</label>
+                <input type="number" id="new-proj-sec" class="neu-input" placeholder="e.g. 03007654321">
+
+                <label class="text-sm">Enter WhatsApp No *</label>
+                <input type="number" id="new-proj-wa" class="neu-input" placeholder="WhatsApp Number">
+
+                <label class="text-sm">Project Type *</label>
+                <select id="new-proj-type" class="neu-input">
+                    <option value="Website">Website</option>
+                    <option value="App">App</option>
+                    <option value="Game">Game</option>
+                    <option value="Both">Both (Website & App)</option>
+                </select>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="neu-button" onclick="nextStep(2)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button>
+                    <button class="neu-button primary-btn" onclick="nextStep(4)" style="justify-content: center;">Next <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></button>
+                </div>
+            </div>
+
+            <!-- STEP 4 -->
+            <div id="step-4" class="wizard-step">
+                <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 4: Final Details</h4>
+                <label class="text-sm">Please Enter your Details. Your Name? *</label>
+                <input type="text" id="new-proj-username" class="neu-input" placeholder="Your Full Name">
+
+                <label class="text-sm">Aap kis k liye App bnwana chahty han? *</label>
+                <select id="new-proj-purpose" class="neu-input">
+                    <option value="Personal">Personal</option>
+                    <option value="Education">Education</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="neu-button" onclick="nextStep(3)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button>
+                    <button class="neu-button accent-btn" onclick="submitNewProject()" style="justify-content: center;">Submit Project <i class="fas fa-check" style="margin-left: 8px;"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen" class="screen" style="justify-content: center; align-items: center; text-align: center;">
+        <div class="circle-loader-wrap">
+            <div class="circle-loader"></div>
+            <div class="circle-percent" id="load-percent">1%</div>
+        </div>
+        <h3 id="load-proj-name" style="color: var(--primary-dark); margin-bottom: 10px;">Project Name</h3>
+        <p style="color: var(--text-muted); font-weight: 500;">Please wait...</p>
+    </div>
+
+    <!-- SUCCESS PENDING SCREEN -->
+    <div id="success-screen" class="screen" style="justify-content: center; align-items: center; text-align: center;">
+        <i class="fas fa-check-circle fa-4x" style="color: #1f9d67; margin-bottom: 20px;"></i>
+        <h2 style="margin-bottom: 15px; color: var(--primary-dark);">Project Submitted!</h2>
+        <p style="margin-bottom: 10px; color: var(--text-color);">Your Project ID is:</p>
+        <div class="neu-box" style="padding: 15px; margin-bottom: 20px;">
+            <h3 id="generated-pid" style="color: var(--info-color); letter-spacing: 2px;">PROJ-XXX</h3>
+        </div>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 30px; padding: 0 10px;">
+            Note down this Project ID. Until our team approves it, it will remain pending. After approval, you will be able to log in to the dashboard..
+        </p>
+        <button class="neu-button primary-btn" onclick="openScreen('login-screen')" style="justify-content: center;">Back to Dashboard</button>
+    </div>
+
 
     <!-- DASHBOARD SCREEN -->
     <div id="dashboard-screen" class="screen">
@@ -520,7 +694,7 @@
 
 </div>
 
-<!-- Image Edit Modal (WhatsApp-style annotation before submitting a screenshot) -->
+<!-- Image Edit Modal -->
 <div class="edit-modal-overlay" id="image-edit-modal">
     <div class="edit-modal-inner">
         <div class="edit-toolbar">
@@ -562,7 +736,7 @@
 
     window.currentProjectId = "";
     window.uploadedImageUrl = "";
-    window.updateScreenshotDataUrl = ""; // annotated screenshot for the App Update request
+    window.updateScreenshotDataUrl = ""; 
 
     window.openScreen = function(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -573,6 +747,90 @@
         document.getElementById(badgeId).style.display = 'none';
     }
 
+    // --- NEW UPDATE: CREATE PROJECT WIZARD LOGIC --- //
+    window.nextStep = function(stepNum) {
+        // Validation check for Step 1
+        if(stepNum === 2) {
+            let name = document.getElementById('new-proj-name').value;
+            let desc = document.getElementById('new-proj-desc').value;
+            if(!name || !desc) return alert("Please Enter Project Name and Details!");
+        }
+        // Validation check for Step 3
+        if(stepNum === 3) {
+            let dead = document.getElementById('new-proj-deadline').value;
+            if(!dead) return alert("Please select a Deadline!");
+        }
+        // Validation check for Step 4
+        if(stepNum === 4) {
+            let call = document.getElementById('new-proj-call').value;
+            let wa = document.getElementById('new-proj-wa').value;
+            if(!call || !wa) return alert("Please enter Call and WhatsApp numbers!");
+        }
+
+        document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+        document.getElementById('step-' + stepNum).classList.add('active');
+    }
+
+    window.submitNewProject = function() {
+        let uName = document.getElementById('new-proj-username').value;
+        if(!uName) return alert("Please enter Your Name!");
+
+        // Collect all data
+        const newProjectData = {
+            appName: document.getElementById('new-proj-name').value,
+            details: document.getElementById('new-proj-desc').value,
+            deadline: document.getElementById('new-proj-deadline').value,
+            refLink: document.getElementById('new-proj-link').value,
+            callNum: document.getElementById('new-proj-call').value,
+            secNum: document.getElementById('new-proj-sec').value,
+            waNum: document.getElementById('new-proj-wa').value,
+            projType: document.getElementById('new-proj-type').value,
+            userName: document.getElementById('new-proj-username').value,
+            purpose: document.getElementById('new-proj-purpose').value,
+            status: "pending", // Status pending until Admin Approves
+            timestamp: Date.now()
+        };
+
+        // File names info only (to avoid uploading huge binary in realtime db)
+        let logoFile = document.getElementById('new-proj-logo').files[0];
+        let pdfFile = document.getElementById('new-proj-pdf').files[0];
+        if(logoFile) newProjectData.logoFileName = logoFile.name;
+        if(pdfFile) newProjectData.pdfFileName = pdfFile.name;
+
+        // Show Loading Screen
+        document.getElementById('load-proj-name').innerText = newProjectData.appName;
+        openScreen('loading-screen');
+
+        let pct = 1;
+        let percentEl = document.getElementById('load-percent');
+        let loaderIntv = setInterval(() => {
+            pct += 1;
+            percentEl.innerText = pct + "%";
+            if(pct >= 100) {
+                clearInterval(loaderIntv);
+                finalizeProjectSave(newProjectData);
+            }
+        }, 30); // Takes around 3 seconds to complete 100%
+    }
+
+    function finalizeProjectSave(data) {
+        // Generate Unique Project ID PROJ-XXXX
+        const pId = "PROJ-" + Math.floor(1000 + Math.random() * 9000);
+        
+        // Save to Firebase under users collection
+        set(ref(db, 'users/' + pId), data).then(() => {
+            document.getElementById('generated-pid').innerText = pId;
+            openScreen('success-screen');
+            // Clear inputs
+            document.querySelectorAll('#create-project-screen input, #create-project-screen textarea').forEach(el => el.value = '');
+            nextStep(1); // Reset wizard
+        }).catch((err) => {
+            alert("Error saving project. Try again!");
+            openScreen('create-project-screen');
+        });
+    }
+
+
     // Login Logic
     window.login = async function() {
         const pId = document.getElementById('projectIdInput').value.trim();
@@ -581,11 +839,18 @@
         const userRef = ref(db, 'users/' + pId);
         get(userRef).then((snapshot) => {
             if (snapshot.exists()) {
-                window.currentProjectId = pId;
                 const data = snapshot.val();
                 
+                // NEW: Block login if status is pending
+                if(data.status && data.status.toLowerCase() === "pending") {
+                    alert("Your Project is pending please wait... 24/48 hours");
+                    return;
+                }
+
+                window.currentProjectId = pId;
+                
                 document.getElementById('dash-username').innerText = data.userName || 'No Name';
-                document.getElementById('dash-phone').innerText = data.phone || 'No Phone';
+                document.getElementById('dash-phone').innerText = data.callNum || data.phone || 'No Phone';
                 document.getElementById('dash-app-name').innerText = data.appName || 'No App Name';
                 if(data.userImage) document.getElementById('dash-user-image').src = data.userImage;
                 if(data.appLogo) document.getElementById('dash-app-logo').src = data.appLogo;
@@ -610,7 +875,6 @@
             if(snapshot.exists()) {
                 const data = snapshot.val();
                 
-                // Current Bill Elements
                 let currAmt = data.currentAmount || '0 PKR';
                 let currStatus = data.status || 'Pending';
                 
@@ -621,11 +885,9 @@
                 statusEl.innerText = currStatus;
                 statusEl.className = currStatus === 'Paid' ? 'text-success' : 'text-warning';
 
-                // Dashboard Preview Update
                 let dashPreview = document.getElementById('dash-bill-preview');
                 dashPreview.innerHTML = `Current Bill: <strong>${currAmt}</strong> - <span class="${currStatus === 'Paid' ? 'text-success' : 'text-warning'}">${currStatus}</span>`;
 
-                // Old Bill Elements
                 document.getElementById('old-bill-amount').innerText = data.oldAmount || '0 PKR';
                 document.getElementById('old-bill-date').innerText = data.oldDate || 'N/A';
                 let oldStatusEl = document.getElementById('old-bill-status');
@@ -633,11 +895,9 @@
                 oldStatusEl.innerText = oldStatus;
                 oldStatusEl.className = oldStatus === 'Paid' ? 'text-success' : 'text-warning';
 
-                // Next Dates
                 document.getElementById('next-bill-date').innerText = data.nextDate || 'N/A';
                 document.getElementById('bill-days-left').innerText = data.daysLeft || 'N/A';
 
-                // Monthly Summary
                 let summaryHTML = "";
                 if(data.summary) {
                     for(let key in data.summary) {
@@ -654,15 +914,15 @@
         });
     }
 
-    // ---------------- IMAGE EDIT MODAL (WhatsApp-style annotate) ---------------- //
+    // IMAGE EDIT MODAL 
     const editCanvas = document.getElementById('editCanvas');
     const ctx = editCanvas.getContext('2d');
-    let baseImage = null;       // the original loaded image
-    let strokes = [];           // array of strokes, each is {color, points:[{x,y}]}
+    let baseImage = null;       
+    let strokes = [];           
     let currentStroke = null;
     let drawing = false;
     let activeColor = '#ff3b30';
-    let pendingCallback = null; // called with dataURL (or null if cancelled)
+    let pendingCallback = null; 
 
     document.getElementById('color-swatches').addEventListener('click', (e) => {
         const swatch = e.target.closest('.color-swatch');
@@ -690,7 +950,6 @@
     }
 
     function fitCanvasToImage() {
-        // Constrain to viewport while keeping the image's native aspect ratio
         const maxW = Math.min(window.innerWidth, 414) - 20;
         const maxH = window.innerHeight - 220;
         let w = baseImage.width, h = baseImage.height;
@@ -784,7 +1043,7 @@
         strokes = [];
     }
 
-    // ---------------- App Update: Attach Screenshot ---------------- //
+    // App Update: Attach Screenshot 
     document.getElementById('updateFileInput').addEventListener('change', function() {
         const file = this.files[0];
         if(!file) return;
@@ -796,7 +1055,6 @@
                 preview.style.display = 'block';
                 document.getElementById('attach-shot-btn').innerHTML = '<i class="fas fa-check" style="margin-right:10px; color:#1f9d67;"></i> Screenshot Marked';
             }
-            // reset input so the same file can be re-selected later if needed
             document.getElementById('updateFileInput').value = '';
         });
     });
@@ -861,7 +1119,6 @@
         }
     }
 
-    // Load Updates History & Auto Delete 24h Complete tasks
     function loadUpdatesHistory(pId) {
         const reqRef = ref(db, `updateRequests/${pId}`);
         onValue(reqRef, (snapshot) => {
@@ -876,13 +1133,11 @@
                     let reqTime = new Date(req.timestamp);
                     let formattedTime = reqTime.toLocaleDateString() + " " + reqTime.toLocaleTimeString();
                     
-                    // 24 Hour Delete Logic for Complete Status
                     if(req.status.toLowerCase() === 'complete' && (now - req.timestamp > oneDay)) {
                         remove(ref(db, `updateRequests/${pId}/${key}`));
                         continue;
                     }
 
-                    // Badge Color Map
                     let badgeClass = 'status-pending';
                     if(req.status.toLowerCase() === 'working') badgeClass = 'status-working';
                     if(req.status.toLowerCase() === 'close') badgeClass = 'status-close';
@@ -909,7 +1164,6 @@
         });
     }
 
-    // Toggle Complaint Fields
     window.toggleComplaintFields = function() {
         const type = document.getElementById('issue-type').value;
         document.querySelectorAll('#complaint-screen .hidden').forEach(el => {
@@ -934,7 +1188,6 @@
         } else if (type === 'other') document.getElementById('image-upload-field').classList.remove('hidden');
     }
 
-    // Upload Image (Complaint screen photo, unchanged behaviour)
     document.getElementById('fileInput').addEventListener('change', async function () {
         const file = this.files[0];
         if (!file) return;
@@ -953,7 +1206,6 @@
         }
     });
 
-    // Submit Complaint
     window.submitComplaint = function() {
         const type = document.getElementById('issue-type').value;
         const details = document.getElementById('comp-details').value;
@@ -981,7 +1233,6 @@
         });
     }
 
-    // Load Complaints History
     function loadComplaintsHistory(pId) {
         const compRef = ref(db, `complaints/${pId}`);
         onValue(compRef, (snapshot) => {
@@ -1009,7 +1260,6 @@
         });
     }
 
-    // ---------------- CHAT BOT LOGIC ---------------- //
     const botReplies = {
         urdu: {
             greeting: "Hello! Main apki kya madad kar sakta hoon? Neechay diye gaye options mein se muntakhib karein.",
@@ -1039,21 +1289,18 @@
         if(topic==='update') userText = lang === 'urdu' ? "App update ki request kaise bhejun?" : "How to request an update?";
         if(topic==='complaint') userText = lang === 'urdu' ? "Complaint kaise karun?" : "How to file a complaint?";
 
-        // Append User Message
         const userDiv = document.createElement('div');
         userDiv.className = "chat-msg chat-user clearfix";
         userDiv.innerText = userText;
         box.appendChild(userDiv);
         box.scrollTop = box.scrollHeight;
 
-        // Bot Typing Placeholder
         const botDiv = document.createElement('div');
         botDiv.className = "chat-msg chat-bot clearfix";
         botDiv.innerHTML = "<i class='fas fa-ellipsis-h fa-fade'></i> Typing...";
         box.appendChild(botDiv);
         box.scrollTop = box.scrollHeight;
 
-        // Typing Animation
         setTimeout(() => {
             botDiv.innerHTML = "";
             const replyText = botReplies[lang][topic];
@@ -1064,7 +1311,7 @@
                     botDiv.innerHTML += replyText.charAt(i) === '\n' ? '<br>' : replyText.charAt(i);
                     i++;
                     box.scrollTop = box.scrollHeight;
-                    setTimeout(type, 25); // Animal fast typing speed
+                    setTimeout(type, 25); 
                 }
             }
             type();
