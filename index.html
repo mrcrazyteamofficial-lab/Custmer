@@ -15,7 +15,7 @@
 </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #e7ecf3;
@@ -37,13 +37,33 @@
             margin: 0;
             padding: 0;
             font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: radial-gradient(circle at top left, #f2f5fa 0%, #dbe2ec 100%);
+            background:
+                radial-gradient(circle at 15% 10%, rgba(18,135,127,0.10) 0%, transparent 45%),
+                radial-gradient(circle at 85% 90%, rgba(214,51,126,0.10) 0%, transparent 45%),
+                linear-gradient(160deg, #0e1420 0%, #182338 55%, #0e1420 100%);
+            background-attachment: fixed;
             color: var(--text-color);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            position: relative;
         }
+
+        /* Developer / system grid backdrop */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+            background-size: 34px 34px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .mono { font-family: 'JetBrains Mono', 'Courier New', monospace; }
 
         h2, h3, h4 { font-family: 'Poppins', 'Segoe UI', sans-serif; letter-spacing: -0.01em; }
 
@@ -55,9 +75,35 @@
             background: var(--bg-color);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 25px 60px rgba(20, 30, 50, 0.28);
-            border-radius: 28px;
+            box-shadow: 0 30px 70px rgba(5, 10, 20, 0.55), 0 0 0 1px rgba(255,255,255,0.06);
+            border-radius: 32px;
+            z-index: 1;
+            border: 6px solid #0e1420;
         }
+
+        /* Dev/system status strip pinned to the very top of the app */
+        .system-strip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            background: linear-gradient(90deg, #0e1420, #16202f 60%, #0e1420);
+            color: #8fe3d8;
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.03em;
+            border-bottom: 1px solid rgba(18,135,127,0.35);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .system-strip .dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: #24d17a; display: inline-block; margin-right: 6px;
+            box-shadow: 0 0 6px #24d17a;
+            animation: pulse-green 1.6s infinite;
+        }
+        .system-strip .strip-right { color: #6d7c98; }
 
         .screen {
             display: none;
@@ -133,6 +179,14 @@
             color: var(--info-color);
             border: 1.5px dashed #b7c2d4;
             box-shadow: none;
+        }
+
+        .neu-button:disabled,
+        .neu-button.disabled-btn {
+            opacity: 0.45;
+            cursor: not-allowed;
+            box-shadow: none !important;
+            transform: none !important;
         }
 
         .neu-input {
@@ -292,6 +346,95 @@
             display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
 
+        /* Upload Widget (used for Logo image & PDF design uploads) */
+        .upload-widget {
+            margin-bottom: 15px;
+        }
+        .upload-row {
+            display: flex;
+            align-items: stretch;
+            gap: 10px;
+        }
+        .upload-btn { margin-bottom: 0 !important; flex: 1; }
+        .skip-btn {
+            width: auto !important;
+            margin: 0 !important;
+            padding: 15px 14px !important;
+            font-size: 12px !important;
+            color: var(--text-muted);
+            background: var(--bg-color);
+            white-space: nowrap;
+        }
+        .skip-btn.skipped-state {
+            background: linear-gradient(135deg, #6d7c98, #46536b);
+            color: #fff;
+            box-shadow: 0 6px 14px rgba(70, 83, 107, 0.35);
+        }
+        .upload-status-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(53, 103, 214, 0.08);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--info-color);
+        }
+        .mini-loader {
+            width: 16px; height: 16px; border-radius: 50%;
+            border: 2.5px solid rgba(53,103,214,0.25);
+            border-top: 2.5px solid var(--info-color);
+            animation: spin 0.8s linear infinite;
+            flex-shrink: 0;
+        }
+        .upload-status-box.error-box { background: rgba(239, 69, 98, 0.1); color: var(--danger-color); }
+        .upload-status-box.error-box .mini-loader { display: none; }
+
+        .upload-preview-thumb {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            padding: 8px 10px;
+            border-radius: 14px;
+            background: rgba(31, 157, 103, 0.09);
+            box-shadow: 3px 3px 8px var(--shadow-dark), -3px -3px 8px var(--shadow-light);
+        }
+        .upload-preview-thumb img {
+            width: 40px; height: 40px; border-radius: 10px; object-fit: cover;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .upload-preview-thumb .pdf-chip {
+            width: 40px; height: 40px; border-radius: 10px;
+            background: linear-gradient(135deg, var(--danger-color), #a91d38);
+            color: #fff; display: flex; align-items: center; justify-content: center;
+            font-size: 16px; flex-shrink: 0;
+        }
+        .upload-success-tag {
+            flex: 1;
+            font-size: 12px;
+            font-weight: 700;
+            color: #1f9d67;
+        }
+        .upload-success-tag i { margin-right: 5px; }
+        .remove-mini-btn {
+            border: none; background: rgba(0,0,0,0.08); color: var(--text-color);
+            width: 26px; height: 26px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0;
+        }
+
+        /* Global inline loading spinner helper (used across all action buttons) */
+        .btn-spinner {
+            width: 16px; height: 16px; border-radius: 50%;
+            border: 2.5px solid rgba(255,255,255,0.35);
+            border-top: 2.5px solid #fff;
+            animation: spin 0.7s linear infinite;
+            display: inline-block;
+            margin: 0 auto;
+        }
+
         /* Image Edit Modal */
         .edit-modal-overlay {
             position: fixed; inset: 0; background: #10151f;
@@ -352,7 +495,11 @@
 <body>
 
 <div class="mobile-container">
-    
+    <div class="system-strip">
+        <span><span class="dot"></span>SYSTEM ONLINE</span>
+        <span class="strip-right mono" id="system-strip-clock">--:--</span>
+    </div>
+
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="screen active">
         <div style="text-align: center; margin-top: 50px; display:flex; flex-direction:column; flex:1;">
@@ -361,7 +508,7 @@
                 <h2 style="margin-bottom: 8px; font-size: 24px; font-weight: 800; color: var(--primary-dark);">MrCrazy Customer</h2>
                 <p style="margin-bottom: 30px; color: var(--text-muted);">Welcome! Please enter your Project ID</p>
                 <input type="text" id="projectIdInput" class="neu-input" placeholder="Project ID (e.g., PROJ-001)">
-                <button class="neu-button primary-btn" onclick="login()" style="justify-content: center;">Login <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></button>
+                <button class="neu-button primary-btn" id="login-btn" onclick="login()" style="justify-content: center;"><span id="login-btn-label">Login</span> <i class="fas fa-arrow-right" id="login-btn-icon" style="margin-left: 10px;"></i></button>
 
                 <!-- NEW UPDATE: Create Project Section -->
                 <div style="margin-top: 40px; padding: 20px; background: rgba(255,255,255,0.4); border-radius: 20px; border: 1px solid rgba(255,255,255,0.6);">
@@ -392,8 +539,25 @@
                 <label class="text-sm">Please Enter your Project name *</label>
                 <input type="text" id="new-proj-name" class="neu-input" placeholder="e.g. My Online Store">
 
-                <label class="text-sm">Please upload your App & website Logo (Optional / Skip)</label>
-                <input type="file" id="new-proj-logo" class="neu-input" accept="image/*" style="padding: 10px;">
+                <label class="text-sm">Please upload your App & website Logo (Optional)</label>
+                <div class="upload-widget" id="logo-upload-widget">
+                    <div class="upload-row">
+                        <button type="button" class="neu-button ghost-btn upload-btn" id="logo-upload-btn" onclick="document.getElementById('new-proj-logo').click()">
+                            <i class="fas fa-image" style="margin-right: 8px;"></i> <span id="logo-upload-label">Upload Logo</span>
+                        </button>
+                        <button type="button" class="neu-button skip-btn" id="logo-skip-btn" onclick="toggleSkipUpload('logo')">Skip</button>
+                    </div>
+                    <input type="file" id="new-proj-logo" accept="image/*" style="display:none">
+                    <div class="upload-status-box" id="logo-status-box" style="display:none;">
+                        <div class="mini-loader" id="logo-mini-loader"></div>
+                        <span id="logo-status-text">Uploading...</span>
+                    </div>
+                    <div class="upload-preview-thumb" id="logo-preview-box" style="display:none;">
+                        <img id="logo-preview-img" src="" alt="Logo">
+                        <span class="upload-success-tag"><i class="fas fa-check-circle"></i> Logo Uploaded</span>
+                        <button type="button" class="remove-mini-btn" onclick="removeUploadedFile('logo')"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
                 
                 <label class="text-sm">Please Enter your details (آپ کیسا ایپ بنوانا چاہتے ہیں؟) *</label>
                 <textarea id="new-proj-desc" class="neu-input" rows="4" placeholder="Detail se bayaan karein..."></textarea>
@@ -407,8 +571,25 @@
                 <label class="text-sm">Deadline kab tak chahiye (Select Date & Time) *</label>
                 <input type="datetime-local" id="new-proj-deadline" class="neu-input">
 
-                <label class="text-sm">Kia aap apna Designs bnwana chahty han? (Add PDF / Skip)</label>
-                <input type="file" id="new-proj-pdf" class="neu-input" accept=".pdf" style="padding: 10px;">
+                <label class="text-sm">Kia aap apna Designs bnwana chahty han? (Add PDF)</label>
+                <div class="upload-widget" id="pdf-upload-widget">
+                    <div class="upload-row">
+                        <button type="button" class="neu-button ghost-btn upload-btn" id="pdf-upload-btn" onclick="document.getElementById('new-proj-pdf').click()">
+                            <i class="fas fa-file-pdf" style="margin-right: 8px;"></i> <span id="pdf-upload-label">Upload PDF</span>
+                        </button>
+                        <button type="button" class="neu-button skip-btn" id="pdf-skip-btn" onclick="toggleSkipUpload('pdf')">Skip</button>
+                    </div>
+                    <input type="file" id="new-proj-pdf" accept="application/pdf" style="display:none">
+                    <div class="upload-status-box" id="pdf-status-box" style="display:none;">
+                        <div class="mini-loader" id="pdf-mini-loader"></div>
+                        <span id="pdf-status-text">Uploading...</span>
+                    </div>
+                    <div class="upload-preview-thumb" id="pdf-preview-box" style="display:none;">
+                        <div class="pdf-chip"><i class="fas fa-file-pdf"></i></div>
+                        <span class="upload-success-tag" id="pdf-preview-name"><i class="fas fa-check-circle"></i> PDF Uploaded</span>
+                        <button type="button" class="remove-mini-btn" onclick="removeUploadedFile('pdf')"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
 
                 <label class="text-sm">Kia aap kisi Website/App jaisa Design bnwana chahty hain? (Add Link / Skip)</label>
                 <input type="url" id="new-proj-link" class="neu-input" placeholder="https://example.com">
@@ -460,7 +641,7 @@
 
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
                     <button class="neu-button" onclick="nextStep(3)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button>
-                    <button class="neu-button accent-btn" onclick="submitNewProject()" style="justify-content: center;">Submit Project <i class="fas fa-check" style="margin-left: 8px;"></i></button>
+                    <button class="neu-button accent-btn" id="submit-project-btn" onclick="submitNewProject()" style="justify-content: center;"><span id="submit-project-label">Submit Project</span> <i class="fas fa-check" id="submit-project-icon" style="margin-left: 8px;"></i></button>
                 </div>
             </div>
         </div>
@@ -656,7 +837,10 @@
                     <i class="fas fa-image" style="margin-right: 10px;"></i> Photo Upload Karein
                 </button>
                 <input type="file" id="fileInput" accept="image/*" style="display:none">
-                <p id="upload-status" class="text-sm text-success" style="text-align: center;"></p>
+                <div class="upload-status-box" id="complaint-status-box" style="display:none;">
+                    <div class="mini-loader" id="complaint-mini-loader"></div>
+                    <span id="upload-status">Uploading...</span>
+                </div>
             </div>
 
             <button id="submit-complaint-btn" class="neu-button accent-btn hidden" onclick="submitComplaint()" style="justify-content: center; margin-top: 15px;">Submit to Admin</button>
@@ -743,6 +927,14 @@
         document.getElementById(screenId).classList.add('active');
     }
 
+    // Live system clock (reinforces the "real system", not a mockup, feel)
+    function tickSystemClock() {
+        const el = document.getElementById('system-strip-clock');
+        if(el) el.innerText = new Date().toLocaleTimeString();
+    }
+    tickSystemClock();
+    setInterval(tickSystemClock, 1000);
+
     window.removeBadge = function(badgeId) {
         document.getElementById(badgeId).style.display = 'none';
     }
@@ -775,6 +967,18 @@
         let uName = document.getElementById('new-proj-username').value;
         if(!uName) return alert("Please enter Your Name!");
 
+        // Block submit if a real upload is still in progress
+        if(window.uploadWidgets.logo.uploading || window.uploadWidgets.pdf.uploading) {
+            return alert("Please wait, your file is still uploading...");
+        }
+
+        const submitBtn = document.getElementById('submit-project-btn');
+        const submitLabel = document.getElementById('submit-project-label');
+        const submitIcon = document.getElementById('submit-project-icon');
+        submitBtn.disabled = true;
+        submitLabel.innerText = 'Submitting';
+        submitIcon.outerHTML = '<span class="btn-spinner" id="submit-project-icon" style="margin-left:8px;"></span>';
+
         // Collect all data
         const newProjectData = {
             appName: document.getElementById('new-proj-name').value,
@@ -791,11 +995,14 @@
             timestamp: Date.now()
         };
 
-        // File names info only (to avoid uploading huge binary in realtime db)
-        let logoFile = document.getElementById('new-proj-logo').files[0];
-        let pdfFile = document.getElementById('new-proj-pdf').files[0];
-        if(logoFile) newProjectData.logoFileName = logoFile.name;
-        if(pdfFile) newProjectData.pdfFileName = pdfFile.name;
+        // Real uploaded Cloudinary URLs (or explicitly marked as skipped)
+        const logoState = window.uploadWidgets.logo;
+        const pdfState = window.uploadWidgets.pdf;
+        newProjectData.appLogo = logoState.url || "";
+        newProjectData.logoSkipped = !!logoState.skipped;
+        newProjectData.designPdf = pdfState.url || "";
+        newProjectData.designPdfName = pdfState.name || "";
+        newProjectData.pdfSkipped = !!pdfState.skipped;
 
         // Show Loading Screen
         document.getElementById('load-proj-name').innerText = newProjectData.appName;
@@ -808,12 +1015,12 @@
             percentEl.innerText = pct + "%";
             if(pct >= 100) {
                 clearInterval(loaderIntv);
-                finalizeProjectSave(newProjectData);
+                finalizeProjectSave(newProjectData, submitBtn, submitLabel);
             }
         }, 30); // Takes around 3 seconds to complete 100%
     }
 
-    function finalizeProjectSave(data) {
+    function finalizeProjectSave(data, submitBtn, submitLabel) {
         // Generate Unique Project ID PROJ-XXXX
         const pId = "PROJ-" + Math.floor(1000 + Math.random() * 9000);
         
@@ -824,10 +1031,35 @@
             // Clear inputs
             document.querySelectorAll('#create-project-screen input, #create-project-screen textarea').forEach(el => el.value = '');
             nextStep(1); // Reset wizard
+            resetUploadWidget('logo');
+            resetUploadWidget('pdf');
+            resetSubmitButton(submitBtn, submitLabel);
         }).catch((err) => {
+            console.error(err);
             alert("Error saving project. Try again!");
             openScreen('create-project-screen');
+            resetSubmitButton(submitBtn, submitLabel);
         });
+    }
+
+    function resetSubmitButton(submitBtn, submitLabel) {
+        if(!submitBtn) return;
+        submitBtn.disabled = false;
+        submitLabel.innerText = 'Submit Project';
+        const spinner = document.getElementById('submit-project-icon');
+        if(spinner) spinner.outerHTML = '<i class="fas fa-check" id="submit-project-icon" style="margin-left: 8px;"></i>';
+    }
+
+    function resetUploadWidget(key) {
+        window.uploadWidgets[key] = { url: '', name: '', skipped: false, uploading: false };
+        const btn = document.getElementById(key + '-upload-btn');
+        const skipBtn = document.getElementById(key + '-skip-btn');
+        const statusBox = document.getElementById(key + '-status-box');
+        const previewBox = document.getElementById(key + '-preview-box');
+        if(btn) { btn.disabled = false; btn.classList.remove('disabled-btn'); }
+        if(skipBtn) { skipBtn.classList.remove('skipped-state'); skipBtn.innerText = 'Skip'; }
+        if(statusBox) statusBox.style.display = 'none';
+        if(previewBox) previewBox.style.display = 'none';
     }
 
 
@@ -835,7 +1067,21 @@
     window.login = async function() {
         const pId = document.getElementById('projectIdInput').value.trim();
         if(!pId) return alert("Please enter Project ID");
-        
+
+        const loginBtn = document.getElementById('login-btn');
+        const loginLabel = document.getElementById('login-btn-label');
+        const loginIcon = document.getElementById('login-btn-icon');
+        loginBtn.disabled = true;
+        loginLabel.innerText = 'Checking';
+        if(loginIcon) loginIcon.outerHTML = '<span class="btn-spinner" id="login-btn-icon" style="margin-left:10px;"></span>';
+
+        function resetLoginBtn() {
+            loginBtn.disabled = false;
+            loginLabel.innerText = 'Login';
+            const spinner = document.getElementById('login-btn-icon');
+            if(spinner) spinner.outerHTML = '<i class="fas fa-arrow-right" id="login-btn-icon" style="margin-left: 10px;"></i>';
+        }
+
         const userRef = ref(db, 'users/' + pId);
         get(userRef).then((snapshot) => {
             if (snapshot.exists()) {
@@ -844,6 +1090,7 @@
                 // NEW: Block login if status is pending
                 if(data.status && data.status.toLowerCase() === "pending") {
                     alert("Your Project is pending please wait... 24/48 hours");
+                    resetLoginBtn();
                     return;
                 }
 
@@ -859,12 +1106,15 @@
                 loadUpdatesHistory(pId);
                 loadComplaintsHistory(pId);
                 openScreen('dashboard-screen');
+                resetLoginBtn();
             } else {
                 alert("Project ID not found in database.");
+                resetLoginBtn();
             }
         }).catch(err => {
             console.error(err);
             alert("Database Error!");
+            resetLoginBtn();
         });
     }
 
@@ -1078,6 +1328,111 @@
         return result.secure_url;
     }
 
+    // ---------------------------------------------------------------
+    // REAL UPLOAD WIDGETS: Project Logo (image) & Project PDF (design)
+    // Each has 3 real states: uploading (animated) -> uploaded (success)
+    // -> or Skipped (disables the upload option entirely).
+    // ---------------------------------------------------------------
+    window.uploadWidgets = {
+        logo: { url: '', name: '', skipped: false, uploading: false },
+        pdf:  { url: '', name: '', skipped: false, uploading: false }
+    };
+
+    async function uploadRawFileToCloudinary(file, resourceType) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', UPLOAD_PRESET);
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resourceType}/upload`, { method: 'POST', body: formData });
+        if(!res.ok) throw new Error('Upload failed: ' + res.status);
+        const result = await res.json();
+        if(!result.secure_url) throw new Error(result.error ? result.error.message : 'Upload failed');
+        return result.secure_url;
+    }
+
+    async function handleWidgetUpload(key, file, resourceType) {
+        const state = window.uploadWidgets[key];
+        const btn = document.getElementById(key + '-upload-btn');
+        const statusBox = document.getElementById(key + '-status-box');
+        const statusText = document.getElementById(key + '-status-text');
+        const previewBox = document.getElementById(key + '-preview-box');
+
+        state.uploading = true;
+        btn.disabled = true;
+        previewBox.style.display = 'none';
+        statusBox.style.display = 'flex';
+        statusBox.classList.remove('error-box');
+        statusText.innerText = 'Uploading, please wait...';
+
+        try {
+            const url = await uploadRawFileToCloudinary(file, resourceType);
+            state.url = url;
+            state.name = file.name;
+            state.uploading = false;
+
+            statusBox.style.display = 'none';
+            btn.disabled = false;
+            previewBox.style.display = 'flex';
+
+            if(key === 'logo') {
+                document.getElementById('logo-preview-img').src = url;
+            } else if(key === 'pdf') {
+                document.getElementById('pdf-preview-name').innerHTML = '<i class="fas fa-check-circle"></i> ' + file.name;
+            }
+        } catch(err) {
+            console.error(err);
+            state.uploading = false;
+            btn.disabled = false;
+            statusBox.classList.add('error-box');
+            statusText.innerText = 'Upload failed. Tap to retry.';
+        }
+    }
+
+    document.getElementById('new-proj-logo').addEventListener('change', function() {
+        const file = this.files[0];
+        if(!file) return;
+        handleWidgetUpload('logo', file, 'image');
+        this.value = '';
+    });
+
+    document.getElementById('new-proj-pdf').addEventListener('change', function() {
+        const file = this.files[0];
+        if(!file) return;
+        handleWidgetUpload('pdf', file, 'raw');
+        this.value = '';
+    });
+
+    window.removeUploadedFile = function(key) {
+        const state = window.uploadWidgets[key];
+        state.url = '';
+        state.name = '';
+        document.getElementById(key + '-preview-box').style.display = 'none';
+        if(key === 'logo') document.getElementById('logo-preview-img').src = '';
+    }
+
+    // Skip toggle: skipping disables the upload option for that field (tap again to undo)
+    window.toggleSkipUpload = function(key) {
+        const state = window.uploadWidgets[key];
+        if(state.uploading) return;
+        const btn = document.getElementById(key + '-upload-btn');
+        const skipBtn = document.getElementById(key + '-skip-btn');
+
+        state.skipped = !state.skipped;
+
+        if(state.skipped) {
+            // Clear any uploaded file when skipping
+            window.removeUploadedFile(key);
+            btn.disabled = true;
+            btn.classList.add('disabled-btn');
+            skipBtn.classList.add('skipped-state');
+            skipBtn.innerHTML = '<i class="fas fa-check" style="margin-right:5px;"></i> Skipped';
+        } else {
+            btn.disabled = false;
+            btn.classList.remove('disabled-btn');
+            skipBtn.classList.remove('skipped-state');
+            skipBtn.innerText = 'Skip';
+        }
+    }
+
     // Submit Update
     window.submitUpdate = async function() {
         const details = document.getElementById('update-details').value;
@@ -1188,21 +1543,35 @@
         } else if (type === 'other') document.getElementById('image-upload-field').classList.remove('hidden');
     }
 
+    window.complaintImageUploading = false;
+
     document.getElementById('fileInput').addEventListener('change', async function () {
         const file = this.files[0];
         if (!file) return;
-        document.getElementById('upload-status').innerText = "Uploading... please wait";
+        const statusBox = document.getElementById('complaint-status-box');
+        const statusText = document.getElementById('upload-status');
+        window.complaintImageUploading = true;
+        statusBox.style.display = 'flex';
+        statusBox.classList.remove('error-box');
+        statusText.innerText = "Uploading, please wait...";
+        document.getElementById('complaint-mini-loader').style.display = 'block';
+
         const formData = new FormData();
         formData.append('file', file);
         formData.append('upload_preset', UPLOAD_PRESET);
         try {
             const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
             const result = await res.json();
-            window.uploadedImageUrl = result.secure_url; 
-            document.getElementById('upload-status').innerText = "Image Uploaded Successfully!";
+            if(!result.secure_url) throw new Error('upload failed');
+            window.uploadedImageUrl = result.secure_url;
+            statusBox.classList.remove('error-box');
+            statusText.innerHTML = '<i class="fas fa-check-circle" style="color:#1f9d67;"></i> Image Uploaded Successfully!';
+            document.getElementById('complaint-mini-loader').style.display = 'none';
         } catch(e) {
-            document.getElementById('upload-status').innerText = "Failed to upload image.";
-            document.getElementById('upload-status').className = "text-sm text-danger";
+            statusBox.classList.add('error-box');
+            statusText.innerText = "Failed to upload image. Tap the button to retry.";
+        } finally {
+            window.complaintImageUploading = false;
         }
     });
 
@@ -1210,6 +1579,12 @@
         const type = document.getElementById('issue-type').value;
         const details = document.getElementById('comp-details').value;
         if(!details) return alert("Apni complaint tafseel se bayaan karein.");
+        if(window.complaintImageUploading) return alert("Please wait, your photo is still uploading...");
+
+        const btn = document.getElementById('submit-complaint-btn');
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = '<span class="btn-spinner" style="margin:0 auto;"></span>';
+        btn.disabled = true;
 
         let complaintData = { type: type, details: details, status: 'Pending', timestamp: Date.now() };
 
@@ -1230,6 +1605,13 @@
             toggleComplaintFields();
             window.uploadedImageUrl = "";
             document.getElementById('upload-status').innerText = "";
+            document.getElementById('complaint-status-box').style.display = 'none';
+        }).catch(err => {
+            console.error(err);
+            alert("Something went wrong. Please try again.");
+        }).finally(() => {
+            btn.innerHTML = originalHtml;
+            btn.disabled = false;
         });
     }
 
