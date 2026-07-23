@@ -46,254 +46,104 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; /* Fallback */
+            min-height: 100vh; 
             min-height: 100dvh;
             position: relative;
         }
 
-        /* Developer / system grid backdrop */
         body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-            background-size: 34px 34px;
-            pointer-events: none;
-            z-index: 0;
+            content: ""; position: fixed; inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+            background-size: 34px 34px; pointer-events: none; z-index: 0;
         }
 
         .mono { font-family: 'JetBrains Mono', 'Courier New', monospace; }
-
         h2, h3, h4 { font-family: 'Poppins', 'Segoe UI', sans-serif; letter-spacing: -0.01em; }
 
         .mobile-container {
-            width: 100%;
-            max-width: 414px;
-            height: 100vh;
-            height: 100dvh; /* Mobile screen perfect fit */
-            background: var(--bg-color);
-            position: relative;
-            overflow: hidden;
+            width: 100%; max-width: 414px; height: 100vh; height: 100dvh;
+            background: var(--bg-color); position: relative; overflow: hidden;
             box-shadow: 0 30px 70px rgba(5, 10, 20, 0.55), 0 0 0 1px rgba(255,255,255,0.06);
-            border-radius: 32px;
-            z-index: 1;
-            border: 6px solid #0e1420;
+            border-radius: 32px; z-index: 1; border: 6px solid #0e1420;
         }
-
-        /* Dev/system status strip pinned to the very top of the app */
-        .system-strip {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 16px;
-            background: linear-gradient(90deg, #0e1420, #16202f 60%, #0e1420);
-            color: #8fe3d8;
-            font-size: 10px;
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 0.03em;
-            border-bottom: 1px solid rgba(18,135,127,0.35);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-        .system-strip .dot {
-            width: 7px; height: 7px; border-radius: 50%;
-            background: #24d17a; display: inline-block; margin-right: 6px;
-            box-shadow: 0 0 6px #24d17a;
-            animation: pulse-green 1.6s infinite;
-        }
-        .system-strip .strip-right { color: #6d7c98; }
 
         .screen {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-            width: 100%;
-            padding: 20px;
-            box-sizing: border-box;
-            overflow-y: auto;
-            padding-bottom: 40px;
+            display: none; flex-direction: column; height: 100%; width: 100%;
+            padding: 20px; box-sizing: border-box; overflow-y: auto; padding-bottom: 40px;
         }
+        .screen.active { display: flex; animation: fadeIn 0.25s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-        .screen.active {
-            display: flex;
-            animation: fadeIn 0.25s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 3D Elements (Neumorphism) */
+        /* Neumorphism */
         .neu-box {
-            background: var(--bg-color);
-            border-radius: 18px;
+            background: var(--bg-color); border-radius: 18px;
             box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 20px; margin-bottom: 20px;
         }
 
         .neu-button {
-            border: none;
-            outline: none;
-            background: var(--bg-color);
-            border-radius: 16px;
+            border: none; outline: none; background: var(--bg-color); border-radius: 16px;
             box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
-            padding: 15px 16px;
-            margin-bottom: 15px;
-            font-size: 15px;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            color: var(--text-color);
-            cursor: pointer;
-            transition: all 0.15s ease;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
+            padding: 15px 16px; margin-bottom: 15px; font-size: 15px; font-weight: 600;
+            font-family: 'Inter', sans-serif; color: var(--text-color); cursor: pointer;
+            transition: all 0.15s ease; position: relative; display: flex; align-items: center; justify-content: space-between; width: 100%;
         }
-
-        .neu-button:active {
-            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
-            transform: scale(0.99);
-        }
-
-        .neu-button.primary-btn {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: #fff;
-            box-shadow: 0 8px 18px rgba(18, 135, 127, 0.35);
-        }
-        .neu-button.primary-btn:active { box-shadow: 0 4px 10px rgba(18, 135, 127, 0.35); }
-
-        .neu-button.accent-btn {
-            background: linear-gradient(135deg, var(--pink-color), #a8215f);
-            color: #fff;
-            box-shadow: 0 8px 18px rgba(214, 51, 126, 0.35);
-        }
-        .neu-button.accent-btn:active { box-shadow: 0 4px 10px rgba(214, 51, 126, 0.35); }
-
-        .neu-button.ghost-btn {
-            background: var(--bg-color);
-            color: var(--info-color);
-            border: 1.5px dashed #b7c2d4;
-            box-shadow: none;
-        }
-
-        .neu-button:disabled,
-        .neu-button.disabled-btn {
-            opacity: 0.45;
-            cursor: not-allowed;
-            box-shadow: none !important;
-            transform: none !important;
-        }
+        .neu-button:active { box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light); transform: scale(0.99); }
+        .neu-button.primary-btn { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: #fff; box-shadow: 0 8px 18px rgba(18, 135, 127, 0.35); }
+        .neu-button.accent-btn { background: linear-gradient(135deg, var(--pink-color), #a8215f); color: #fff; box-shadow: 0 8px 18px rgba(214, 51, 126, 0.35); }
+        .neu-button.ghost-btn { background: var(--bg-color); color: var(--info-color); border: 1.5px dashed #b7c2d4; box-shadow: none; }
+        .neu-button:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none !important; transform: none !important; }
 
         .neu-input {
-            width: 100%;
-            border: none;
-            outline: none;
-            background: var(--bg-color);
-            border-radius: 12px;
+            width: 100%; border: none; outline: none; background: var(--bg-color); border-radius: 12px;
             box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
-            padding: 14px;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-            color: var(--text-color);
+            padding: 14px; margin-bottom: 15px; box-sizing: border-box; font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text-color);
         }
 
-        /* Create Project New Anim Button */
-        @keyframes pulse-btn {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(214, 51, 126, 0.5); }
-            70% { transform: scale(1.03); box-shadow: 0 0 0 10px rgba(214, 51, 126, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(214, 51, 126, 0); }
+        /* Saved Projects Dropdown */
+        .saved-ids-dropdown {
+            position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-color);
+            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); z-index: 100;
+            max-height: 180px; overflow-y: auto; border: 1px solid #ccd5e3; display: none; margin-top: 5px;
         }
-        .create-btn-anim {
-            animation: pulse-btn 2s infinite;
+        .saved-id-item {
+            padding: 12px 15px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 14px;
+            font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
         }
+        .saved-id-item:last-child { border-bottom: none; }
+        .saved-id-item:hover { background: rgba(0,0,0,0.03); }
 
-        /* Circular Loader */
-        .circle-loader-wrap {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 40px auto;
-            position: relative;
-            width: 120px;
-            height: 120px;
-        }
-        .circle-loader {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 8px solid var(--shadow-light);
-            border-top: 8px solid var(--primary-color);
-            animation: spin 1s linear infinite;
-            box-shadow: 5px 5px 15px var(--shadow-dark), -5px -5px 15px var(--shadow-light);
-        }
-        .circle-percent {
-            position: absolute;
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--primary-dark);
-            font-family: 'Poppins', sans-serif;
-        }
+        @keyframes pulse-btn { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(214, 51, 126, 0.5); } 70% { transform: scale(1.03); box-shadow: 0 0 0 10px rgba(214, 51, 126, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(214, 51, 126, 0); } }
+        .create-btn-anim { animation: pulse-btn 2s infinite; }
+
+        /* Loaders */
+        .circle-loader-wrap { display: flex; justify-content: center; align-items: center; margin: 40px auto; position: relative; width: 120px; height: 120px; }
+        .circle-loader { width: 100%; height: 100%; border-radius: 50%; border: 8px solid var(--shadow-light); border-top: 8px solid var(--primary-color); animation: spin 1s linear infinite; box-shadow: 5px 5px 15px var(--shadow-dark), -5px -5px 15px var(--shadow-light); }
+        .circle-percent { position: absolute; font-size: 22px; font-weight: 800; color: var(--primary-dark); font-family: 'Poppins', sans-serif; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Notifications */
+        /* Notification Badges */
         .badge {
-            background: linear-gradient(135deg, #ff5f6d, #d6337e);
-            color: white;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 3px 9px;
-            border-radius: 20px;
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            display: none;
-            box-shadow: 2px 2px 6px rgba(0,0,0,0.25);
+            background: linear-gradient(135deg, #ff5f6d, #d6337e); color: white; font-size: 11px;
+            font-weight: 700; padding: 3px 9px; border-radius: 20px; position: absolute;
+            top: -6px; right: -6px; display: none; box-shadow: 2px 2px 6px rgba(0,0,0,0.25);
         }
 
-        /* Profile Landscape Section */
         .landscape-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: linear-gradient(150deg, #ffffff, #dde3ee);
-            padding: 18px 20px;
-            border-radius: 20px;
-            box-shadow: 6px 6px 16px var(--shadow-dark), -6px -6px 16px var(--shadow-light);
-            margin-bottom: 22px;
+            display: flex; align-items: center; gap: 15px; background: linear-gradient(150deg, #ffffff, #dde3ee);
+            padding: 18px 20px; border-radius: 20px; box-shadow: 6px 6px 16px var(--shadow-dark), -6px -6px 16px var(--shadow-light); margin-bottom: 22px; position: relative;
         }
-
-        .profile-img, .app-logo {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #fff;
-            box-shadow: 3px 3px 8px rgba(60,80,110,0.25);
-        }
-
+        .profile-img, .app-logo { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 3px 3px 8px rgba(60,80,110,0.25); }
         h2, h3, h4, p { margin: 0; padding: 0; }
         .text-sm { font-size: 12px; color: var(--text-muted); }
         .text-success { color: #1f9d67; font-weight: 600; }
         .text-danger { color: var(--danger-color); font-weight: 600; }
         .text-warning { color: var(--accent-color); font-weight: 600; }
-
         .header-nav { display: flex; align-items: center; margin-bottom: 20px; gap: 15px; }
         .back-btn { padding: 10px 15px; border-radius: 12px; }
         .hidden { display: none !important; }
 
-        /* Animated Status Badges */
-        .status-badge {
-            padding: 4px 11px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; display: inline-block; letter-spacing: 0.02em;
-        }
+        .status-badge { padding: 4px 11px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; display: inline-block; letter-spacing: 0.02em; }
         .status-pending { background: linear-gradient(135deg, var(--accent-color), #d9761c); animation: pulse-orange 1.5s infinite; }
         .status-working { background: linear-gradient(135deg, var(--info-color), #1f3f9c); animation: pulse-blue 1.5s infinite; }
         .status-close { background: linear-gradient(135deg, var(--pink-color), #8f1a53); }
@@ -303,100 +153,55 @@
         @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0 rgba(53, 103, 214, 0.6); } 70% { box-shadow: 0 0 0 9px rgba(53, 103, 214, 0); } 100% { box-shadow: 0 0 0 0 rgba(53, 103, 214, 0); } }
         @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(36, 180, 126, 0.6); } 70% { box-shadow: 0 0 0 9px rgba(36, 180, 126, 0); } 100% { box-shadow: 0 0 0 0 rgba(36, 180, 126, 0); } }
 
-        /* Slime Bot Button */
         .slime-bot {
-            position: fixed; bottom: 20px; right: 20px;
-            background: linear-gradient(135deg, #12877f, #0b5f59);
-            color: white; border-radius: 50% 50% 30% 70% / 60% 40% 70% 40%;
-            width: 58px; height: 58px; display: flex;
-            align-items: center; justify-content: center;
-            box-shadow: 0 10px 22px rgba(11, 95, 89, 0.4);
-            animation: slime 3s infinite ease-in-out;
-            cursor: pointer; z-index: 1000;
-            text-align: center; flex-direction: column;
+            position: fixed; bottom: 20px; right: 20px; background: linear-gradient(135deg, #12877f, #0b5f59);
+            color: white; border-radius: 50% 50% 30% 70% / 60% 40% 70% 40%; width: 58px; height: 58px; display: flex;
+            align-items: center; justify-content: center; box-shadow: 0 10px 22px rgba(11, 95, 89, 0.4);
+            animation: slime 3s infinite ease-in-out; cursor: pointer; z-index: 1000; text-align: center; flex-direction: column;
         }
         .slime-bot span { font-size: 9px; font-weight: 700; margin-top: 2px;}
-        @keyframes slime {
-            0%, 100% { border-radius: 50% 50% 30% 70% / 60% 40% 70% 40%; transform: scale(1); }
-            50% { border-radius: 30% 70% 70% 30% / 40% 60% 40% 60%; transform: scale(1.05); }
-        }
+        @keyframes slime { 0%, 100% { border-radius: 50% 50% 30% 70% / 60% 40% 70% 40%; transform: scale(1); } 50% { border-radius: 30% 70% 70% 30% / 40% 60% 40% 60%; transform: scale(1.05); } }
 
-        /* Chat Box */
         .chat-msg { margin-bottom: 15px; border-radius: 15px; padding: 12px 14px; max-width: 80%; font-size: 14px; line-height: 1.5; }
         .chat-bot { background: #dcf3f0; color: #0b5f59; float: left; border-bottom-left-radius: 2px; box-shadow: 2px 2px 6px rgba(0,0,0,0.05); }
         .chat-user { background: linear-gradient(135deg, var(--info-color), #1f3f9c); color: white; float: right; border-bottom-right-radius: 2px; text-align: right; box-shadow: -2px 2px 6px rgba(0,0,0,0.08); }
         .clearfix::after { content: ""; clear: both; display: table; }
 
-        /* Screenshot attach preview */
-        .screenshot-preview {
-            position: relative;
-            width: 100%;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-bottom: 15px;
-            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
-            display: none;
-        }
+        .screenshot-preview { position: relative; width: 100%; border-radius: 14px; overflow: hidden; margin-bottom: 15px; box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light); display: none; }
         .screenshot-preview img { width: 100%; display: block; }
-        .screenshot-preview .remove-shot {
-            position: absolute; top: 8px; right: 8px;
-            background: rgba(20,20,20,0.55); color: #fff;
-            border: none; border-radius: 50%; width: 30px; height: 30px;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-        }
+        .screenshot-preview .remove-shot { position: absolute; top: 8px; right: 8px; background: rgba(20,20,20,0.55); color: #fff; border: none; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        /* Upload Widget */
+        /* Upload Widgets */
         .upload-widget { margin-bottom: 15px; }
         .upload-row { display: flex; align-items: stretch; gap: 10px; }
         .upload-btn { margin-bottom: 0 !important; flex: 1; }
-        .skip-btn {
-            width: auto !important; margin: 0 !important; padding: 15px 14px !important;
-            font-size: 12px !important; color: var(--text-muted); background: var(--bg-color); white-space: nowrap;
-        }
+        .skip-btn { width: auto !important; margin: 0 !important; padding: 15px 14px !important; font-size: 12px !important; color: var(--text-muted); background: var(--bg-color); white-space: nowrap; }
         .skip-btn.skipped-state { background: linear-gradient(135deg, #6d7c98, #46536b); color: #fff; box-shadow: 0 6px 14px rgba(70, 83, 107, 0.35); }
-        .upload-status-box {
-            display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 10px 12px;
-            border-radius: 12px; background: rgba(53, 103, 214, 0.08); font-size: 12px; font-weight: 600; color: var(--info-color);
-        }
-        .mini-loader {
-            width: 16px; height: 16px; border-radius: 50%;
-            border: 2.5px solid rgba(53,103,214,0.25); border-top: 2.5px solid var(--info-color);
-            animation: spin 0.8s linear infinite; flex-shrink: 0;
-        }
+        .upload-status-box { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(53, 103, 214, 0.08); font-size: 12px; font-weight: 600; color: var(--info-color); }
+        .mini-loader { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid rgba(53,103,214,0.25); border-top: 2.5px solid var(--info-color); animation: spin 0.8s linear infinite; flex-shrink: 0; }
         .upload-status-box.error-box { background: rgba(239, 69, 98, 0.1); color: var(--danger-color); }
         .upload-status-box.error-box .mini-loader { display: none; }
-
-        .upload-preview-thumb {
-            display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 8px 10px;
-            border-radius: 14px; background: rgba(31, 157, 103, 0.09); box-shadow: 3px 3px 8px var(--shadow-dark), -3px -3px 8px var(--shadow-light);
-        }
+        .upload-preview-thumb { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 8px 10px; border-radius: 14px; background: rgba(31, 157, 103, 0.09); box-shadow: 3px 3px 8px var(--shadow-dark), -3px -3px 8px var(--shadow-light); }
         .upload-preview-thumb img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
-        .upload-preview-thumb .pdf-chip {
-            width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, var(--danger-color), #a91d38);
-            color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;
-        }
+        .upload-preview-thumb .pdf-chip { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, var(--danger-color), #a91d38); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
         .upload-success-tag { flex: 1; font-size: 12px; font-weight: 700; color: #1f9d67; }
-        .upload-success-tag i { margin-right: 5px; }
-        .remove-mini-btn {
-            border: none; background: rgba(0,0,0,0.08); color: var(--text-color);
-            width: 26px; height: 26px; border-radius: 50%; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0;
-        }
+        .remove-mini-btn { border: none; background: rgba(0,0,0,0.08); color: var(--text-color); width: 26px; height: 26px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
+        .btn-spinner { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,0.35); border-top: 2.5px solid #fff; animation: spin 0.7s linear infinite; display: inline-block; margin: 0 auto; }
 
-        .btn-spinner {
-            width: 16px; height: 16px; border-radius: 50%;
-            border: 2.5px solid rgba(255,255,255,0.35); border-top: 2.5px solid #fff;
-            animation: spin 0.7s linear infinite; display: inline-block; margin: 0 auto;
-        }
+        /* Modals & Lightbox */
+        .simple-modal-overlay, .lightbox-overlay { position: fixed; inset: 0; background: rgba(10,15,25,0.7); display: none; align-items: center; justify-content: center; z-index: 2500; padding: 20px; }
+        .simple-modal-overlay.active, .lightbox-overlay.active { display: flex; animation: fadeIn 0.2s ease; }
+        .simple-modal-box { width: 100%; max-width: 360px; background: var(--bg-color); border-radius: 20px; padding: 22px; box-shadow: 0 20px 45px rgba(0,0,0,0.35); max-height: 90vh; overflow-y: auto; }
+        .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.08); font-size: 13px; }
+        .detail-row:last-child { border-bottom: none; }
+        
+        .lightbox-overlay { z-index: 3000; background: rgba(5,6,10,0.95); }
+        .lightbox-overlay img { max-width: 100%; max-height: 100%; border-radius: 10px; }
+        .lightbox-close { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.12); color: #fff; border: none; width: 42px; height: 42px; border-radius: 50%; font-size: 18px; cursor: pointer; }
 
-        /* Image Edit Modal */
-        .edit-modal-overlay {
-            position: fixed; inset: 0; background: #10151f; display: none; flex-direction: column; z-index: 2000; align-items: center; justify-content: center;
-        }
+        .edit-modal-overlay { position: fixed; inset: 0; background: #10151f; display: none; flex-direction: column; z-index: 2000; align-items: center; justify-content: center; }
         .edit-modal-overlay.active { display: flex; }
-        .edit-modal-inner {
-            width: 100%; max-width: 414px; height: 100%; max-height: 896px; display: flex; flex-direction: column; background: #10151f; position: relative;
-        }
+        .edit-modal-inner { width: 100%; max-width: 414px; height: 100%; max-height: 896px; display: flex; flex-direction: column; background: #10151f; position: relative; }
         .edit-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #171e2b; }
         .edit-toolbar .icon-btn { background: rgba(255,255,255,0.08); border: none; color: #fff; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
         .color-swatches { display: flex; gap: 8px; }
@@ -416,17 +221,15 @@
         .wizard-step { display: none; }
         .wizard-step.active { display: block; animation: fadeIn 0.3s ease; }
 
-        /* Updates Dashboard tabs */
         .ud-tabs { display: flex; gap: 10px; margin-bottom: 18px; }
         .ud-tab-btn { flex: 1; text-align: center; justify-content: center; margin-bottom: 0; font-size: 13px; padding: 12px 10px; }
         .ud-tab-btn.ud-tab-active { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: #fff; box-shadow: 0 8px 18px rgba(18, 135, 127, 0.35); }
         .ud-tab-content { display: none; }
         .ud-tab-content.active { display: block; animation: fadeIn 0.25s ease; }
-
         .ud-update-card { padding: 16px; margin-bottom: 15px; }
         .ud-update-title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
         .ud-update-title-row h4 { color: var(--primary-dark); font-size: 15px; }
-        .ud-whats-new-box { background: rgba(53,103,214,0.07); border-radius: 12px; padding: 10px 12px; font-size: 13px; margin: 10px 0; color: var(--text-color); }
+        .ud-whats-new-box { background: rgba(53,103,214,0.07); border-radius: 12px; padding: 12px 14px; font-size: 13px; margin: 10px 0; color: var(--text-color); border-left: 4px solid var(--info-color); white-space: pre-line; line-height: 1.6; }
         .ud-source-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); margin-top: 8px; }
         .ready-btn { margin-top: 10px !important; margin-bottom: 0 !important; font-size: 12px !important; padding: 10px !important; }
     </style>
@@ -434,12 +237,7 @@
 <body>
 
 <div class="mobile-container">
-    <div class="system-strip">
-        <span><span class="dot"></span>SYSTEM ONLINE</span>
-        <span style="color:var(--accent-color); font-weight:bold; font-size:12px;">V1.1</span>
-        <span class="strip-right mono" id="system-strip-clock">--:--</span>
-    </div>
-
+    
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="screen active">
         <div style="text-align: center; margin-top: 30px; display:flex; flex-direction:column; flex:1;">
@@ -447,10 +245,18 @@
                 <i class="fas fa-crown fa-4x" style="color: var(--accent-color); margin-bottom: 20px; filter: drop-shadow(0 6px 10px rgba(240,151,63,0.35));"></i>
                 <h2 style="margin-bottom: 8px; font-size: 24px; font-weight: 800; color: var(--primary-dark);">MrCrazy Customer</h2>
                 <p style="margin-bottom: 30px; color: var(--text-muted);">Welcome! Please enter your Project ID</p>
-                <input type="text" id="projectIdInput" class="neu-input" placeholder="Project ID (e.g., PROJ-001)">
+                
+                <div style="position:relative; margin-bottom:15px; text-align:left;">
+                    <input type="text" id="projectIdInput" class="neu-input" style="margin-bottom:0;" placeholder="Project ID (e.g., PROJ-001)" onfocus="showSavedIds()">
+                    <div id="saved-ids-dropdown" class="saved-ids-dropdown"></div>
+                </div>
+
+                <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-muted); margin-bottom:20px; justify-content:center; cursor:pointer;">
+                    <input type="checkbox" id="remember-me" style="accent-color:var(--primary-color); width:16px; height:16px;" checked> Remember me
+                </label>
+
                 <button class="neu-button primary-btn" id="login-btn" onclick="login()" style="justify-content: center;"><span id="login-btn-label">Login</span> <i class="fas fa-arrow-right" id="login-btn-icon" style="margin-left: 10px;"></i></button>
 
-                <!-- Create Project Section -->
                 <div style="margin-top: 40px; padding: 20px; background: rgba(255,255,255,0.4); border-radius: 20px; border: 1px solid rgba(255,255,255,0.6);">
                     <p style="font-size: 13px; color: var(--text-color); font-weight: 600; margin-bottom: 15px; line-height: 1.5;">
                         If you want to get a new app or website made, then get your new project developed below..
@@ -470,149 +276,79 @@
             <button class="neu-button back-btn" onclick="openScreen('login-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
             <h3>Start New Project</h3>
         </div>
-
         <div class="neu-box">
-            <!-- STEP 1 -->
             <div id="step-1" class="wizard-step active">
                 <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 1: Project Details</h4>
                 <label class="text-sm">Please Enter your Project name *</label>
                 <input type="text" id="new-proj-name" class="neu-input" placeholder="e.g. My Online Store">
-
                 <label class="text-sm">Please upload your App & website Logo (Optional)</label>
                 <div class="upload-widget" id="logo-upload-widget">
-                    <div class="upload-row">
-                        <button type="button" class="neu-button ghost-btn upload-btn" id="logo-upload-btn" onclick="document.getElementById('new-proj-logo').click()">
-                            <i class="fas fa-image" style="margin-right: 8px;"></i> <span id="logo-upload-label">Upload Logo</span>
-                        </button>
-                        <button type="button" class="neu-button skip-btn" id="logo-skip-btn" onclick="toggleSkipUpload('logo')">Skip</button>
-                    </div>
+                    <div class="upload-row"><button type="button" class="neu-button ghost-btn upload-btn" id="logo-upload-btn" onclick="document.getElementById('new-proj-logo').click()"><i class="fas fa-image" style="margin-right: 8px;"></i> <span id="logo-upload-label">Upload Logo</span></button><button type="button" class="neu-button skip-btn" id="logo-skip-btn" onclick="toggleSkipUpload('logo')">Skip</button></div>
                     <input type="file" id="new-proj-logo" accept="image/*" style="display:none">
-                    <div class="upload-status-box" id="logo-status-box" style="display:none;">
-                        <div class="mini-loader" id="logo-mini-loader"></div>
-                        <span id="logo-status-text">Uploading...</span>
-                    </div>
-                    <div class="upload-preview-thumb" id="logo-preview-box" style="display:none;">
-                        <img id="logo-preview-img" src="" alt="Logo">
-                        <span class="upload-success-tag"><i class="fas fa-check-circle"></i> Logo Uploaded</span>
-                        <button type="button" class="remove-mini-btn" onclick="removeUploadedFile('logo')"><i class="fas fa-times"></i></button>
-                    </div>
+                    <div class="upload-status-box" id="logo-status-box" style="display:none;"><div class="mini-loader" id="logo-mini-loader"></div><span id="logo-status-text">Uploading...</span></div>
+                    <div class="upload-preview-thumb" id="logo-preview-box" style="display:none;"><img id="logo-preview-img" src="" alt="Logo"><span class="upload-success-tag"><i class="fas fa-check-circle"></i> Logo Uploaded</span><button type="button" class="remove-mini-btn" onclick="removeUploadedFile('logo')"><i class="fas fa-times"></i></button></div>
                 </div>
-                
                 <label class="text-sm">Please Enter your details *</label>
                 <textarea id="new-proj-desc" class="neu-input" rows="4" placeholder="Detail se bayaan karein..."></textarea>
-                
                 <button class="neu-button primary-btn" onclick="nextStep(2)" style="justify-content: center;">Next <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></button>
             </div>
-
-            <!-- STEP 2 -->
             <div id="step-2" class="wizard-step">
                 <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 2: Time & Documents</h4>
-                <label class="text-sm">Deadline kab tak chahiye (Select Date & Time) *</label>
-                <input type="datetime-local" id="new-proj-deadline" class="neu-input">
-
+                <label class="text-sm">Deadline kab tak chahiye *</label><input type="datetime-local" id="new-proj-deadline" class="neu-input">
                 <label class="text-sm">Kia aap apna Designs bnwana chahty han? (Add PDF)</label>
                 <div class="upload-widget" id="pdf-upload-widget">
-                    <div class="upload-row">
-                        <button type="button" class="neu-button ghost-btn upload-btn" id="pdf-upload-btn" onclick="document.getElementById('new-proj-pdf').click()">
-                            <i class="fas fa-file-pdf" style="margin-right: 8px;"></i> <span id="pdf-upload-label">Upload PDF</span>
-                        </button>
-                        <button type="button" class="neu-button skip-btn" id="pdf-skip-btn" onclick="toggleSkipUpload('pdf')">Skip</button>
-                    </div>
+                    <div class="upload-row"><button type="button" class="neu-button ghost-btn upload-btn" id="pdf-upload-btn" onclick="document.getElementById('new-proj-pdf').click()"><i class="fas fa-file-pdf" style="margin-right: 8px;"></i> <span id="pdf-upload-label">Upload PDF</span></button><button type="button" class="neu-button skip-btn" id="pdf-skip-btn" onclick="toggleSkipUpload('pdf')">Skip</button></div>
                     <input type="file" id="new-proj-pdf" accept="application/pdf" style="display:none">
-                    <div class="upload-status-box" id="pdf-status-box" style="display:none;">
-                        <div class="mini-loader" id="pdf-mini-loader"></div>
-                        <span id="pdf-status-text">Uploading...</span>
-                    </div>
-                    <div class="upload-preview-thumb" id="pdf-preview-box" style="display:none;">
-                        <div class="pdf-chip"><i class="fas fa-file-pdf"></i></div>
-                        <span class="upload-success-tag" id="pdf-preview-name"><i class="fas fa-check-circle"></i> PDF Uploaded</span>
-                        <button type="button" class="remove-mini-btn" onclick="removeUploadedFile('pdf')"><i class="fas fa-times"></i></button>
-                    </div>
+                    <div class="upload-status-box" id="pdf-status-box" style="display:none;"><div class="mini-loader" id="pdf-mini-loader"></div><span id="pdf-status-text">Uploading...</span></div>
+                    <div class="upload-preview-thumb" id="pdf-preview-box" style="display:none;"><div class="pdf-chip"><i class="fas fa-file-pdf"></i></div><span class="upload-success-tag" id="pdf-preview-name"><i class="fas fa-check-circle"></i> PDF Uploaded</span><button type="button" class="remove-mini-btn" onclick="removeUploadedFile('pdf')"><i class="fas fa-times"></i></button></div>
                 </div>
-
-                <label class="text-sm">Kia aap kisi Website/App jaisa Design bnwana chahty hain? (Add Link / Skip)</label>
-                <input type="url" id="new-proj-link" class="neu-input" placeholder="https://example.com">
-
-                <div style="display: flex; gap: 10px;">
-                    <button class="neu-button" onclick="nextStep(1)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button>
-                    <button class="neu-button primary-btn" onclick="nextStep(3)" style="justify-content: center;">Next <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></button>
-                </div>
+                <label class="text-sm">Website/App jaisa Design bnwana chahty hain? (Link)</label><input type="url" id="new-proj-link" class="neu-input" placeholder="https://example.com">
+                <div style="display: flex; gap: 10px;"><button class="neu-button" onclick="nextStep(1)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button><button class="neu-button primary-btn" onclick="nextStep(3)" style="justify-content: center;">Next <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></button></div>
             </div>
-
-            <!-- STEP 3 -->
             <div id="step-3" class="wizard-step">
                 <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 3: Contact Info</h4>
-                <label class="text-sm">Please Enter Call number *</label>
-                <input type="number" id="new-proj-call" class="neu-input" placeholder="e.g. 03001234567">
-
-                <label class="text-sm">Secondary number (Optional)</label>
-                <input type="number" id="new-proj-sec" class="neu-input" placeholder="e.g. 03007654321">
-
-                <label class="text-sm">Enter WhatsApp No *</label>
-                <input type="number" id="new-proj-wa" class="neu-input" placeholder="WhatsApp Number">
-
+                <label class="text-sm">Please Enter Call number *</label><input type="number" id="new-proj-call" class="neu-input">
+                <label class="text-sm">Secondary number (Optional)</label><input type="number" id="new-proj-sec" class="neu-input">
+                <label class="text-sm">Enter WhatsApp No *</label><input type="number" id="new-proj-wa" class="neu-input">
                 <label class="text-sm">Project Type *</label>
-                <select id="new-proj-type" class="neu-input">
-                    <option value="Website">Website</option>
-                    <option value="App">App</option>
-                    <option value="Game">Game</option>
-                    <option value="Both">Both (Website & App)</option>
-                </select>
-
-                <div style="display: flex; gap: 10px;">
-                    <button class="neu-button" onclick="nextStep(2)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button>
-                    <button class="neu-button primary-btn" onclick="nextStep(4)" style="justify-content: center;">Next <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></button>
-                </div>
+                <select id="new-proj-type" class="neu-input"><option value="Website">Website</option><option value="App">App</option><option value="Game">Game</option><option value="Both">Both</option></select>
+                <div style="display: flex; gap: 10px;"><button class="neu-button" onclick="nextStep(2)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button><button class="neu-button primary-btn" onclick="nextStep(4)" style="justify-content: center;">Next <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></button></div>
             </div>
-
-            <!-- STEP 4 -->
             <div id="step-4" class="wizard-step">
                 <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 4: Final Details</h4>
-                <label class="text-sm">Please Enter your Details. Your Name? *</label>
-                <input type="text" id="new-proj-username" class="neu-input" placeholder="Your Full Name">
-
+                <label class="text-sm">Your Name? *</label><input type="text" id="new-proj-username" class="neu-input">
                 <label class="text-sm">Aap kis k liye App bnwana chahty han? *</label>
-                <select id="new-proj-purpose" class="neu-input">
-                    <option value="Personal">Personal</option>
-                    <option value="Education">Education</option>
-                    <option value="Other">Other</option>
-                </select>
-
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button class="neu-button" onclick="nextStep(3)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button>
-                    <button class="neu-button accent-btn" id="submit-project-btn" onclick="submitNewProject()" style="justify-content: center;"><span id="submit-project-label">Submit Project</span> <i class="fas fa-check" id="submit-project-icon" style="margin-left: 8px;"></i></button>
-                </div>
+                <select id="new-proj-purpose" class="neu-input"><option value="Personal">Personal</option><option value="Education">Education</option><option value="Other">Other</option></select>
+                <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="neu-button" onclick="nextStep(3)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button><button class="neu-button accent-btn" id="submit-project-btn" onclick="submitNewProject()" style="justify-content: center;"><span id="submit-project-label">Submit Project</span> <i class="fas fa-check" id="submit-project-icon" style="margin-left: 8px;"></i></button></div>
             </div>
         </div>
     </div>
 
-    <!-- LOADING SCREEN -->
+    <!-- LOADING & SUCCESS SCREENS -->
     <div id="loading-screen" class="screen" style="justify-content: center; align-items: center; text-align: center;">
-        <div class="circle-loader-wrap">
-            <div class="circle-loader"></div>
-            <div class="circle-percent" id="load-percent">1%</div>
-        </div>
+        <div class="circle-loader-wrap"><div class="circle-loader"></div><div class="circle-percent" id="load-percent">1%</div></div>
         <h3 id="load-proj-name" style="color: var(--primary-dark); margin-bottom: 10px;">Project Name</h3>
         <p style="color: var(--text-muted); font-weight: 500;">Please wait...</p>
     </div>
-
-    <!-- SUCCESS PENDING SCREEN -->
     <div id="success-screen" class="screen" style="justify-content: center; align-items: center; text-align: center;">
         <i class="fas fa-check-circle fa-4x" style="color: #1f9d67; margin-bottom: 20px;"></i>
         <h2 style="margin-bottom: 15px; color: var(--primary-dark);">Project Submitted!</h2>
         <p style="margin-bottom: 10px; color: var(--text-color);">Your Project ID is:</p>
-        <div class="neu-box" style="padding: 15px; margin-bottom: 20px;">
-            <h3 id="generated-pid" style="color: var(--info-color); letter-spacing: 2px;">PROJ-XXX</h3>
-        </div>
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 30px; padding: 0 10px;">
-            Note down this Project ID. Until our team approves it, it will remain pending. After approval, you will be able to log in to the dashboard..
-        </p>
+        <div class="neu-box" style="padding: 15px; margin-bottom: 20px;"><h3 id="generated-pid" style="color: var(--info-color); letter-spacing: 2px;">PROJ-XXX</h3></div>
         <button class="neu-button primary-btn" onclick="openScreen('login-screen')" style="justify-content: center;">Back to Dashboard</button>
     </div>
 
-
     <!-- DASHBOARD SCREEN -->
     <div id="dashboard-screen" class="screen">
+        
+        <!-- Big Prominent Bell Icon -->
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+            <div style="position: relative; background: #ffffff; padding: 14px 16px; border-radius: 18px; box-shadow: 5px 5px 15px var(--shadow-dark), -5px -5px 15px var(--shadow-light); cursor: pointer; border: 2px solid var(--primary-color);" onclick="document.getElementById('notif-modal').classList.add('active')">
+                <i class="fas fa-bell" style="color: var(--primary-dark); font-size: 26px;"></i>
+                <span class="badge" id="main-bell-badge" style="top: -8px; right: -8px; font-size: 13px; padding: 4px 10px; border-radius: 20px; display: none; align-items: center; justify-content: center;">0</span>
+            </div>
+        </div>
+
         <div class="landscape-header">
             <img id="dash-user-image" src="https://via.placeholder.com/60" class="profile-img" alt="User">
             <div style="flex: 1;">
@@ -626,28 +362,30 @@
             <div style="flex: 1;">
                 <p class="text-sm">Your App Name</p>
                 <h3 id="dash-app-name">Loading...</h3>
+                <!-- App Info Button -->
+                <span class="text-sm" style="color:var(--info-color); font-weight:700; cursor:pointer; display:inline-block; margin-top:4px;" onclick="document.getElementById('app-info-modal').classList.add('active')"><i class="fas fa-info-circle"></i> App Info</span>
             </div>
         </div>
 
-        <button class="neu-button" onclick="openScreen('bills-screen'); removeBadge('badge-bills')">
+        <button class="neu-button" onclick="clearNotifAndOpen('bills', 'bills-screen')">
             <div style="text-align: left; flex: 1;">
                 <span><i class="fas fa-file-invoice-dollar" style="color: var(--primary-color); margin-right:10px;"></i> Check Bills</span>
                 <div id="dash-bill-preview" style="font-size: 12px; margin-top: 5px; color: var(--text-muted);">Current Bill: Loading...</div>
             </div>
             <i class="fas fa-chevron-right"></i>
-            <span class="badge" id="badge-bills">1 New</span>
+            <span class="badge" id="badge-bills">NEW</span>
         </button>
         
-        <button class="neu-button" onclick="openScreen('update-screen'); removeBadge('badge-update')">
+        <button class="neu-button" onclick="clearNotifAndOpen('update', 'update-screen')">
             <span><i class="fas fa-sync-alt" style="color: var(--info-color); margin-right:10px;"></i> App Update Now</span>
             <i class="fas fa-chevron-right"></i>
-            <span class="badge" id="badge-update">1 New</span>
+            <span class="badge" id="badge-update">NEW</span>
         </button>
 
-        <button class="neu-button" onclick="openScreen('complaint-screen'); removeBadge('badge-complaint')">
+        <button class="neu-button" onclick="clearNotifAndOpen('complaint', 'complaint-screen')">
             <span><i class="fas fa-headset" style="color: var(--pink-color); margin-right:10px;"></i> Complaint</span>
             <i class="fas fa-chevron-right"></i>
-            <span class="badge" id="badge-complaint">1 New</span>
+            <span class="badge" id="badge-complaint">NEW</span>
         </button>
 
         <button class="neu-button" onclick="openUpdatesDashboard()">
@@ -673,46 +411,22 @@
             <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
             <h3>Billing Details</h3>
         </div>
-
         <div class="neu-box">
             <h4 style="margin-bottom: 15px;">Current Bill</h4>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                <span class="text-sm">Amount:</span> <strong id="bill-amount">...</strong>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                <span class="text-sm">Bill Date:</span> <span id="bill-date">...</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                <span class="text-sm">Status:</span> <span id="bill-status" class="text-success">...</span>
-            </div>
-            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span class="text-sm">Amount:</span> <strong id="bill-amount">...</strong></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span class="text-sm">Bill Date:</span> <span id="bill-date">...</span></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span class="text-sm">Status:</span> <span id="bill-status" class="text-success">...</span></div>
             <hr style="border: none; border-top: 1px solid #ccd5e3; margin: 15px 0;">
-            
             <h4 style="margin-bottom: 10px; color: var(--text-muted);">Old Bill</h4>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                <span class="text-sm">Amount:</span> <strong id="old-bill-amount">...</strong>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                <span class="text-sm">Bill Date:</span> <span id="old-bill-date">...</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                <span class="text-sm">Status:</span> <span id="old-bill-status" class="text-success">...</span>
-            </div>
-
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span class="text-sm">Amount:</span> <strong id="old-bill-amount">...</strong></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span class="text-sm">Bill Date:</span> <span id="old-bill-date">...</span></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;"><span class="text-sm">Status:</span> <span id="old-bill-status" class="text-success">...</span></div>
             <hr style="border: none; border-top: 1px solid #ccd5e3; margin: 15px 0;">
-            
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                <span class="text-sm">Next Bill Date:</span> <span id="next-bill-date">...</span>
-            </div>
-            <div style="display: flex; justify-content: space-between;">
-                <span class="text-sm">Days Left:</span> <strong id="bill-days-left">...</strong>
-            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span class="text-sm">Next Bill Date:</span> <span id="next-bill-date">...</span></div>
+            <div style="display: flex; justify-content: space-between;"><span class="text-sm">Days Left:</span> <strong id="bill-days-left">...</strong></div>
         </div>
-
         <h4>Monthly Summary</h4>
-        <div id="monthly-summary-list" style="margin-top: 15px;">
-            <!-- Rendered via JS -->
-        </div>
+        <div id="monthly-summary-list" style="margin-top: 15px;"></div>
     </div>
 
     <!-- UPDATE SCREEN -->
@@ -721,29 +435,22 @@
             <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
             <h3>App Update</h3>
         </div>
-
         <div class="neu-box">
             <h4>Request Update</h4>
             <p class="text-sm" style="margin-bottom: 10px;">Please enter the details you want to update.</p>
             <textarea id="update-details" class="neu-input" rows="4" placeholder="Enter required features..."></textarea>
-
             <div class="screenshot-preview" id="update-shot-preview">
                 <img id="update-shot-img" src="" alt="Screenshot">
                 <button class="remove-shot" onclick="removeUpdateScreenshot()"><i class="fas fa-times"></i></button>
             </div>
-
             <button class="neu-button ghost-btn" id="attach-shot-btn" onclick="document.getElementById('updateFileInput').click()" style="justify-content: center; font-size: 14px;">
                 <i class="fas fa-camera" style="margin-right: 10px;"></i> Attach Screenshot
             </button>
             <input type="file" id="updateFileInput" accept="image/*" style="display:none">
-
             <button class="neu-button primary-btn" onclick="submitUpdate()" style="justify-content: center;">Submit Request <i class="fas fa-paper-plane" style="margin-left:10px;"></i></button>
         </div>
-
         <h4 style="margin-top: 10px;">Updates History</h4>
-        <div id="update-history-list" style="margin-top: 15px; padding-bottom: 20px;">
-            <!-- History Appears Here -->
-        </div>
+        <div id="update-history-list" style="margin-top: 15px; padding-bottom: 20px;"></div>
     </div>
 
     <!-- COMPLAINT SCREEN -->
@@ -752,7 +459,6 @@
             <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
             <h3>File a Complaint</h3>
         </div>
-
         <div class="neu-box">
             <p class="text-sm" style="margin-bottom: 10px;">Select Issue Method</p>
             <select id="issue-type" class="neu-input" onchange="toggleComplaintFields()">
@@ -763,69 +469,41 @@
                 <option value="plan">Plan issue</option>
                 <option value="other">Other issue</option>
             </select>
-
             <div id="user-fields" class="hidden">
                 <input type="text" id="comp-username" class="neu-input" placeholder="Enter Username">
                 <input type="number" id="comp-number" class="neu-input" placeholder="Enter Number">
             </div>
-
             <div id="transaction-fields" class="hidden">
                 <input type="text" id="comp-trx-id" class="neu-input" placeholder="Enter Deposit/Withdraw ID">
             </div>
-
             <div id="common-details-field" class="hidden">
                 <textarea id="comp-details" class="neu-input" rows="4" placeholder="Apni complaint tafseel se bayaan karein..."></textarea>
             </div>
-
             <div id="image-upload-field" class="hidden">
                 <button class="neu-button" onclick="document.getElementById('fileInput').click()" style="justify-content: center; font-size: 14px;">
                     <i class="fas fa-image" style="margin-right: 10px;"></i> Photo Upload Karein
                 </button>
                 <input type="file" id="fileInput" accept="image/*" style="display:none">
-                <div class="upload-status-box" id="complaint-status-box" style="display:none;">
-                    <div class="mini-loader" id="complaint-mini-loader"></div>
-                    <span id="upload-status">Uploading...</span>
-                </div>
+                <div class="upload-status-box" id="complaint-status-box" style="display:none;"><div class="mini-loader" id="complaint-mini-loader"></div><span id="upload-status">Uploading...</span></div>
             </div>
-
             <button id="submit-complaint-btn" class="neu-button accent-btn hidden" onclick="submitComplaint()" style="justify-content: center; margin-top: 15px;">Submit to Admin</button>
         </div>
-
         <h4 style="margin-top: 10px;">Your Complaints</h4>
-        <div id="complaint-history-list" style="margin-top: 15px; padding-bottom: 20px;">
-            <!-- History Appears Here -->
-        </div>
+        <div id="complaint-history-list" style="margin-top: 15px; padding-bottom: 20px;"></div>
     </div>
 
-    <!-- UPDATES DASHBOARD SCREEN (Tabs) -->
+    <!-- UPDATES DASHBOARD SCREEN -->
     <div id="updates-dashboard-screen" class="screen">
         <div class="header-nav">
             <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
             <h3>Dashboard</h3>
         </div>
-
         <div class="ud-tabs">
-            <button class="neu-button ud-tab-btn ud-tab-active" id="ud-tab-btn-bills" onclick="switchUpdatesDashboardTab('bills')">
-                <i class="fas fa-file-invoice-dollar" style="margin-right:6px;"></i> Bill Summary
-            </button>
-            <button class="neu-button ud-tab-btn" id="ud-tab-btn-appupdates" onclick="switchUpdatesDashboardTab('appupdates')">
-                <i class="fas fa-mobile-alt" style="margin-right:6px;"></i> App Updates
-            </button>
+            <button class="neu-button ud-tab-btn ud-tab-active" id="ud-tab-btn-bills" onclick="switchUpdatesDashboardTab('bills')"><i class="fas fa-file-invoice-dollar" style="margin-right:6px;"></i> Bill Summary</button>
+            <button class="neu-button ud-tab-btn" id="ud-tab-btn-appupdates" onclick="switchUpdatesDashboardTab('appupdates')"><i class="fas fa-mobile-alt" style="margin-right:6px;"></i> App Updates</button>
         </div>
-
-        <!-- BILL SUMMARY TAB -->
-        <div id="ud-bills-tab" class="ud-tab-content active">
-            <div id="ud-bill-summary-list">
-                <p class="text-sm">Loading bill summary...</p>
-            </div>
-        </div>
-
-        <!-- APP UPDATES TAB -->
-        <div id="ud-appupdates-tab" class="ud-tab-content">
-            <div id="ud-appupdates-list" style="padding-bottom: 20px;">
-                <p class="text-sm">Loading app updates...</p>
-            </div>
-        </div>
+        <div id="ud-bills-tab" class="ud-tab-content active"><div id="ud-bill-summary-list"></div></div>
+        <div id="ud-appupdates-tab" class="ud-tab-content"><div id="ud-appupdates-list" style="padding-bottom: 20px;"></div></div>
     </div>
 
     <!-- HELP/CHAT SCREEN -->
@@ -849,12 +527,42 @@
             <button class="neu-button" style="width: 48%; padding: 10px; font-size: 13px; margin: 0; justify-content: center;" onclick="sendChatMsg('bill')">Bill Check/Pay</button>
             <button class="neu-button" style="width: 48%; padding: 10px; font-size: 13px; margin: 0; justify-content: center;" onclick="sendChatMsg('update')">App Update</button>
             <button class="neu-button" style="width: 100%; padding: 10px; font-size: 13px; margin: 0; justify-content: center;" onclick="sendChatMsg('complaint')">File a Complaint</button>
+            <button class="neu-button ghost-btn" style="width: 100%; padding: 10px; font-size: 13px; margin: 0; justify-content: center;" onclick="sendChatMsg('dashboard')"><i class="fas fa-bell" style="margin-right:8px;"></i> App Info & Notifications</button>
         </div>
     </div>
 
 </div>
 
-<!-- Image Edit Modal -->
+<!-- NEW: App Info Modal -->
+<div class="simple-modal-overlay" id="app-info-modal">
+    <div class="simple-modal-box">
+        <h3 style="color: var(--primary-dark); margin-bottom: 15px;"><i class="fas fa-info-circle"></i> App Information</h3>
+        <div class="detail-row"><span class="text-muted">Current Version:</span> <strong id="info-version">...</strong></div>
+        <div class="detail-row"><span class="text-muted">Last Update:</span> <strong id="info-update">...</strong></div>
+        <div class="detail-row"><span class="text-muted">Project Type:</span> <strong id="info-type">...</strong></div>
+        <div class="detail-row" style="flex-direction:column; gap:5px;"><span class="text-muted">Purpose / Details:</span> <strong id="info-purpose" style="line-height:1.4;">...</strong></div>
+        <button class="neu-button primary-btn" onclick="document.getElementById('app-info-modal').classList.remove('active')" style="justify-content:center; margin-top:20px;">Close</button>
+    </div>
+</div>
+
+<!-- NEW: Notifications Modal -->
+<div class="simple-modal-overlay" id="notif-modal">
+    <div class="simple-modal-box">
+        <h3 style="color: var(--primary-dark); margin-bottom: 15px;"><i class="fas fa-bell"></i> Notifications</h3>
+        <div id="notif-list">
+            <!-- Dynamically populated -->
+        </div>
+        <button class="neu-button" onclick="document.getElementById('notif-modal').classList.remove('active')" style="justify-content:center; margin-top:15px;">Close</button>
+    </div>
+</div>
+
+<!-- Image View Lightbox (Customer Side) -->
+<div class="lightbox-overlay" id="lightbox-overlay" onclick="closeLightbox(event)">
+    <button class="lightbox-close" onclick="closeLightbox(event)"><i class="fas fa-times"></i></button>
+    <img id="lightbox-img" src="" alt="View">
+</div>
+
+<!-- Image Edit Modal (For Upload) -->
 <div class="edit-modal-overlay" id="image-edit-modal">
     <div class="edit-modal-inner">
         <div class="edit-toolbar">
@@ -868,9 +576,7 @@
             </div>
             <button class="icon-btn" onclick="undoLastStroke()"><i class="fas fa-undo"></i></button>
         </div>
-        <div class="canvas-wrap">
-            <canvas id="editCanvas"></canvas>
-        </div>
+        <div class="canvas-wrap"><canvas id="editCanvas"></canvas></div>
         <div class="edit-footer">
             <button class="clear-btn" onclick="clearAnnotations()"><i class="fas fa-eraser"></i> Clear</button>
             <button class="done-btn" onclick="closeImageEditor(true)"><i class="fas fa-check"></i> Done</button>
@@ -881,14 +587,13 @@
 <!-- Firebase & Scripts -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, get, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, get, push, set, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDUg33dZk0hsqTMK2l2r32QCHeOZB93w4w",
         databaseURL: "https://website-create-ec499-default-rtdb.firebaseio.com",
         projectId: "website-create-ec499",
-        storageBucket: "website-create-ec499.firebasestorage.app",
-        appId: "1:662033839999:android:99c07b1aaef1ee3fdc8c4a"
+        storageBucket: "website-create-ec499.firebasestorage.app"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -897,137 +602,52 @@
     window.currentProjectId = "";
     window.uploadedImageUrl = "";
     window.updateScreenshotDataUrl = ""; 
+    let userListenerUnsubscribe = null;
 
     window.openScreen = function(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(screenId).classList.add('active');
     }
 
-    function tickSystemClock() {
-        const el = document.getElementById('system-strip-clock');
-        if(el) el.innerText = new Date().toLocaleTimeString();
+    // Lightbox implementation for viewing attachments
+    window.openLightbox = function(url) {
+        document.getElementById('lightbox-img').src = url;
+        document.getElementById('lightbox-overlay').classList.add('active');
     }
-    tickSystemClock();
-    setInterval(tickSystemClock, 1000);
-
-    window.removeBadge = function(badgeId) {
-        document.getElementById(badgeId).style.display = 'none';
-    }
-
-    // --- CREATE PROJECT WIZARD LOGIC ---
-    window.nextStep = function(stepNum) {
-        if(stepNum === 2) {
-            let name = document.getElementById('new-proj-name').value;
-            let desc = document.getElementById('new-proj-desc').value;
-            if(!name || !desc) return alert("Please Enter Project Name and Details!");
-        }
-        if(stepNum === 3) {
-            let dead = document.getElementById('new-proj-deadline').value;
-            if(!dead) return alert("Please select a Deadline!");
-        }
-        if(stepNum === 4) {
-            let call = document.getElementById('new-proj-call').value;
-            let wa = document.getElementById('new-proj-wa').value;
-            if(!call || !wa) return alert("Please enter Call and WhatsApp numbers!");
-        }
-
-        document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
-        document.getElementById('step-' + stepNum).classList.add('active');
+    window.closeLightbox = function(evt) {
+        if(evt) evt.stopPropagation();
+        document.getElementById('lightbox-overlay').classList.remove('active');
+        document.getElementById('lightbox-img').src = '';
     }
 
-    window.submitNewProject = function() {
-        let uName = document.getElementById('new-proj-username').value;
-        if(!uName) return alert("Please enter Your Name!");
-
-        if(window.uploadWidgets.logo.uploading || window.uploadWidgets.pdf.uploading) {
-            return alert("Please wait, your file is still uploading...");
-        }
-
-        const submitBtn = document.getElementById('submit-project-btn');
-        const submitLabel = document.getElementById('submit-project-label');
-        const submitIcon = document.getElementById('submit-project-icon');
-        submitBtn.disabled = true;
-        submitLabel.innerText = 'Submitting';
-        submitIcon.outerHTML = '<span class="btn-spinner" id="submit-project-icon" style="margin-left:8px;"></span>';
-
-        const newProjectData = {
-            appName: document.getElementById('new-proj-name').value,
-            details: document.getElementById('new-proj-desc').value,
-            deadline: document.getElementById('new-proj-deadline').value,
-            refLink: document.getElementById('new-proj-link').value,
-            callNum: document.getElementById('new-proj-call').value,
-            secNum: document.getElementById('new-proj-sec').value,
-            waNum: document.getElementById('new-proj-wa').value,
-            projType: document.getElementById('new-proj-type').value,
-            userName: document.getElementById('new-proj-username').value,
-            purpose: document.getElementById('new-proj-purpose').value,
-            status: "pending", 
-            timestamp: Date.now()
-        };
-
-        const logoState = window.uploadWidgets.logo;
-        const pdfState = window.uploadWidgets.pdf;
-        newProjectData.appLogo = logoState.url || "";
-        newProjectData.logoSkipped = !!logoState.skipped;
-        newProjectData.designPdf = pdfState.url || "";
-        newProjectData.designPdfName = pdfState.name || "";
-        newProjectData.pdfSkipped = !!pdfState.skipped;
-
-        document.getElementById('load-proj-name').innerText = newProjectData.appName;
-        openScreen('loading-screen');
-
-        let pct = 1;
-        let percentEl = document.getElementById('load-percent');
-        let loaderIntv = setInterval(() => {
-            pct += 1;
-            percentEl.innerText = pct + "%";
-            if(pct >= 100) {
-                clearInterval(loaderIntv);
-                finalizeProjectSave(newProjectData, submitBtn, submitLabel);
-            }
-        }, 30); 
-    }
-
-    function finalizeProjectSave(data, submitBtn, submitLabel) {
-        const pId = "PROJ-" + Math.floor(1000 + Math.random() * 9000);
-        set(ref(db, 'users/' + pId), data).then(() => {
-            document.getElementById('generated-pid').innerText = pId;
-            openScreen('success-screen');
-            document.querySelectorAll('#create-project-screen input, #create-project-screen textarea').forEach(el => el.value = '');
-            nextStep(1);
-            resetUploadWidget('logo');
-            resetUploadWidget('pdf');
-            resetSubmitButton(submitBtn, submitLabel);
-        }).catch((err) => {
-            console.error(err);
-            alert("Error saving project. Try again!");
-            openScreen('create-project-screen');
-            resetSubmitButton(submitBtn, submitLabel);
+    // Remember Me Dropdown Logic
+    window.showSavedIds = function() {
+        let saved = JSON.parse(localStorage.getItem('savedProjects') || '[]');
+        if(saved.length === 0) return;
+        let html = '';
+        saved.forEach(s => {
+            html += `<div class="saved-id-item" onclick="selectSavedId('${s.id}')">
+                        <span style="color:var(--primary-dark);">${s.id}</span>
+                        <span style="color:var(--text-muted); font-size:11px;">${s.name}</span>
+                     </div>`;
         });
+        const dd = document.getElementById('saved-ids-dropdown');
+        dd.innerHTML = html;
+        dd.style.display = 'block';
     }
-
-    function resetSubmitButton(submitBtn, submitLabel) {
-        if(!submitBtn) return;
-        submitBtn.disabled = false;
-        submitLabel.innerText = 'Submit Project';
-        const spinner = document.getElementById('submit-project-icon');
-        if(spinner) spinner.outerHTML = '<i class="fas fa-check" id="submit-project-icon" style="margin-left: 8px;"></i>';
+    window.selectSavedId = function(id) {
+        document.getElementById('projectIdInput').value = id;
+        document.getElementById('saved-ids-dropdown').style.display = 'none';
+        login();
     }
+    document.addEventListener('click', (e) => {
+        if(!e.target.closest('#projectIdInput') && !e.target.closest('#saved-ids-dropdown')) {
+            const dd = document.getElementById('saved-ids-dropdown');
+            if(dd) dd.style.display = 'none';
+        }
+    });
 
-    function resetUploadWidget(key) {
-        window.uploadWidgets[key] = { url: '', name: '', skipped: false, uploading: false };
-        const btn = document.getElementById(key + '-upload-btn');
-        const skipBtn = document.getElementById(key + '-skip-btn');
-        const statusBox = document.getElementById(key + '-status-box');
-        const previewBox = document.getElementById(key + '-preview-box');
-        if(btn) { btn.disabled = false; btn.classList.remove('disabled-btn'); }
-        if(skipBtn) { skipBtn.classList.remove('skipped-state'); skipBtn.innerText = 'Skip'; }
-        if(statusBox) statusBox.style.display = 'none';
-        if(previewBox) previewBox.style.display = 'none';
-    }
-
-
-    // Login Logic
+    // Login Logic using onValue for live Badges and Info updates
     window.login = async function() {
         const pId = document.getElementById('projectIdInput').value.trim();
         if(!pId) return alert("Please enter Project ID");
@@ -1047,17 +667,31 @@
         }
 
         const userRef = ref(db, 'users/' + pId);
-        get(userRef).then((snapshot) => {
+        onValue(userRef, (snapshot) => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
                 
+                // Only alert for pending if we are currently on the login screen trying to enter
+                const onLoginScreen = document.getElementById('login-screen').classList.contains('active');
+
                 if(data.status && data.status.toLowerCase() === "pending") {
-                    alert("Your Project is pending please wait... 24/48 hours");
-                    resetLoginBtn();
+                    if(onLoginScreen) {
+                        alert("Your Project is pending please wait... 24/48 hours");
+                        resetLoginBtn();
+                    }
                     return;
                 }
 
                 window.currentProjectId = pId;
+                
+                // Save to Remember Me
+                if(onLoginScreen && document.getElementById('remember-me').checked) {
+                    let saved = JSON.parse(localStorage.getItem('savedProjects') || '[]');
+                    if(!saved.find(s => s.id === pId)) {
+                        saved.push({ id: pId, name: data.appName || data.userName || 'Project' });
+                        localStorage.setItem('savedProjects', JSON.stringify(saved));
+                    }
+                }
                 
                 document.getElementById('dash-username').innerText = data.userName || 'No Name';
                 document.getElementById('dash-phone').innerText = data.callNum || data.phone || 'No Phone';
@@ -1065,53 +699,78 @@
                 if(data.userImage) document.getElementById('dash-user-image').src = data.userImage;
                 if(data.appLogo) document.getElementById('dash-app-logo').src = data.appLogo;
 
-                loadBills(pId);
-                loadUpdatesHistory(pId);
-                loadComplaintsHistory(pId);
-                openScreen('dashboard-screen');
-                resetLoginBtn();
+                // App Info Values
+                document.getElementById('info-version').innerText = data.updateMonth || 'N/A';
+                document.getElementById('info-update').innerText = data.lastUpdate || 'N/A';
+                document.getElementById('info-type').innerText = data.projType || 'N/A';
+                document.getElementById('info-purpose').innerText = data.purpose || 'N/A';
+
+                // Notifications Binding
+                let notiCount = 0;
+                let notifs = data.notifications || {};
+                let nHtml = '';
+                
+                if(notifs.bills) { 
+                    notiCount++; document.getElementById('badge-bills').style.display = 'inline-block';
+                    nHtml += `<div class="neu-box" style="padding:12px; margin-bottom:10px; cursor:pointer;" onclick="clearNotifAndOpen('bills', 'bills-screen')"><i class="fas fa-file-invoice-dollar" style="color:var(--primary-color); margin-right:8px;"></i> New Bill Update <span class="badge" style="display:inline-block; position:relative; top:0; right:0; float:right;">New</span></div>`;
+                } else { document.getElementById('badge-bills').style.display = 'none'; }
+                
+                if(notifs.update) { 
+                    notiCount++; document.getElementById('badge-update').style.display = 'inline-block';
+                    nHtml += `<div class="neu-box" style="padding:12px; margin-bottom:10px; cursor:pointer;" onclick="clearNotifAndOpen('update', 'update-screen')"><i class="fas fa-sync-alt" style="color:var(--info-color); margin-right:8px;"></i> Admin replied to Update <span class="badge" style="display:inline-block; position:relative; top:0; right:0; float:right;">New</span></div>`;
+                } else { document.getElementById('badge-update').style.display = 'none'; }
+                
+                if(notifs.complaint) { 
+                    notiCount++; document.getElementById('badge-complaint').style.display = 'inline-block';
+                    nHtml += `<div class="neu-box" style="padding:12px; margin-bottom:10px; cursor:pointer;" onclick="clearNotifAndOpen('complaint', 'complaint-screen')"><i class="fas fa-headset" style="color:var(--pink-color); margin-right:8px;"></i> Admin replied to Complaint <span class="badge" style="display:inline-block; position:relative; top:0; right:0; float:right;">New</span></div>`;
+                } else { document.getElementById('badge-complaint').style.display = 'none'; }
+                
+                const bellBadge = document.getElementById('main-bell-badge');
+                if(notiCount > 0) { bellBadge.style.display = 'flex'; bellBadge.innerText = notiCount; } 
+                else { bellBadge.style.display = 'none'; }
+                
+                document.getElementById('notif-list').innerHTML = nHtml || '<p class="text-sm text-center">No new notifications.</p>';
+
+                if(onLoginScreen) {
+                    loadBills(pId);
+                    loadUpdatesHistory(pId);
+                    loadComplaintsHistory(pId);
+                    openScreen('dashboard-screen');
+                    resetLoginBtn();
+                }
             } else {
-                alert("Project ID not found in database.");
-                resetLoginBtn();
+                if(document.getElementById('login-screen').classList.contains('active')) {
+                    alert("Project ID not found in database.");
+                    resetLoginBtn();
+                }
             }
-        }).catch(err => {
-            console.error(err);
-            alert("Database Error!");
-            resetLoginBtn();
         });
     }
 
-    // Load Bills and Expanded Monthly Summary
+    // Clear Notification and Open Specific Screen
+    window.clearNotifAndOpen = function(notifKey, screenId) {
+        if(window.currentProjectId) {
+            update(ref(db, `users/${window.currentProjectId}/notifications`), { [notifKey]: false });
+        }
+        document.getElementById('notif-modal').classList.remove('active');
+        openScreen(screenId);
+    }
+
+
+    // Load Bills
     function loadBills(pId) {
         const billsRef = ref(db, 'bills/' + pId);
         onValue(billsRef, (snapshot) => {
             if(snapshot.exists()) {
                 const data = snapshot.val();
-                
-                let currAmt = data.currentAmount || '0 PKR';
-                let currStatus = data.status || 'Pending';
-                
-                document.getElementById('bill-amount').innerText = currAmt;
-                document.getElementById('bill-date').innerText = data.billDate || 'N/A';
-                
-                let statusEl = document.getElementById('bill-status');
-                statusEl.innerText = currStatus;
-                statusEl.className = currStatus === 'Paid' ? 'text-success' : 'text-warning';
+                let currAmt = data.currentAmount || '0 PKR'; let currStatus = data.status || 'Pending';
+                document.getElementById('bill-amount').innerText = currAmt; document.getElementById('bill-date').innerText = data.billDate || 'N/A';
+                let statusEl = document.getElementById('bill-status'); statusEl.innerText = currStatus; statusEl.className = currStatus === 'Paid' ? 'text-success' : 'text-warning';
+                document.getElementById('dash-bill-preview').innerHTML = `Current Bill: <strong>${currAmt}</strong> - <span class="${currStatus === 'Paid' ? 'text-success' : 'text-warning'}">${currStatus}</span>`;
+                document.getElementById('old-bill-amount').innerText = data.oldAmount || '0 PKR'; document.getElementById('old-bill-date').innerText = data.oldDate || 'N/A';
+                let oldStatusEl = document.getElementById('old-bill-status'); let oldStatus = data.oldStatus || 'Paid'; oldStatusEl.innerText = oldStatus; oldStatusEl.className = oldStatus === 'Paid' ? 'text-success' : 'text-warning';
+                document.getElementById('next-bill-date').innerText = data.nextDate || 'N/A'; document.getElementById('bill-days-left').innerText = data.daysLeft || 'N/A';
 
-                let dashPreview = document.getElementById('dash-bill-preview');
-                dashPreview.innerHTML = `Current Bill: <strong>${currAmt}</strong> - <span class="${currStatus === 'Paid' ? 'text-success' : 'text-warning'}">${currStatus}</span>`;
-
-                document.getElementById('old-bill-amount').innerText = data.oldAmount || '0 PKR';
-                document.getElementById('old-bill-date').innerText = data.oldDate || 'N/A';
-                let oldStatusEl = document.getElementById('old-bill-status');
-                let oldStatus = data.oldStatus || 'Paid';
-                oldStatusEl.innerText = oldStatus;
-                oldStatusEl.className = oldStatus === 'Paid' ? 'text-success' : 'text-warning';
-
-                document.getElementById('next-bill-date').innerText = data.nextDate || 'N/A';
-                document.getElementById('bill-days-left').innerText = data.daysLeft || 'N/A';
-
-                // Display Expanded UI for Monthly Summary
                 let summaryHTML = "";
                 if(data.summary) {
                     for(let key in data.summary) {
@@ -1134,224 +793,6 @@
                 document.getElementById('monthly-summary-list').innerHTML = summaryHTML || '<p class="text-sm">No summary yet.</p>';
             }
         });
-    }
-
-    // IMAGE EDIT MODAL LOGIC
-    const editCanvas = document.getElementById('editCanvas');
-    const ctx = editCanvas.getContext('2d');
-    let baseImage = null;       
-    let strokes = [];           
-    let currentStroke = null;
-    let drawing = false;
-    let activeColor = '#ff3b30';
-    let pendingCallback = null; 
-
-    document.getElementById('color-swatches').addEventListener('click', (e) => {
-        const swatch = e.target.closest('.color-swatch');
-        if(!swatch) return;
-        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-        swatch.classList.add('active');
-        activeColor = swatch.dataset.color;
-    });
-
-    function openImageEditor(file, callback) {
-        pendingCallback = callback;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = new Image();
-            img.onload = function() {
-                baseImage = img;
-                strokes = [];
-                fitCanvasToImage();
-                redrawCanvas();
-                document.getElementById('image-edit-modal').classList.add('active');
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function fitCanvasToImage() {
-        const maxW = Math.min(window.innerWidth, 414) - 20;
-        const maxH = window.innerHeight - 220;
-        let w = baseImage.width, h = baseImage.height;
-        const ratio = Math.min(maxW / w, maxH / h, 1);
-        editCanvas.width = Math.round(w * ratio);
-        editCanvas.height = Math.round(h * ratio);
-    }
-
-    function redrawCanvas() {
-        ctx.clearRect(0, 0, editCanvas.width, editCanvas.height);
-        ctx.drawImage(baseImage, 0, 0, editCanvas.width, editCanvas.height);
-        strokes.forEach(drawStroke);
-    }
-
-    function drawStroke(stroke) {
-        if(stroke.points.length < 2) {
-            if(stroke.points.length === 1) {
-                ctx.beginPath();
-                ctx.fillStyle = stroke.color;
-                ctx.arc(stroke.points[0].x, stroke.points[0].y, 3, 0, Math.PI*2);
-                ctx.fill();
-            }
-            return;
-        }
-        ctx.strokeStyle = stroke.color;
-        ctx.lineWidth = 5;
-        ctx.lineJoin = 'round';
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
-        for(let i = 1; i < stroke.points.length; i++) {
-            ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
-        }
-        ctx.stroke();
-    }
-
-    function getPos(evt) {
-        const rect = editCanvas.getBoundingClientRect();
-        const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
-        const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
-        return {
-            x: (clientX - rect.left) * (editCanvas.width / rect.width),
-            y: (clientY - rect.top) * (editCanvas.height / rect.height)
-        };
-    }
-
-    function startDraw(evt) {
-        evt.preventDefault();
-        drawing = true;
-        currentStroke = { color: activeColor, points: [getPos(evt)] };
-        strokes.push(currentStroke);
-    }
-    function moveDraw(evt) {
-        if(!drawing) return;
-        evt.preventDefault();
-        currentStroke.points.push(getPos(evt));
-        redrawCanvas();
-    }
-    function endDraw(evt) {
-        drawing = false;
-        currentStroke = null;
-    }
-
-    editCanvas.addEventListener('mousedown', startDraw);
-    editCanvas.addEventListener('mousemove', moveDraw);
-    editCanvas.addEventListener('mouseup', endDraw);
-    editCanvas.addEventListener('mouseleave', endDraw);
-    editCanvas.addEventListener('touchstart', startDraw, { passive: false });
-    editCanvas.addEventListener('touchmove', moveDraw, { passive: false });
-    editCanvas.addEventListener('touchend', endDraw);
-
-    window.undoLastStroke = function() { strokes.pop(); redrawCanvas(); }
-    window.clearAnnotations = function() { strokes = []; redrawCanvas(); }
-
-    window.closeImageEditor = function(save) {
-        document.getElementById('image-edit-modal').classList.remove('active');
-        if(save && baseImage) {
-            const dataUrl = editCanvas.toDataURL('image/png');
-            if(pendingCallback) pendingCallback(dataUrl);
-        } else {
-            if(pendingCallback) pendingCallback(null);
-        }
-        pendingCallback = null; baseImage = null; strokes = [];
-    }
-
-    // App Update Attach Screenshot 
-    document.getElementById('updateFileInput').addEventListener('change', function() {
-        const file = this.files[0];
-        if(!file) return;
-        openImageEditor(file, function(dataUrl) {
-            if(dataUrl) {
-                window.updateScreenshotDataUrl = dataUrl;
-                const preview = document.getElementById('update-shot-preview');
-                document.getElementById('update-shot-img').src = dataUrl;
-                preview.style.display = 'block';
-                document.getElementById('attach-shot-btn').innerHTML = '<i class="fas fa-check" style="margin-right:10px; color:#1f9d67;"></i> Screenshot Marked';
-            }
-            document.getElementById('updateFileInput').value = '';
-        });
-    });
-
-    window.removeUpdateScreenshot = function() {
-        window.updateScreenshotDataUrl = "";
-        document.getElementById('update-shot-preview').style.display = 'none';
-        document.getElementById('update-shot-img').src = '';
-        document.getElementById('attach-shot-btn').innerHTML = '<i class="fas fa-camera" style="margin-right: 10px;"></i> Attach Screenshot';
-    }
-
-    const CLOUD_NAME = "sjt8mlws";
-    const UPLOAD_PRESET = "Naeem786";
-
-    async function uploadDataUrlToCloudinary(dataUrl) {
-        const formData = new FormData();
-        formData.append('file', dataUrl);
-        formData.append('upload_preset', UPLOAD_PRESET);
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
-        const result = await res.json();
-        return result.secure_url;
-    }
-
-    window.uploadWidgets = {
-        logo: { url: '', name: '', skipped: false, uploading: false },
-        pdf:  { url: '', name: '', skipped: false, uploading: false }
-    };
-
-    async function uploadRawFileToCloudinary(file, resourceType) {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', UPLOAD_PRESET);
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resourceType}/upload`, { method: 'POST', body: formData });
-        if(!res.ok) throw new Error('Upload failed');
-        const result = await res.json();
-        return result.secure_url;
-    }
-
-    async function handleWidgetUpload(key, file, resourceType) {
-        const state = window.uploadWidgets[key];
-        const btn = document.getElementById(key + '-upload-btn');
-        const statusBox = document.getElementById(key + '-status-box');
-        const statusText = document.getElementById(key + '-status-text');
-        const previewBox = document.getElementById(key + '-preview-box');
-
-        state.uploading = true; btn.disabled = true; previewBox.style.display = 'none';
-        statusBox.style.display = 'flex'; statusBox.classList.remove('error-box');
-        statusText.innerText = 'Uploading, please wait...';
-
-        try {
-            const url = await uploadRawFileToCloudinary(file, resourceType);
-            state.url = url; state.name = file.name; state.uploading = false;
-            statusBox.style.display = 'none'; btn.disabled = false; previewBox.style.display = 'flex';
-
-            if(key === 'logo') document.getElementById('logo-preview-img').src = url;
-            else if(key === 'pdf') document.getElementById('pdf-preview-name').innerHTML = '<i class="fas fa-check-circle"></i> ' + file.name;
-        } catch(err) {
-            state.uploading = false; btn.disabled = false; statusBox.classList.add('error-box');
-            statusText.innerText = 'Upload failed. Tap to retry.';
-        }
-    }
-
-    document.getElementById('new-proj-logo').addEventListener('change', function() { if(this.files[0]) handleWidgetUpload('logo', this.files[0], 'image'); this.value = ''; });
-    document.getElementById('new-proj-pdf').addEventListener('change', function() { if(this.files[0]) handleWidgetUpload('pdf', this.files[0], 'raw'); this.value = ''; });
-    window.removeUploadedFile = function(key) {
-        window.uploadWidgets[key].url = ''; window.uploadWidgets[key].name = '';
-        document.getElementById(key + '-preview-box').style.display = 'none';
-        if(key === 'logo') document.getElementById('logo-preview-img').src = '';
-    }
-
-    window.toggleSkipUpload = function(key) {
-        const state = window.uploadWidgets[key];
-        if(state.uploading) return;
-        const btn = document.getElementById(key + '-upload-btn'), skipBtn = document.getElementById(key + '-skip-btn');
-        state.skipped = !state.skipped;
-        if(state.skipped) {
-            window.removeUploadedFile(key);
-            btn.disabled = true; btn.classList.add('disabled-btn');
-            skipBtn.classList.add('skipped-state'); skipBtn.innerHTML = '<i class="fas fa-check" style="margin-right:5px;"></i> Skipped';
-        } else {
-            btn.disabled = false; btn.classList.remove('disabled-btn');
-            skipBtn.classList.remove('skipped-state'); skipBtn.innerText = 'Skip';
-        }
     }
 
     // Submit Update
@@ -1381,56 +822,83 @@
         finally { submitBtn.innerHTML = originalHtml; submitBtn.disabled = false; }
     }
 
+    // Load Updates with 3-Days Auto Archive Logic & View Image Button
     function loadUpdatesHistory(pId) {
         const reqRef = ref(db, `updateRequests/${pId}`);
         onValue(reqRef, (snapshot) => {
-            let html = "";
+            let activeHtml = "";
+            let archiveHtml = "";
+            let archiveCount = 0;
+            
             if(snapshot.exists()) {
                 const data = snapshot.val();
                 const now = Date.now();
+                const threeDays = 3 * 24 * 60 * 60 * 1000;
+
                 for(let key in data) {
                     let req = data[key];
                     let reqTime = new Date(req.timestamp);
                     let formattedTime = reqTime.toLocaleDateString() + " " + reqTime.toLocaleTimeString();
                     
-                    if(req.status.toLowerCase() === 'complete' && (now - req.timestamp > (24*60*60*1000))) {
-                        remove(ref(db, `updateRequests/${pId}/${key}`)); continue;
-                    }
-
                     let badgeClass = 'status-pending';
                     if(req.status.toLowerCase() === 'working') badgeClass = 'status-working';
                     if(req.status.toLowerCase() === 'close') badgeClass = 'status-close';
                     if(req.status.toLowerCase() === 'complete') badgeClass = 'status-complete';
 
-                    const screenshotHtml = req.screenshot ? `<img src="${req.screenshot}" style="width:100%; border-radius:10px; margin-top:8px; display:block;">` : '';
+                    // Replace raw image with View Image button
+                    const screenshotHtml = req.screenshot ? `<button class="neu-button ghost-btn" style="padding:10px; margin-top:10px; margin-bottom:0; font-size:12px; width:auto;" onclick="openLightbox('${req.screenshot}')"><i class="fas fa-image" style="margin-right:8px;"></i> View Attached Image</button>` : '';
                     
                     const readyBtnHtml = req.appReadyCreated
                         ? `<button class="neu-button primary-btn ready-btn" onclick="openUpdatesDashboard(); switchUpdatesDashboardTab('appupdates')" style="justify-content:center; margin-top:10px;"><i class="fas fa-gift" style="margin-right:8px;"></i> Update Available</button>`
                         : '';
 
-                    html += `
+                    let cardHtml = `
                         <div class="neu-box" style="padding:15px; margin-bottom:15px;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
                                 <span class="text-sm" style="color: var(--info-color); font-weight:bold;">${req.trxId}</span>
                                 <span class="status-badge ${badgeClass}">${req.status}</span>
                             </div>
                             <p class="text-sm" style="margin-bottom: 8px;"><i class="far fa-clock"></i> ${formattedTime}</p>
-                            <p style="font-size: 14px; color: #333;">${req.details}</p>
+                            <p style="font-size: 14px; color: #333; white-space:pre-line;">${req.details}</p>
                             ${screenshotHtml}
                             ${readyBtnHtml}
                         </div>
                     `;
+
+                    // Check if it should be archived
+                    let isClosed = (req.status.toLowerCase() === 'close' || req.status.toLowerCase() === 'complete');
+                    let isOld = (now - req.timestamp) > threeDays;
+
+                    if(isClosed && isOld) {
+                        archiveHtml = cardHtml + archiveHtml; 
+                        archiveCount++;
+                    } else {
+                        activeHtml = cardHtml + activeHtml;
+                    }
                 }
             }
-            document.getElementById('update-history-list').innerHTML = html || '<p class="text-sm">No history found.</p>';
+
+            let finalHtml = activeHtml || '<p class="text-sm">No recent history.</p>';
+            if(archiveCount > 0) {
+                finalHtml += `
+                <div style="margin-top:25px;">
+                    <button class="neu-button ghost-btn" onclick="document.getElementById('updates-archive').classList.toggle('hidden')" style="justify-content:center; border:1px solid #ccd5e3; background:transparent;">
+                        <i class="fas fa-archive" style="margin-right:8px; color:var(--text-muted);"></i> Archived Items (${archiveCount})
+                    </button>
+                    <div id="updates-archive" class="hidden">
+                        ${archiveHtml}
+                    </div>
+                </div>`;
+            }
+            document.getElementById('update-history-list').innerHTML = finalHtml;
         });
     }
 
-    // Complaints Logic
+    // Complaints Logic with 3-Days Auto Archive
     window.toggleComplaintFields = function() {
         const type = document.getElementById('issue-type').value;
         document.querySelectorAll('#complaint-screen .hidden').forEach(el => {
-            if(el.id !== 'submit-complaint-btn' && el.id !== 'common-details-field' && !el.id.includes('history')) el.classList.add('hidden');
+            if(el.id !== 'submit-complaint-btn' && el.id !== 'common-details-field' && !el.id.includes('archive') && !el.id.includes('history')) el.classList.add('hidden');
         });
         const btn = document.getElementById('submit-complaint-btn'), cFields = document.getElementById('common-details-field');
         btn.classList.add('hidden'); cFields.classList.add('hidden');
@@ -1486,34 +954,67 @@
     function loadComplaintsHistory(pId) {
         const compRef = ref(db, `complaints/${pId}`);
         onValue(compRef, (snapshot) => {
-            let html = "";
+            let activeHtml = "";
+            let archiveHtml = "";
+            let archiveCount = 0;
+
             if(snapshot.exists()) {
                 const data = snapshot.val();
+                const now = Date.now();
+                const threeDays = 3 * 24 * 60 * 60 * 1000;
+
                 for(let key in data) {
                     let comp = data[key];
                     let compTime = new Date(comp.timestamp).toLocaleDateString() + " " + new Date(comp.timestamp).toLocaleTimeString();
-                    let badgeClass = comp.status.toLowerCase() === 'resolved' ? 'status-complete' : 'status-pending';
+                    let badgeClass = (comp.status.toLowerCase() === 'resolved' || comp.status.toLowerCase() === 'close') ? 'status-complete' : 'status-pending';
+
+                    const imgHtml = comp.attachedImage ? `<button class="neu-button ghost-btn" style="padding:10px; margin-top:10px; margin-bottom:0; font-size:12px; width:auto;" onclick="openLightbox('${comp.attachedImage}')"><i class="fas fa-image" style="margin-right:8px;"></i> View Attached Image</button>` : '';
 
                     const readyBtnHtml = comp.appReadyCreated
                         ? `<button class="neu-button primary-btn ready-btn" onclick="openUpdatesDashboard(); switchUpdatesDashboardTab('appupdates')" style="justify-content:center; margin-top:10px;"><i class="fas fa-gift" style="margin-right:8px;"></i> Update Available</button>`
                         : ``;
 
-                    html += `
+                    let cardHtml = `
                         <div class="neu-box" style="padding:15px; margin-bottom:15px;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
                                 <span class="text-sm" style="text-transform: capitalize; font-weight:bold;">${comp.type} Issue</span>
                                 <span class="status-badge ${badgeClass}">${comp.status}</span>
                             </div>
                             <p class="text-sm" style="margin-bottom: 8px;"><i class="far fa-clock"></i> ${compTime}</p>
-                            <p style="font-size: 14px; color: #333;">${comp.details}</p>
+                            <p style="font-size: 14px; color: #333; white-space:pre-line;">${comp.details}</p>
+                            ${imgHtml}
                             ${readyBtnHtml}
                         </div>
                     `;
+
+                    let isClosed = (comp.status.toLowerCase() === 'resolved' || comp.status.toLowerCase() === 'close' || comp.status.toLowerCase() === 'complete');
+                    let isOld = (now - comp.timestamp) > threeDays;
+
+                    if(isClosed && isOld) {
+                        archiveHtml = cardHtml + archiveHtml;
+                        archiveCount++;
+                    } else {
+                        activeHtml = cardHtml + activeHtml;
+                    }
                 }
             }
-            document.getElementById('complaint-history-list').innerHTML = html || '<p class="text-sm">No complaints found.</p>';
+            
+            let finalHtml = activeHtml || '<p class="text-sm">No recent complaints.</p>';
+            if(archiveCount > 0) {
+                finalHtml += `
+                <div style="margin-top:25px;">
+                    <button class="neu-button ghost-btn" onclick="document.getElementById('complaint-archive').classList.toggle('hidden')" style="justify-content:center; border:1px solid #ccd5e3; background:transparent;">
+                        <i class="fas fa-archive" style="margin-right:8px; color:var(--text-muted);"></i> Archived Items (${archiveCount})
+                    </button>
+                    <div id="complaint-archive" class="hidden">
+                        ${archiveHtml}
+                    </div>
+                </div>`;
+            }
+            document.getElementById('complaint-history-list').innerHTML = finalHtml;
         });
     }
+
 
     // UPDATES DASHBOARD 
     window.openUpdatesDashboard = function() {
@@ -1558,7 +1059,7 @@
         });
     }
 
-    // --- NEW: Custom Real Download Animation with Server Check --- 
+    // Real Download Animation with Server Check
     window.startApkDownload = async function(btn, fileName) {
         if(btn.dataset.downloading === "true") return;
         btn.dataset.downloading = "true";
@@ -1567,10 +1068,8 @@
         const originalHtml = btn.innerHTML;
 
         try {
-            // Loading text before check
             btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:8px;"></i> Checking File...';
             
-            // Check if file exists and get real size headers
             const response = await fetch(filePath, { method: 'HEAD' });
             
             if(!response.ok) {
@@ -1580,13 +1079,12 @@
                 return;
             }
 
-            // Get Real File Size in MB
             const contentLength = response.headers.get('content-length');
-            let totalMb = 25.0; // Fallback if server hides headers
+            let totalMb = 25.0; 
             if(contentLength) {
                 totalMb = (parseInt(contentLength) / (1024 * 1024)).toFixed(1);
             } else {
-                totalMb = (Math.random() * 25 + 15).toFixed(1); // Fake fallback
+                totalMb = (Math.random() * 25 + 15).toFixed(1); 
             }
 
             let downloaded = 0;
@@ -1614,7 +1112,6 @@
                     btn.classList.replace('primary-btn', 'accent-btn');
                     btn.dataset.downloading = "false";
 
-                    // Trigger true OS download to the Downloads folder
                     const a = document.createElement('a');
                     a.href = filePath;
                     a.download = fileName;
@@ -1662,19 +1159,21 @@
         });
     }
 
-    // Bot Logic
+    // Bot Logic Updated
     const botReplies = {
         urdu: {
             greeting: "Hello! Main apki kya madad kar sakta hoon? Neechay diye gaye options mein se muntakhib karein.",
             bill: "Bill check karne ka tareeqa:\n1. Dashboard se 'Check Bills' wale button par click karein.\n2. Wahan aap apna naya (Current) aur purana (Old) bill tafseel se dekh sakte hain.\n3. Agar bill pay nahi hua toh 'Pending' likha hoga, aur pay hone ke baad wo automatically 'Paid' ho jayega.",
-            update: "App Update ki request bhejne ka tareeqa:\n1. Dashboard par 'App Update Now' button dabaein.\n2. Request Update ke box mein likhein ke aapko app mein kya naya chahiye.\n3. Agar zaroorat ho toh 'Attach Screenshot' se tasveer lagayein aur oper mark/circle bhi laga sakte hain.\n4. Submit karein! Apki history neechay animation wale status ke sath show hogi. Jab status 'Complete' hoga toh theek 24 ghante baad history se remove ho jayega.",
-            complaint: "Complaint file karne ka tareeqa:\n1. Dashboard se 'Complaint' option kholiye.\n2. Apna issue select karein (jaise Deposit, Withdraw, ya Other).\n3. Box mein apni pareshani tafseel se likhein, agar zaroorat ho toh tasveer (photo) bhi laga dein aur Submit daba dein."
+            update: "App Update ki request bhejne ka tareeqa:\n1. Dashboard par 'App Update Now' button dabaein.\n2. Request Update ke box mein likhein ke aapko app mein kya naya chahiye.\n3. Agar zaroorat ho toh 'Attach Screenshot' se tasveer lagayein aur oper mark/circle bhi laga sakte hain.\n4. Submit karein! Apki history neechay animation wale status ke sath show hogi. Jab status 'Complete' hoga toh theek 3 din baad history se archive folder main chali jayegi.",
+            complaint: "Complaint file karne ka tareeqa:\n1. Dashboard se 'Complaint' option kholiye.\n2. Apna issue select karein.\n3. Box mein apni pareshani tafseel se likhein, tasveer attach karein aur Submit daba dein.",
+            dashboard: "Dashboard par 'App Info' par click karke aap apni app ka current version aur details dekh sakte hain. Top right corner mein maujood Bell Icon aapko admin ki taraf se aaney wali har nayi update ka notification dega."
         },
         english: {
             greeting: "Hello! How can I assist you today? Please choose from the options below.",
             bill: "How to check/pay your bill:\n1. Click on the 'Check Bills' button on the Dashboard.\n2. There you can view your Current and Old bills in detail.\n3. If unpaid, it shows 'Pending'. Once paid, the status automatically updates to 'Paid'.",
-            update: "How to request an App Update:\n1. Click 'App Update Now' on the Dashboard.\n2. Type your required features in the request box.\n3. Optionally, tap 'Attach Screenshot', mark or circle the area you mean, then tap Done.\n4. Hit Submit! Your request will appear below with live animated status. Once marked 'Complete', it will auto-delete after 24 hours.",
-            complaint: "How to file a Complaint:\n1. Open the 'Complaint' screen from the Dashboard.\n2. Select your issue type from the dropdown (Deposit, Withdraw, etc.).\n3. Describe your issue in detail, attach a photo if necessary, and click Submit."
+            update: "How to request an App Update:\n1. Click 'App Update Now' on the Dashboard.\n2. Type your required features in the request box.\n3. Optionally, tap 'Attach Screenshot', mark or circle the area you mean, then tap Done.\n4. Hit Submit! Once marked 'Complete', it will auto-move to the Archive folder after 3 days.",
+            complaint: "How to file a Complaint:\n1. Open the 'Complaint' screen from the Dashboard.\n2. Select your issue type from the dropdown.\n3. Describe your issue in detail, attach a photo if necessary, and click Submit.",
+            dashboard: "From the Dashboard, click 'App Info' to see your app's current version and details. The Notification Bell on the top right will alert you to any new updates from the admin."
         }
     };
 
@@ -1691,6 +1190,7 @@
         if(topic==='bill') userText = lang === 'urdu' ? "Bill kaise check karun?" : "How to check my bill?";
         if(topic==='update') userText = lang === 'urdu' ? "App update ki request kaise bhejun?" : "How to request an update?";
         if(topic==='complaint') userText = lang === 'urdu' ? "Complaint kaise karun?" : "How to file a complaint?";
+        if(topic==='dashboard') userText = lang === 'urdu' ? "App Info aur Notifications kya hain?" : "What is App Info & Notifications?";
 
         const userDiv = document.createElement('div');
         userDiv.className = "chat-msg chat-user clearfix";
@@ -1714,6 +1214,37 @@
                 }
             } type();
         }, 600);
+    }
+
+    // Initialize Image Editor functions...
+    const editCanvas = document.getElementById('editCanvas');
+    const ctx = editCanvas.getContext('2d');
+    let baseImage = null; let strokes = []; let currentStroke = null; let drawing = false; let activeColor = '#ff3b30'; let pendingCallback = null; 
+    document.getElementById('color-swatches').addEventListener('click', (e) => {
+        const swatch = e.target.closest('.color-swatch'); if(!swatch) return;
+        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active')); swatch.classList.add('active'); activeColor = swatch.dataset.color;
+    });
+    function openImageEditor(file, callback) {
+        pendingCallback = callback; const reader = new FileReader();
+        reader.onload = function(e) { const img = new Image(); img.onload = function() { baseImage = img; strokes = []; fitCanvasToImage(); redrawCanvas(); document.getElementById('image-edit-modal').classList.add('active'); }; img.src = e.target.result; }; reader.readAsDataURL(file);
+    }
+    function fitCanvasToImage() { const maxW = Math.min(window.innerWidth, 414) - 20; const maxH = window.innerHeight - 220; let w = baseImage.width, h = baseImage.height; const ratio = Math.min(maxW / w, maxH / h, 1); editCanvas.width = Math.round(w * ratio); editCanvas.height = Math.round(h * ratio); }
+    function redrawCanvas() { ctx.clearRect(0, 0, editCanvas.width, editCanvas.height); ctx.drawImage(baseImage, 0, 0, editCanvas.width, editCanvas.height); strokes.forEach(drawStroke); }
+    function drawStroke(stroke) {
+        if(stroke.points.length < 2) { if(stroke.points.length === 1) { ctx.beginPath(); ctx.fillStyle = stroke.color; ctx.arc(stroke.points[0].x, stroke.points[0].y, 3, 0, Math.PI*2); ctx.fill(); } return; }
+        ctx.strokeStyle = stroke.color; ctx.lineWidth = 5; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(stroke.points[0].x, stroke.points[0].y); for(let i = 1; i < stroke.points.length; i++) { ctx.lineTo(stroke.points[i].x, stroke.points[i].y); } ctx.stroke();
+    }
+    function getPos(evt) { const rect = editCanvas.getBoundingClientRect(); const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX; const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY; return { x: (clientX - rect.left) * (editCanvas.width / rect.width), y: (clientY - rect.top) * (editCanvas.height / rect.height) }; }
+    function startDraw(evt) { evt.preventDefault(); drawing = true; currentStroke = { color: activeColor, points: [getPos(evt)] }; strokes.push(currentStroke); }
+    function moveDraw(evt) { if(!drawing) return; evt.preventDefault(); currentStroke.points.push(getPos(evt)); redrawCanvas(); }
+    function endDraw(evt) { drawing = false; currentStroke = null; }
+    editCanvas.addEventListener('mousedown', startDraw); editCanvas.addEventListener('mousemove', moveDraw); editCanvas.addEventListener('mouseup', endDraw); editCanvas.addEventListener('mouseleave', endDraw); editCanvas.addEventListener('touchstart', startDraw, { passive: false }); editCanvas.addEventListener('touchmove', moveDraw, { passive: false }); editCanvas.addEventListener('touchend', endDraw);
+    window.undoLastStroke = function() { strokes.pop(); redrawCanvas(); }
+    window.clearAnnotations = function() { strokes = []; redrawCanvas(); }
+    window.closeImageEditor = function(save) {
+        document.getElementById('image-edit-modal').classList.remove('active');
+        if(save && baseImage) { const dataUrl = editCanvas.toDataURL('image/png'); if(pendingCallback) pendingCallback(dataUrl); } else { if(pendingCallback) pendingCallback(null); }
+        pendingCallback = null; baseImage = null; strokes = [];
     }
 </script>
 </body>
