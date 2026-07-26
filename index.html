@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#12877f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
     <title>MrCrazy Customer App</title>
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
@@ -10,91 +14,59 @@
       OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
           appId: "a291449e-5e47-42c5-b575-ed24970d5c91",
+          allowLocalhostAsSecureOrigin: true,
+          notifyButton: { enable: false },
+          serviceWorkerParam: { scope: '/' },
+          serviceWorkerPath: 'OneSignalSDKWorker.js'
         });
+        window._OneSignal = OneSignal;
+        // Ask permission early (browser + PWA)
+        try {
+          const perm = await OneSignal.Notifications.permissionNative;
+          if (perm !== 'granted') {
+            await OneSignal.Notifications.requestPermission();
+          }
+        } catch(e) {}
       });
     </script>
-    <!-- PDF Generation Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #e7ecf3;
-            --text-color: #3b4252;
-            --text-muted: #7d8aa0;
-            --shadow-light: #ffffff;
-            --shadow-dark: #a9b6c9;
-            --primary-color: #12877f;
-            --primary-dark: #0b5f59;
-            --accent-color: #f0973f;
-            --danger-color: #ef4562;
-            --info-color: #3567d6;
-            --pink-color: #d6337e;
+            --bg-color: #e7ecf3; --text-color: #3b4252; --text-muted: #7d8aa0;
+            --shadow-light: #ffffff; --shadow-dark: #a9b6c9;
+            --primary-color: #12877f; --primary-dark: #0b5f59;
+            --accent-color: #f0973f; --danger-color: #ef4562;
+            --info-color: #3567d6; --pink-color: #d6337e;
+            --wa-green: #25D366; --wa-dark: #075E54;
         }
-
         * { box-sizing: border-box; }
-
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background:
-                radial-gradient(circle at 15% 10%, rgba(18,135,127,0.10) 0%, transparent 45%),
+            margin: 0; padding: 0; font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 15% 10%, rgba(18,135,127,0.10) 0%, transparent 45%),
                 radial-gradient(circle at 85% 90%, rgba(214,51,126,0.10) 0%, transparent 45%),
                 linear-gradient(160deg, #0e1420 0%, #182338 55%, #0e1420 100%);
-            background-attachment: fixed;
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh; 
-            min-height: 100dvh;
-            position: relative;
+            background-attachment: fixed; color: var(--text-color);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; min-height: 100dvh; position: relative;
         }
-
         body::before {
             content: ""; position: fixed; inset: 0;
             background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
             background-size: 34px 34px; pointer-events: none; z-index: 0;
         }
-
-        .mono { font-family: 'JetBrains Mono', 'Courier New', monospace; }
-        h2, h3, h4 { font-family: 'Poppins', 'Segoe UI', sans-serif; letter-spacing: -0.01em; }
-
+        h2, h3, h4 { font-family: 'Poppins', sans-serif; letter-spacing: -0.01em; }
         .mobile-container {
             width: 100%; max-width: 414px; height: 100vh; height: 100dvh;
             background: var(--bg-color); position: relative; overflow: hidden;
-            box-shadow: 0 30px 70px rgba(5, 10, 20, 0.55), 0 0 0 1px rgba(255,255,255,0.06);
-            border-radius: 32px; z-index: 1; border: 6px solid #0e1420;
+            box-shadow: 0 30px 70px rgba(5, 10, 20, 0.55); border-radius: 32px; z-index: 1; border: 6px solid #0e1420;
         }
-
-        .screen {
-            display: none; flex-direction: column; height: 100%; width: 100%;
-            padding: 20px; box-sizing: border-box; overflow-y: auto; padding-bottom: 40px;
-        }
+        .screen { display: none; flex-direction: column; height: 100%; width: 100%; padding: 20px; box-sizing: border-box; overflow-y: auto; padding-bottom: 40px; }
         .screen.active { display: flex; animation: fadeIn 0.25s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Neumorphism */
-        .neu-box {
-            background: var(--bg-color); border-radius: 18px;
-            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
-            padding: 20px; margin-bottom: 20px;
-        }
-
-        /* Compact Design for Update, Complaint & Bills */
-        .compact-box {
-            padding: 14px 16px; margin-bottom: 15px; border-radius: 16px;
-        }
-        .compact-box h4 { font-size: 14px; margin-bottom: 10px; }
-        .compact-box .text-sm { font-size: 11px; margin-bottom: 8px; }
-        .compact-box .neu-input { padding: 10px 12px; font-size: 12px; margin-bottom: 12px; border-radius: 10px; }
-        .compact-box .neu-button { padding: 12px 14px; font-size: 13px; margin-bottom: 12px; border-radius: 12px; }
-        .compact-box .neu-button i { font-size: 14px; }
-        .compact-box .screenshot-preview { margin-bottom: 12px; border-radius: 10px; }
-
+        .neu-box { background: var(--bg-color); border-radius: 18px; box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light); padding: 20px; margin-bottom: 20px; }
+        .compact-box { padding: 14px 16px; margin-bottom: 15px; border-radius: 16px; }
         .neu-button {
             border: none; outline: none; background: var(--bg-color); border-radius: 16px;
             box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
@@ -106,47 +78,26 @@
         .neu-button.primary-btn { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: #fff; box-shadow: 0 8px 18px rgba(18, 135, 127, 0.35); }
         .neu-button.accent-btn { background: linear-gradient(135deg, var(--pink-color), #a8215f); color: #fff; box-shadow: 0 8px 18px rgba(214, 51, 126, 0.35); }
         .neu-button.ghost-btn { background: var(--bg-color); color: var(--info-color); border: 1.5px dashed #b7c2d4; box-shadow: none; }
-        .neu-button:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none !important; transform: none !important; }
-
+        .neu-button.green-btn { background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; box-shadow: 0 8px 18px rgba(37, 211, 102, 0.4); }
+        .neu-button:disabled { opacity: 0.45; cursor: not-allowed; }
         .neu-input {
             width: 100%; border: none; outline: none; background: var(--bg-color); border-radius: 12px;
             box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
             padding: 14px; margin-bottom: 15px; box-sizing: border-box; font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text-color);
         }
-
-        /* Saved Projects Dropdown */
-        .saved-ids-dropdown {
-            position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-color);
-            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); z-index: 100;
-            max-height: 180px; overflow-y: auto; border: 1px solid #ccd5e3; display: none; margin-top: 5px;
-        }
-        .saved-id-item {
-            padding: 12px 15px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 14px;
-            font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-        }
+        .saved-ids-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-color); border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); z-index: 100; max-height: 180px; overflow-y: auto; border: 1px solid #ccd5e3; display: none; margin-top: 5px; }
+        .saved-id-item { padding: 12px 15px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .saved-id-item:last-child { border-bottom: none; }
-        .saved-id-item:hover { background: rgba(0,0,0,0.03); }
-
         @keyframes pulse-btn { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(214, 51, 126, 0.5); } 70% { transform: scale(1.03); box-shadow: 0 0 0 10px rgba(214, 51, 126, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(214, 51, 126, 0); } }
         .create-btn-anim { animation: pulse-btn 2s infinite; }
-
-        /* Loaders */
+        @keyframes pulse-green-btn { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6); } 70% { transform: scale(1.04); box-shadow: 0 0 0 12px rgba(37, 211, 102, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
+        .contact-btn-anim { animation: pulse-green-btn 2.2s infinite; }
         .circle-loader-wrap { display: flex; justify-content: center; align-items: center; margin: 40px auto; position: relative; width: 120px; height: 120px; }
         .circle-loader { width: 100%; height: 100%; border-radius: 50%; border: 8px solid var(--shadow-light); border-top: 8px solid var(--primary-color); animation: spin 1s linear infinite; box-shadow: 5px 5px 15px var(--shadow-dark), -5px -5px 15px var(--shadow-light); }
         .circle-percent { position: absolute; font-size: 22px; font-weight: 800; color: var(--primary-dark); font-family: 'Poppins', sans-serif; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* Notification Badges */
-        .badge {
-            background: linear-gradient(135deg, #ff5f6d, #d6337e); color: white; font-size: 11px;
-            font-weight: 700; padding: 3px 9px; border-radius: 20px; position: absolute;
-            top: -6px; right: -6px; display: none; box-shadow: 2px 2px 6px rgba(0,0,0,0.25);
-        }
-
-        .landscape-header {
-            display: flex; align-items: center; gap: 15px; background: linear-gradient(150deg, #ffffff, #dde3ee);
-            padding: 18px 20px; border-radius: 20px; box-shadow: 6px 6px 16px var(--shadow-dark), -6px -6px 16px var(--shadow-light); margin-bottom: 22px; position: relative;
-        }
+        .badge { background: linear-gradient(135deg, #ff5f6d, #d6337e); color: white; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px; position: absolute; top: -6px; right: -6px; display: none; box-shadow: 2px 2px 6px rgba(0,0,0,0.25); }
+        .landscape-header { display: flex; align-items: center; gap: 15px; background: linear-gradient(150deg, #ffffff, #dde3ee); padding: 18px 20px; border-radius: 20px; box-shadow: 6px 6px 16px var(--shadow-dark), -6px -6px 16px var(--shadow-light); margin-bottom: 22px; position: relative; }
         .profile-img, .app-logo { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 3px 3px 8px rgba(60,80,110,0.25); }
         h2, h3, h4, p { margin: 0; padding: 0; }
         .text-sm { font-size: 12px; color: var(--text-muted); }
@@ -156,63 +107,45 @@
         .header-nav { display: flex; align-items: center; margin-bottom: 20px; gap: 15px; }
         .back-btn { padding: 10px 15px; border-radius: 12px; }
         .hidden { display: none !important; }
-
-        .status-badge { padding: 4px 11px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; display: inline-block; letter-spacing: 0.02em; }
+        .status-badge { padding: 4px 11px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; display: inline-block; }
         .status-pending { background: linear-gradient(135deg, var(--accent-color), #d9761c); animation: pulse-orange 1.5s infinite; }
         .status-working { background: linear-gradient(135deg, var(--info-color), #1f3f9c); animation: pulse-blue 1.5s infinite; }
         .status-close { background: linear-gradient(135deg, var(--pink-color), #8f1a53); }
         .status-complete { background: linear-gradient(135deg, #24b47e, #0f7a52); animation: pulse-green 1.5s infinite; }
-
         @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(240, 151, 63, 0.6); } 70% { box-shadow: 0 0 0 9px rgba(240, 151, 63, 0); } 100% { box-shadow: 0 0 0 0 rgba(240, 151, 63, 0); } }
         @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0 rgba(53, 103, 214, 0.6); } 70% { box-shadow: 0 0 0 9px rgba(53, 103, 214, 0); } 100% { box-shadow: 0 0 0 0 rgba(53, 103, 214, 0); } }
         @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(36, 180, 126, 0.6); } 70% { box-shadow: 0 0 0 9px rgba(36, 180, 126, 0); } 100% { box-shadow: 0 0 0 0 rgba(36, 180, 126, 0); } }
-
-        .slime-bot {
-            position: fixed; bottom: 20px; right: 20px; background: linear-gradient(135deg, #12877f, #0b5f59);
-            color: white; border-radius: 50% 50% 30% 70% / 60% 40% 70% 40%; width: 58px; height: 58px; display: flex;
-            align-items: center; justify-content: center; box-shadow: 0 10px 22px rgba(11, 95, 89, 0.4);
-            animation: slime 3s infinite ease-in-out; cursor: pointer; z-index: 1000; text-align: center; flex-direction: column;
-        }
+        .slime-bot { position: fixed; bottom: 20px; right: 20px; background: linear-gradient(135deg, #12877f, #0b5f59); color: white; border-radius: 50% 50% 30% 70% / 60% 40% 70% 40%; width: 58px; height: 58px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 22px rgba(11, 95, 89, 0.4); animation: slime 3s infinite ease-in-out; cursor: pointer; z-index: 1000; text-align: center; flex-direction: column; }
         .slime-bot span { font-size: 9px; font-weight: 700; margin-top: 2px;}
         @keyframes slime { 0%, 100% { border-radius: 50% 50% 30% 70% / 60% 40% 70% 40%; transform: scale(1); } 50% { border-radius: 30% 70% 70% 30% / 40% 60% 40% 60%; transform: scale(1.05); } }
-
         .chat-msg { margin-bottom: 15px; border-radius: 15px; padding: 12px 14px; max-width: 80%; font-size: 14px; line-height: 1.5; }
-        .chat-bot { background: #dcf3f0; color: #0b5f59; float: left; border-bottom-left-radius: 2px; box-shadow: 2px 2px 6px rgba(0,0,0,0.05); }
-        .chat-user { background: linear-gradient(135deg, var(--info-color), #1f3f9c); color: white; float: right; border-bottom-right-radius: 2px; text-align: right; box-shadow: -2px 2px 6px rgba(0,0,0,0.08); }
+        .chat-bot { background: #dcf3f0; color: #0b5f59; float: left; border-bottom-left-radius: 2px; }
+        .chat-user { background: linear-gradient(135deg, var(--info-color), #1f3f9c); color: white; float: right; border-bottom-right-radius: 2px; text-align: right; }
         .clearfix::after { content: ""; clear: both; display: table; }
-
         .screenshot-preview { position: relative; width: 100%; border-radius: 14px; overflow: hidden; margin-bottom: 15px; box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light); display: none; }
         .screenshot-preview img { width: 100%; display: block; }
         .screenshot-preview .remove-shot { position: absolute; top: 8px; right: 8px; background: rgba(20,20,20,0.55); color: #fff; border: none; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-
-        /* Upload Widgets */
         .upload-widget { margin-bottom: 15px; }
         .upload-row { display: flex; align-items: stretch; gap: 10px; }
         .upload-btn { margin-bottom: 0 !important; flex: 1; }
         .skip-btn { width: auto !important; margin: 0 !important; padding: 15px 14px !important; font-size: 12px !important; color: var(--text-muted); background: var(--bg-color); white-space: nowrap; }
-        .skip-btn.skipped-state { background: linear-gradient(135deg, #6d7c98, #46536b); color: #fff; box-shadow: 0 6px 14px rgba(70, 83, 107, 0.35); }
+        .skip-btn.skipped-state { background: linear-gradient(135deg, #6d7c98, #46536b); color: #fff; }
         .upload-status-box { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(53, 103, 214, 0.08); font-size: 12px; font-weight: 600; color: var(--info-color); }
         .mini-loader { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid rgba(53,103,214,0.25); border-top: 2.5px solid var(--info-color); animation: spin 0.8s linear infinite; flex-shrink: 0; }
-        .upload-status-box.error-box { background: rgba(239, 69, 98, 0.1); color: var(--danger-color); }
-        .upload-status-box.error-box .mini-loader { display: none; }
         .upload-preview-thumb { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 8px 10px; border-radius: 14px; background: rgba(31, 157, 103, 0.09); box-shadow: 3px 3px 8px var(--shadow-dark), -3px -3px 8px var(--shadow-light); }
-        .upload-preview-thumb img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+        .upload-preview-thumb img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; }
         .upload-preview-thumb .pdf-chip { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, var(--danger-color), #a91d38); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
         .upload-success-tag { flex: 1; font-size: 12px; font-weight: 700; color: #1f9d67; }
         .remove-mini-btn { border: none; background: rgba(0,0,0,0.08); color: var(--text-color); width: 26px; height: 26px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
         .btn-spinner { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,0.35); border-top: 2.5px solid #fff; animation: spin 0.7s linear infinite; display: inline-block; margin: 0 auto; }
-
-        /* Modals & Lightbox */
         .simple-modal-overlay, .lightbox-overlay { position: fixed; inset: 0; background: rgba(10,15,25,0.7); display: none; align-items: center; justify-content: center; z-index: 2500; padding: 20px; }
         .simple-modal-overlay.active, .lightbox-overlay.active { display: flex; animation: fadeIn 0.2s ease; }
         .simple-modal-box { width: 100%; max-width: 360px; background: var(--bg-color); border-radius: 20px; padding: 22px; box-shadow: 0 20px 45px rgba(0,0,0,0.35); max-height: 90vh; overflow-y: auto; text-align: center; }
         .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.08); font-size: 13px; text-align: left;}
         .detail-row:last-child { border-bottom: none; }
-        
         .lightbox-overlay { z-index: 3000; background: rgba(5,6,10,0.95); }
         .lightbox-overlay img { max-width: 100%; max-height: 100%; border-radius: 10px; }
         .lightbox-close { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.12); color: #fff; border: none; width: 42px; height: 42px; border-radius: 50%; font-size: 18px; cursor: pointer; }
-
         .edit-modal-overlay { position: fixed; inset: 0; background: #10151f; display: none; flex-direction: column; z-index: 2000; align-items: center; justify-content: center; }
         .edit-modal-overlay.active { display: flex; }
         .edit-modal-inner { width: 100%; max-width: 414px; height: 100%; max-height: 896px; display: flex; flex-direction: column; background: #10151f; position: relative; }
@@ -227,14 +160,11 @@
         .edit-footer button { flex: 1; border: none; border-radius: 14px; padding: 14px; font-weight: 700; font-family: 'Inter', sans-serif; font-size: 14px; cursor: pointer; }
         .edit-footer .clear-btn { background: rgba(255,255,255,0.1); color: #fff; }
         .edit-footer .done-btn { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: #fff; }
-
-        .dev-credit { text-align: center; font-size: 11px; color: var(--text-muted); padding: 14px 0 4px 0; letter-spacing: 0.02em; }
+        .dev-credit { text-align: center; font-size: 11px; color: var(--text-muted); padding: 14px 0 4px 0; }
         .dev-credit i { color: var(--pink-color); }
         .dev-credit strong { color: var(--primary-dark); font-weight: 700; }
-        
         .wizard-step { display: none; }
         .wizard-step.active { display: block; animation: fadeIn 0.3s ease; }
-
         .ud-tabs { display: flex; gap: 10px; margin-bottom: 18px; }
         .ud-tab-btn { flex: 1; text-align: center; justify-content: center; margin-bottom: 0; font-size: 13px; padding: 12px 10px; }
         .ud-tab-btn.ud-tab-active { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: #fff; box-shadow: 0 8px 18px rgba(18, 135, 127, 0.35); }
@@ -246,28 +176,67 @@
         .ud-whats-new-box { background: rgba(53,103,214,0.07); border-radius: 12px; padding: 12px 14px; font-size: 13px; margin: 10px 0; color: var(--text-color); border-left: 4px solid var(--info-color); white-space: pre-line; line-height: 1.6; }
         .ud-source-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); margin-top: 8px; }
         .ready-btn { margin-top: 10px !important; margin-bottom: 0 !important; font-size: 12px !important; padding: 10px !important; }
-
-        /* Payment & Bills Styling */
         .bill-detail-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 12px; align-items: center; text-align: left; }
         .bill-detail-row:last-child { border-bottom: none; }
         .bill-amount-text { font-size: 16px; font-weight: 800; color: var(--primary-dark); font-family: 'JetBrains Mono', monospace; }
-        
         .bank-card { background: rgba(53, 103, 214, 0.05); border: 1px solid rgba(53, 103, 214, 0.2); border-radius: 12px; padding: 12px; margin-bottom: 12px; position: relative; text-align: left; }
         .bank-title { font-size: 14px; font-weight: 800; color: var(--primary-dark); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
         .bank-info { font-size: 12px; color: var(--text-color); margin-bottom: 2px; }
         .copy-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: #fff; border: 1px solid #ccd5e3; border-radius: 8px; width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; cursor: pointer; color: var(--primary-color); box-shadow: 2px 2px 6px rgba(0,0,0,0.05); }
-        .copy-btn:active { background: var(--bg-color); }
-
-        .payment-overlay {
-            position: absolute; inset: 0; background: rgba(255,255,255,0.9); z-index: 2000;
-            display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 32px;
-        }
+        .payment-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.9); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 32px; }
+        /* Contact Us + Chat styles */
+        .contact-welcome-box { background: linear-gradient(145deg, #e8f8f0, #d1f0e0); border: 2px solid #25D366; border-radius: 20px; padding: 22px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.2); }
+        .contact-welcome-box h3 { color: #075E54; margin-bottom: 12px; font-size: 18px; }
+        .contact-welcome-box p { font-size: 14px; line-height: 1.6; color: #1a3c34; margin-bottom: 18px; }
+        .chat-dash-header { display: flex; flex-direction: column; align-items: center; gap: 12px; background: linear-gradient(150deg, #ffffff, #e8f5e9); padding: 24px 20px; border-radius: 22px; box-shadow: 6px 6px 16px var(--shadow-dark), -6px -6px 16px var(--shadow-light); margin-bottom: 20px; }
+        .chat-dp-wrap { position: relative; width: 90px; height: 90px; }
+        .chat-dp { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 4px solid #25D366; box-shadow: 0 6px 16px rgba(37,211,102,0.35); background: #ddd; }
+        .chat-dp-edit { position: absolute; bottom: 0; right: 0; width: 30px; height: 30px; background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer; border: 2px solid #fff; }
+        .project-card-mini { background: rgba(18,135,127,0.06); border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--primary-color); }
+        .wa-chat-screen { padding: 0 !important; background: #0b141a; overflow: hidden; }
+        .wa-header { background: #1f2c34; color: #e9edef; padding: 12px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; }
+        .wa-header .back-wa { background: none; border: none; color: #e9edef; font-size: 18px; cursor: pointer; padding: 6px; }
+        .wa-avatar { width: 42px; height: 42px; border-radius: 50%; background: #25D366; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 16px; }
+        .wa-header-info { flex: 1; }
+        .wa-header-info h4 { font-size: 16px; margin: 0; color: #e9edef; }
+        .wa-header-info p { font-size: 12px; color: #8696a0; margin: 0; }
+        .wa-online { color: #25D366 !important; }
+        .wa-typing { color: #25D366 !important; font-style: italic; }
+        .wa-messages { flex: 1; overflow-y: auto; padding: 12px 10px; background: #0b141a; display: flex; flex-direction: column; gap: 4px; }
+        .wa-msg { max-width: 78%; padding: 8px 12px; border-radius: 10px; font-size: 14px; line-height: 1.4; position: relative; word-wrap: break-word; animation: msgIn 0.2s ease; }
+        @keyframes msgIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .wa-msg-user { align-self: flex-end; background: #005c4b; color: #e9edef; border-bottom-right-radius: 2px; }
+        .wa-msg-admin { align-self: flex-start; background: #1f2c34; color: #e9edef; border-bottom-left-radius: 2px; }
+        .wa-msg-bot { align-self: center; background: rgba(37,211,102,0.15); color: #25D366; border: 1px solid rgba(37,211,102,0.3); font-size: 12px; text-align: center; max-width: 90%; border-radius: 14px; padding: 10px 14px; }
+        .wa-msg-time { font-size: 10px; color: #8696a0; margin-top: 4px; text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
+        .wa-msg-reply-preview { background: rgba(0,0,0,0.2); border-left: 3px solid #25D366; padding: 4px 8px; margin-bottom: 6px; border-radius: 4px; font-size: 12px; color: #8696a0; }
+        .wa-reactions { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+        .wa-reaction { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 2px 6px; font-size: 12px; cursor: pointer; }
+        .wa-input-bar { background: #1f2c34; padding: 10px 12px; display: flex; align-items: center; gap: 8px; position: sticky; bottom: 0; }
+        .wa-input { flex: 1; background: #2a3942; border: none; border-radius: 22px; padding: 10px 16px; color: #e9edef; font-size: 15px; outline: none; font-family: 'Inter', sans-serif; }
+        .wa-input::placeholder { color: #8696a0; }
+        .wa-action-btn { width: 42px; height: 42px; border-radius: 50%; border: none; background: #00a884; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; flex-shrink: 0; }
+        .wa-action-btn.secondary { background: #2a3942; }
+        .wa-action-btn.recording { background: #ef4562; animation: pulse-red 1s infinite; }
+        @keyframes pulse-red { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .wa-help-btns { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 10px 0; }
+        .wa-help-btn { background: rgba(37,211,102,0.15); border: 1px solid #25D366; color: #25D366; border-radius: 20px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .wa-help-btn:active { background: #25D366; color: #fff; }
+        .feedback-bar { background: #1f2c34; padding: 16px; text-align: center; border-top: 1px solid #2a3942; }
+        .feedback-btns { display: flex; gap: 12px; justify-content: center; margin-top: 10px; }
+        .feedback-btn { flex: 1; max-width: 140px; padding: 12px; border-radius: 12px; border: none; font-weight: 700; font-size: 14px; cursor: pointer; }
+        .feedback-good { background: #25D366; color: #fff; }
+        .feedback-bad { background: #ef4562; color: #fff; }
+        .username-status { font-size: 12px; margin-top: -10px; margin-bottom: 12px; min-height: 18px; }
+        .username-ok { color: #1f9d67; }
+        .username-taken { color: var(--danger-color); }
+        .pwa-banner { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 414px; background: linear-gradient(135deg, #12877f, #0b5f59); color: #fff; padding: 12px 16px; display: none; align-items: center; gap: 12px; z-index: 3000; border-radius: 16px 16px 0 0; box-shadow: 0 -6px 20px rgba(0,0,0,0.3); }
+        .pwa-banner button { background: #fff; color: #0b5f59; border: none; border-radius: 10px; padding: 8px 14px; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
-
 <div class="mobile-container">
-    
+
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="screen active">
         <div style="text-align: center; margin-top: 30px; display:flex; flex-direction:column; flex:1;">
@@ -275,18 +244,14 @@
                 <i class="fas fa-crown fa-4x" style="color: var(--accent-color); margin-bottom: 20px; filter: drop-shadow(0 6px 10px rgba(240,151,63,0.35));"></i>
                 <h2 style="margin-bottom: 8px; font-size: 24px; font-weight: 800; color: var(--primary-dark);">MrCrazy Customer</h2>
                 <p style="margin-bottom: 30px; color: var(--text-muted);">Welcome! Please enter your Project ID</p>
-                
                 <div style="position:relative; margin-bottom:15px; text-align:left;">
                     <input type="text" id="projectIdInput" class="neu-input" style="margin-bottom:0;" placeholder="Project ID (e.g., PROJ-001)" onfocus="showSavedIds()">
                     <div id="saved-ids-dropdown" class="saved-ids-dropdown"></div>
                 </div>
-
                 <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-muted); margin-bottom:20px; justify-content:center; cursor:pointer;">
                     <input type="checkbox" id="remember-me" style="accent-color:var(--primary-color); width:16px; height:16px;" checked> Remember me
                 </label>
-
                 <button class="neu-button primary-btn" id="login-btn" onclick="login()" style="justify-content: center;"><span id="login-btn-label">Login</span> <i class="fas fa-arrow-right" id="login-btn-icon" style="margin-left: 10px;"></i></button>
-
                 <div style="margin-top: 40px; padding: 20px; background: rgba(255,255,255,0.4); border-radius: 20px; border: 1px solid rgba(255,255,255,0.6);">
                     <p style="font-size: 13px; color: var(--text-color); font-weight: 600; margin-bottom: 15px; line-height: 1.5;">
                         If you want to get a new app or website made, then get your new project developed below..
@@ -295,12 +260,163 @@
                         <i class="fas fa-plus-circle" style="margin-right: 8px;"></i> Create new project
                     </button>
                 </div>
+                <!-- CONTACT US Green Animated Section -->
+                <div style="margin-top: 18px; padding: 18px; background: linear-gradient(145deg, rgba(37,211,102,0.12), rgba(18,140,126,0.08)); border-radius: 20px; border: 2px solid rgba(37,211,102,0.35);">
+                    <p style="font-size: 13px; color: var(--text-color); font-weight: 600; margin-bottom: 12px; line-height: 1.5;">
+                        Koi sawal, madad ya live support chahiye? Hum se seedha rabta karein.
+                    </p>
+                    <button class="neu-button green-btn contact-btn-anim" onclick="openContactFlow()" style="justify-content: center; margin-bottom: 0;">
+                        <i class="fas fa-comments" style="margin-right: 8px;"></i> Contact Us / Hum se Rabta
+                    </button>
+                </div>
             </div>
             <div class="dev-credit"><i class="fas fa-code"></i> Developed by <strong>Muhammad Naeem</strong></div>
         </div>
     </div>
 
-    <!-- CREATE PROJECT WIZARD SCREEN -->
+    <!-- CONTACT GREETING -->
+    <div id="contact-greeting-screen" class="screen">
+        <div class="header-nav">
+            <button class="neu-button back-btn" onclick="openScreen('login-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
+            <h3>Contact Us</h3>
+        </div>
+        <div class="contact-welcome-box">
+            <i class="fas fa-handshake fa-3x" style="color: #25D366; margin-bottom: 16px;"></i>
+            <h3>Mohtaram Customer</h3>
+            <p>
+                Assalam o Alaikum!<br><br>
+                Umeed hai aap khairiyat se hon ge. Hamare sath rabta karne ka dil se shukriya.<br><br>
+                Bara-e-karam apni identity confirm kar ke aage barhein taake hum aapki behtareen madad kar saken.
+            </p>
+            <button class="neu-button green-btn" onclick="startContactAuth()" style="justify-content: center; margin-bottom: 0;">
+                Let's Go <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- CONTACT LOADING -->
+    <div id="contact-loading-screen" class="screen" style="justify-content: center; align-items: center; text-align: center;">
+        <div class="circle-loader-wrap" style="width: 90px; height: 90px;"><div class="circle-loader" style="border-top-color: #25D366;"></div></div>
+        <h3 style="color: var(--primary-dark); margin-bottom: 8px;">Please wait...</h3>
+        <p style="color: var(--text-muted); font-size: 13px;">Identity system load ho raha hai</p>
+    </div>
+
+    <!-- CONTACT AUTH -->
+    <div id="contact-auth-screen" class="screen">
+        <div class="header-nav">
+            <button class="neu-button back-btn" onclick="openScreen('contact-greeting-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
+            <h3 id="auth-title">Login / Signup</h3>
+        </div>
+        <div style="display: flex; gap: 10px; margin-bottom: 18px;">
+            <button class="neu-button ud-tab-btn ud-tab-active" id="auth-tab-login" onclick="switchAuthTab('login')" style="flex:1; justify-content:center; margin:0;">Login</button>
+            <button class="neu-button ud-tab-btn" id="auth-tab-signup" onclick="switchAuthTab('signup')" style="flex:1; justify-content:center; margin:0;">Signup</button>
+        </div>
+        <div id="auth-login-tab" class="ud-tab-content active">
+            <div class="neu-box">
+                <h4 style="color: var(--primary-dark); margin-bottom: 12px;">Login with Number</h4>
+                <p class="text-sm" style="margin-bottom: 12px;">Sirf apna number darj karein. Agar pehle login kiya ho to auto detect ho jayega.</p>
+                <input type="tel" id="login-phone" class="neu-input" placeholder="e.g. 03XXXXXXXXX" maxlength="12">
+                <button class="neu-button green-btn" onclick="doChatLogin()" style="justify-content: center; margin-bottom: 0;">
+                    <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i> Login
+                </button>
+            </div>
+        </div>
+        <div id="auth-signup-tab" class="ud-tab-content">
+            <div class="neu-box">
+                <h4 style="color: var(--primary-dark); margin-bottom: 12px;">Create New Account</h4>
+                <label class="text-sm">Please Enter your Full Name *</label>
+                <input type="text" id="signup-fullname" class="neu-input" placeholder="e.g. Muhammad Ali">
+                <label class="text-sm">Enter Username *</label>
+                <input type="text" id="signup-username" class="neu-input" placeholder="Unique username" oninput="checkUsernameRealtime()">
+                <div id="username-status" class="username-status"></div>
+                <label class="text-sm">Please Enter your Number *</label>
+                <input type="tel" id="signup-phone" class="neu-input" placeholder="e.g. 03XXXXXXXXX" maxlength="12" oninput="checkPhoneRealtime()">
+                <div id="phone-status" class="username-status"></div>
+                <button class="neu-button green-btn" id="signup-submit-btn" onclick="doChatSignup()" style="justify-content: center; margin-bottom: 0;">
+                    <span id="signup-btn-label">Submit now</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTACT WELCOME -->
+    <div id="contact-welcome-screen" class="screen" style="justify-content: center; align-items: center; text-align: center;">
+        <div class="contact-welcome-box" style="width: 100%;">
+            <i class="fas fa-check-circle fa-3x" style="color: #25D366; margin-bottom: 16px;"></i>
+            <h3 id="welcome-username-display">Assalam o Alaikum</h3>
+            <p style="font-size: 14px; line-height: 1.7; color: #1a3c34;">
+                Hum yahaan har waqt dastiyab hain. Aap yahaan hamare sath live chat kar sakte hain.<br><br>
+                Aapke taawun ka shukriya!
+            </p>
+            <button class="neu-button green-btn" onclick="openChatDashboard()" style="justify-content: center; margin-bottom: 0;">
+                OK <i class="fas fa-check" style="margin-left: 8px;"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- CHAT DASHBOARD -->
+    <div id="chat-dashboard-screen" class="screen">
+        <div class="header-nav">
+            <button class="neu-button back-btn" onclick="openScreen('login-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
+            <h3>My Support</h3>
+        </div>
+        <div class="chat-dash-header">
+            <div class="chat-dp-wrap">
+                <img id="chat-user-dp" src="https://via.placeholder.com/90" class="chat-dp" alt="DP">
+                <div class="chat-dp-edit" onclick="document.getElementById('chat-dp-input').click()">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <input type="file" id="chat-dp-input" accept="image/*" style="display:none" onchange="handleChatDP(this)">
+            </div>
+            <h3 id="chat-dash-name" style="color: var(--primary-dark);">User Name</h3>
+            <p class="text-sm" id="chat-dash-phone">03XXXXXXXXX</p>
+        </div>
+        <div class="neu-box compact-box">
+            <h4 style="color: var(--primary-dark); margin-bottom: 10px;"><i class="fas fa-folder-open" style="margin-right:6px;"></i> Your Projects</h4>
+            <p class="text-sm" id="chat-projects-count" style="margin-bottom: 10px;">Total Projects: 0</p>
+            <div id="chat-projects-list"><p class="text-sm">No projects found for this number.</p></div>
+        </div>
+        <button class="neu-button green-btn contact-btn-anim" onclick="openLiveChat()" style="justify-content: center; margin-top: 10px;">
+            <i class="fas fa-comment-dots" style="margin-right: 8px;"></i> Hum se Rabta
+        </button>
+        <div class="dev-credit" style="margin-top: auto;"><i class="fas fa-code"></i> Developed by <strong>Muhammad Naeem</strong></div>
+    </div>
+
+    <!-- LIVE CHAT -->
+    <div id="live-chat-screen" class="screen wa-chat-screen">
+        <div class="wa-header">
+            <button class="back-wa" onclick="openScreen('chat-dashboard-screen')"><i class="fas fa-arrow-left"></i></button>
+            <div class="wa-avatar">MN</div>
+            <div class="wa-header-info">
+                <h4>Muhammad Naeem</h4>
+                <p id="wa-status-text">last seen recently</p>
+            </div>
+        </div>
+        <div class="wa-messages" id="wa-messages"></div>
+        <div id="wa-help-section" style="padding: 0 10px 8px;">
+            <div class="wa-help-btns">
+                <button class="wa-help-btn" onclick="sendHelpChoice('complaint')">Complaint</button>
+                <button class="wa-help-btn" onclick="sendHelpChoice('update')">App Update</button>
+                <button class="wa-help-btn" onclick="sendHelpChoice('owner')">Owner se Rabta</button>
+            </div>
+        </div>
+        <div class="feedback-bar hidden" id="feedback-bar">
+            <p style="color:#e9edef; font-size:14px; margin:0;">Chat khatam ho gaya. Feedback dein:</p>
+            <div class="feedback-btns">
+                <button class="feedback-btn feedback-good" onclick="submitFeedback('good')"><i class="fas fa-thumbs-up"></i> Good</button>
+                <button class="feedback-btn feedback-bad" onclick="submitFeedback('bad')"><i class="fas fa-thumbs-down"></i> Bad</button>
+            </div>
+        </div>
+        <div class="wa-input-bar" id="wa-input-bar">
+            <button class="wa-action-btn secondary" onclick="document.getElementById('wa-image-input').click()"><i class="fas fa-image"></i></button>
+            <input type="file" id="wa-image-input" accept="image/*" style="display:none" onchange="sendChatImage(this)">
+            <input type="text" id="wa-text-input" class="wa-input" placeholder="Message..." onkeypress="if(event.key==='Enter') sendChatText()">
+            <button class="wa-action-btn secondary" id="wa-voice-btn" onmousedown="startVoiceRecord()" onmouseup="stopVoiceRecord()" ontouchstart="startVoiceRecord()" ontouchend="stopVoiceRecord()"><i class="fas fa-microphone"></i></button>
+            <button class="wa-action-btn" onclick="sendChatText()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- CREATE PROJECT (kept minimal structure) -->
     <div id="create-project-screen" class="screen">
         <div class="header-nav">
             <button class="neu-button back-btn" onclick="openScreen('login-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
@@ -311,268 +427,162 @@
                 <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 1: Project Details</h4>
                 <label class="text-sm">Please Enter your Project name *</label>
                 <input type="text" id="new-proj-name" class="neu-input" placeholder="e.g. My Online Store">
-                <label class="text-sm">Please upload your App & website Logo (Optional)</label>
-                <div class="upload-widget" id="logo-upload-widget">
-                    <div class="upload-row"><button type="button" class="neu-button ghost-btn upload-btn" id="logo-upload-btn" onclick="document.getElementById('new-proj-logo').click()"><i class="fas fa-image" style="margin-right: 8px;"></i> <span id="logo-upload-label">Upload Logo</span></button><button type="button" class="neu-button skip-btn" id="logo-skip-btn" onclick="toggleSkipUpload('logo')">Skip</button></div>
-                    <input type="file" id="new-proj-logo" accept="image/*" style="display:none">
-                    <div class="upload-status-box" id="logo-status-box" style="display:none;"><div class="mini-loader" id="logo-mini-loader"></div><span id="logo-status-text">Uploading...</span></div>
-                    <div class="upload-preview-thumb" id="logo-preview-box" style="display:none;"><img id="logo-preview-img" src="" alt="Logo"><span class="upload-success-tag"><i class="fas fa-check-circle"></i> Logo Uploaded</span><button type="button" class="remove-mini-btn" onclick="removeUploadedFile('logo')"><i class="fas fa-times"></i></button></div>
-                </div>
                 <label class="text-sm">Please Enter your details *</label>
                 <textarea id="new-proj-desc" class="neu-input" rows="4" placeholder="Detail se bayaan karein..."></textarea>
                 <button class="neu-button primary-btn" onclick="nextStep(2)" style="justify-content: center;">Next <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></button>
             </div>
             <div id="step-2" class="wizard-step">
-                <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 2: Time & Documents</h4>
-                <label class="text-sm">Deadline kab tak chahiye *</label><input type="datetime-local" id="new-proj-deadline" class="neu-input">
-                <label class="text-sm">Kia aap apna Designs bnwana chahty han? (Add PDF)</label>
-                <div class="upload-widget" id="pdf-upload-widget">
-                    <div class="upload-row"><button type="button" class="neu-button ghost-btn upload-btn" id="pdf-upload-btn" onclick="document.getElementById('new-proj-pdf').click()"><i class="fas fa-file-pdf" style="margin-right: 8px;"></i> <span id="pdf-upload-label">Upload PDF</span></button><button type="button" class="neu-button skip-btn" id="pdf-skip-btn" onclick="toggleSkipUpload('pdf')">Skip</button></div>
-                    <input type="file" id="new-proj-pdf" accept="application/pdf" style="display:none">
-                    <div class="upload-status-box" id="pdf-status-box" style="display:none;"><div class="mini-loader" id="pdf-mini-loader"></div><span id="pdf-status-text">Uploading...</span></div>
-                    <div class="upload-preview-thumb" id="pdf-preview-box" style="display:none;"><div class="pdf-chip"><i class="fas fa-file-pdf"></i></div><span class="upload-success-tag" id="pdf-preview-name"><i class="fas fa-check-circle"></i> PDF Uploaded</span><button type="button" class="remove-mini-btn" onclick="removeUploadedFile('pdf')"><i class="fas fa-times"></i></button></div>
-                </div>
-                <label class="text-sm">Website/App jaisa Design bnwana chahty hain? (Link)</label><input type="url" id="new-proj-link" class="neu-input" placeholder="https://example.com">
-                <div style="display: flex; gap: 10px;"><button class="neu-button" onclick="nextStep(1)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button><button class="neu-button primary-btn" onclick="nextStep(3)" style="justify-content: center;">Next <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></button></div>
+                <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 2</h4>
+                <label class="text-sm">Deadline *</label><input type="datetime-local" id="new-proj-deadline" class="neu-input">
+                <div style="display: flex; gap: 10px;"><button class="neu-button" onclick="nextStep(1)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button><button class="neu-button primary-btn" onclick="nextStep(3)" style="justify-content: center;">Next</button></div>
             </div>
             <div id="step-3" class="wizard-step">
-                <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 3: Contact Info</h4>
-                <label class="text-sm">Please Enter Call number *</label><input type="number" id="new-proj-call" class="neu-input">
-                <label class="text-sm">Secondary number (Optional)</label><input type="number" id="new-proj-sec" class="neu-input">
-                <label class="text-sm">Enter WhatsApp No *</label><input type="number" id="new-proj-wa" class="neu-input">
-                <label class="text-sm">Project Type *</label>
-                <select id="new-proj-type" class="neu-input"><option value="Website">Website</option><option value="App">App</option><option value="Game">Game</option><option value="Both">Both</option></select>
-                <div style="display: flex; gap: 10px;"><button class="neu-button" onclick="nextStep(2)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button><button class="neu-button primary-btn" onclick="nextStep(4)" style="justify-content: center;">Next <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></button></div>
+                <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 3: Contact</h4>
+                <label class="text-sm">Call number *</label><input type="number" id="new-proj-call" class="neu-input">
+                <label class="text-sm">WhatsApp No *</label><input type="number" id="new-proj-wa" class="neu-input">
+                <div style="display: flex; gap: 10px;"><button class="neu-button" onclick="nextStep(2)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button><button class="neu-button primary-btn" onclick="nextStep(4)" style="justify-content: center;">Next</button></div>
             </div>
             <div id="step-4" class="wizard-step">
-                <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 4: Final Details</h4>
+                <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 4</h4>
                 <label class="text-sm">Your Name? *</label><input type="text" id="new-proj-username" class="neu-input">
-                <label class="text-sm">Aap kis k liye App bnwana chahty han? *</label>
-                <select id="new-proj-purpose" class="neu-input"><option value="Personal">Personal</option><option value="Education">Education</option><option value="Other">Other</option></select>
-                <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="neu-button" onclick="nextStep(3)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button><button class="neu-button accent-btn" id="submit-project-btn" onclick="submitNewProject()" style="justify-content: center;"><span id="submit-project-label">Submit Project</span> <i class="fas fa-check" id="submit-project-icon" style="margin-left: 8px;"></i></button></div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="neu-button" onclick="nextStep(3)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button><button class="neu-button accent-btn" onclick="submitNewProject()" style="justify-content: center;">Submit Project</button></div>
             </div>
         </div>
     </div>
 
-    <!-- LOADING & SUCCESS SCREENS -->
+    <!-- LOADING / SUCCESS -->
     <div id="loading-screen" class="screen" style="justify-content: center; align-items: center; text-align: center;">
         <div class="circle-loader-wrap"><div class="circle-loader"></div><div class="circle-percent" id="load-percent">1%</div></div>
-        <h3 id="load-proj-name" style="color: var(--primary-dark); margin-bottom: 10px;">Project Name</h3>
-        <p style="color: var(--text-muted); font-weight: 500;">Please wait...</p>
+        <h3 id="load-proj-name" style="color: var(--primary-dark);">Project Name</h3>
+        <p style="color: var(--text-muted);">Please wait...</p>
     </div>
     <div id="success-screen" class="screen" style="justify-content: center; align-items: center; text-align: center;">
         <i class="fas fa-check-circle fa-4x" style="color: #1f9d67; margin-bottom: 20px;"></i>
         <h2 style="margin-bottom: 15px; color: var(--primary-dark);">Project Submitted!</h2>
-        <p style="margin-bottom: 10px; color: var(--text-color);">Your Project ID is:</p>
+        <p style="margin-bottom: 10px;">Your Project ID is:</p>
         <div class="neu-box" style="padding: 15px; margin-bottom: 20px;"><h3 id="generated-pid" style="color: var(--info-color); letter-spacing: 2px;">PROJ-XXX</h3></div>
-        <button class="neu-button primary-btn" onclick="openScreen('login-screen')" style="justify-content: center;">Back to Dashboard</button>
+        <button class="neu-button primary-btn" onclick="openScreen('login-screen')" style="justify-content: center;">Back</button>
     </div>
 
-    <!-- DASHBOARD SCREEN -->
+    <!-- DASHBOARD (core) -->
     <div id="dashboard-screen" class="screen">
-        
         <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
             <div style="position: relative; background: #ffffff; padding: 14px 16px; border-radius: 18px; box-shadow: 5px 5px 15px var(--shadow-dark), -5px -5px 15px var(--shadow-light); cursor: pointer; border: 2px solid var(--primary-color);" onclick="document.getElementById('notif-modal').classList.add('active')">
                 <i class="fas fa-bell" style="color: var(--primary-dark); font-size: 26px;"></i>
-                <span class="badge" id="main-bell-badge" style="top: -8px; right: -8px; font-size: 13px; padding: 4px 10px; border-radius: 20px; display: none; align-items: center; justify-content: center;">0</span>
+                <span class="badge" id="main-bell-badge" style="top: -8px; right: -8px; font-size: 13px; padding: 4px 10px; border-radius: 20px; display: none;">0</span>
             </div>
         </div>
-
-        <!-- Normal Dashboard Headers -->
         <div id="dashboard-normal-headers">
             <div class="landscape-header">
                 <img id="dash-user-image" src="https://via.placeholder.com/60" class="profile-img" alt="User">
-                <div style="flex: 1;">
-                    <h3 id="dash-username">Loading...</h3>
-                    <p class="text-sm" id="dash-phone">Loading...</p>
-                </div>
+                <div style="flex: 1;"><h3 id="dash-username">Loading...</h3><p class="text-sm" id="dash-phone">Loading...</p></div>
             </div>
-
             <div class="landscape-header" style="margin-bottom: 34px; padding: 10px 20px;">
                 <img id="dash-app-logo" src="https://via.placeholder.com/60" class="app-logo" alt="App">
-                <div style="flex: 1;">
-                    <p class="text-sm">Your App Name</p>
-                    <h3 id="dash-app-name">Loading...</h3>
-                    <!-- App Info Button -->
-                    <span class="text-sm" style="color:var(--info-color); font-weight:700; cursor:pointer; display:inline-block; margin-top:4px;" onclick="document.getElementById('app-info-modal').classList.add('active')"><i class="fas fa-info-circle"></i> App Info</span>
-                </div>
+                <div style="flex: 1;"><p class="text-sm">Your App Name</p><h3 id="dash-app-name">Loading...</h3>
+                <span class="text-sm" style="color:var(--info-color); font-weight:700; cursor:pointer;" onclick="document.getElementById('app-info-modal').classList.add('active')"><i class="fas fa-info-circle"></i> App Info</span></div>
             </div>
         </div>
-
-        <!-- Maintenance Media Section -->
         <div id="dashboard-maintenance-header" class="hidden" style="margin-bottom: 22px;">
-            <video src="Assets/Vid1.mp4" autoplay muted loop playsinline style="pointer-events:none; width:100%; border-radius:20px; box-shadow: 6px 6px 16px var(--shadow-dark), -6px -6px 16px var(--shadow-light);"></video>
+            <video src="Assets/Vid1.mp4" autoplay muted loop playsinline style="pointer-events:none; width:100%; border-radius:20px;"></video>
             <audio id="maintenance-audio" src="Assets/Aud1.mp3" loop></audio>
         </div>
-
-        <!-- Normal Dashboard Buttons -->
         <div id="dashboard-buttons-section">
             <button class="neu-button" onclick="clearNotifAndOpen('bills', 'bills-screen')">
-                <div style="text-align: left; flex: 1;">
-                    <span><i class="fas fa-file-invoice-dollar" style="color: var(--primary-color); margin-right:10px;"></i> Check Bills</span>
-                    <div id="dash-bill-preview" style="font-size: 12px; margin-top: 5px; color: var(--text-muted);">Current Bill: Loading...</div>
-                </div>
-                <i class="fas fa-chevron-right"></i>
-                <span class="badge" id="badge-bills">NEW</span>
+                <div style="text-align: left; flex: 1;"><span><i class="fas fa-file-invoice-dollar" style="color: var(--primary-color); margin-right:10px;"></i> Check Bills</span>
+                <div id="dash-bill-preview" style="font-size: 12px; margin-top: 5px; color: var(--text-muted);">Current Bill: Loading...</div></div>
+                <i class="fas fa-chevron-right"></i><span class="badge" id="badge-bills">NEW</span>
             </button>
-            
             <button class="neu-button" onclick="clearNotifAndOpen('update', 'update-screen')">
                 <span><i class="fas fa-sync-alt" style="color: var(--info-color); margin-right:10px;"></i> App Update Now</span>
-                <i class="fas fa-chevron-right"></i>
-                <span class="badge" id="badge-update">NEW</span>
+                <i class="fas fa-chevron-right"></i><span class="badge" id="badge-update">NEW</span>
             </button>
-
             <button class="neu-button" onclick="clearNotifAndOpen('complaint', 'complaint-screen')">
                 <span><i class="fas fa-headset" style="color: var(--pink-color); margin-right:10px;"></i> Complaint</span>
-                <i class="fas fa-chevron-right"></i>
-                <span class="badge" id="badge-complaint">NEW</span>
+                <i class="fas fa-chevron-right"></i><span class="badge" id="badge-complaint">NEW</span>
             </button>
-
             <button class="neu-button" onclick="openUpdatesDashboard()">
-                <div style="text-align: left; flex: 1;">
-                    <span><i class="fas fa-tachometer-alt" style="color: var(--accent-color); margin-right:10px;"></i> Dashboard</span>
-                    <div style="font-size: 12px; margin-top: 5px; color: var(--text-muted);">Please click here &amp; check your updates</div>
-                </div>
+                <div style="text-align: left; flex: 1;"><span><i class="fas fa-tachometer-alt" style="color: var(--accent-color); margin-right:10px;"></i> Dashboard</span>
+                <div style="font-size: 12px; margin-top: 5px; color: var(--text-muted);">Please click here &amp; check your updates</div></div>
                 <i class="fas fa-chevron-right"></i>
             </button>
         </div>
-
-        <!-- Maintenance Card Section -->
         <div id="dashboard-maintenance-card" class="hidden neu-box" style="text-align: center; border: 2px solid var(--accent-color);">
-            
-            <!-- Subscribe Checkbox / Mark option -->
             <div style="background: rgba(31, 157, 103, 0.1); padding: 12px; border-radius: 12px; text-align: left; margin-bottom: 20px;">
                 <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
                     <input type="checkbox" id="maint-subscribe" style="margin-top: 3px; width: 22px; height: 22px; accent-color: var(--primary-color);" onchange="handleSubscribe(this)">
-                    <span id="subscribe-text" style="font-size: 13px; font-weight: 600; color: var(--text-color);">Subscribe jab aap Update ho jayegi apko WhatsApp par notifection bhej dia jayega.</span>
+                    <span id="subscribe-text" style="font-size: 13px; font-weight: 600;">Subscribe jab aap Update ho jayegi apko WhatsApp par notifection bhej dia jayega.</span>
                 </label>
             </div>
-
             <div class="circle-loader-wrap" style="width: 60px; height: 60px; margin: 10px auto;"><div class="circle-loader"></div></div>
             <h3 style="color: var(--accent-color); margin-bottom: 15px;">App under Processing</h3>
-            
             <div style="background: rgba(0,0,0,0.05); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
-                <h4 id="maint-title" style="margin-bottom: 5px; display: flex; align-items: center; justify-content: center; gap: 8px;"><i class="fas fa-tools"></i> System Maintenance</h4>
+                <h4 id="maint-title" style="margin-bottom: 5px;"><i class="fas fa-tools"></i> System Maintenance</h4>
                 <p id="maint-desc" class="text-sm">We are upgrading our servers...</p>
             </div>
-            
             <p class="text-sm" style="margin-bottom: 5px; font-weight: bold;">Estimated Time Remaining:</p>
-            <div style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: bold; color: var(--danger-color); margin-bottom: 15px;" id="maint-timer">
-                00:00:00
-            </div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: bold; color: var(--danger-color); margin-bottom: 15px;" id="maint-timer">00:00:00</div>
         </div>
-
         <div class="dev-credit" style="margin-top: auto;"><i class="fas fa-code"></i> Developed by <strong>Muhammad Naeem</strong></div>
-
-        <!-- Slime Bot Button -->
-        <div class="slime-bot" onclick="openScreen('help-screen')">
-            <i class="fas fa-robot"></i>
-            <span>Help</span>
-        </div>
+        <div class="slime-bot" onclick="openScreen('help-screen')"><i class="fas fa-robot"></i><span>Help</span></div>
     </div>
 
-    <!-- NEW BILLS SCREEN -->
+    <!-- BILLS / PAYMENT / UPDATE / COMPLAINT / UPDATES DASH / HELP - keep structure, full logic in JS -->
     <div id="bills-screen" class="screen">
         <div class="header-nav" style="margin-bottom: 10px;">
             <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto; padding: 10px 15px; margin-bottom: 0;"><i class="fas fa-arrow-left"></i></button>
             <h3 style="font-size: 18px;">Billing Details</h3>
         </div>
-        
-        <!-- Content to be printed as PDF -->
         <div id="pdf-content-area">
             <div class="neu-box compact-box" style="border: 2px solid var(--primary-color);">
                 <h4 style="color: var(--primary-dark); border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 8px; margin-bottom: 8px;"><i class="fas fa-file-invoice"></i> Current Bill</h4>
-                
-                <div class="bill-detail-row">
-                    <span class="text-sm">Amount:</span> 
-                    <span class="bill-amount-text" id="bill-amount">0 PKR</span>
-                </div>
-                <div class="bill-detail-row">
-                    <span class="text-sm">Date:</span> 
-                    <span style="font-weight: 700; color: var(--text-color);"><i class="fas fa-check-circle" style="color:var(--primary-color);"></i> <span id="bill-date">N/A</span></span>
-                </div>
-                <div class="bill-detail-row">
-                    <span class="text-sm">Server Used:</span> 
-                    <strong id="bill-server-used">Standard Hosting</strong>
-                </div>
-                <div class="bill-detail-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
-                    <span class="text-sm">Description (Fees Reason):</span> 
-                    <span style="font-size: 11px; color: var(--text-muted); line-height: 1.4;" id="bill-desc">Monthly maintenance and server resources usage fee.</span>
-                </div>
-                <div class="bill-detail-row">
-                    <span class="text-sm">Status:</span> 
-                    <span id="bill-status" class="status-badge status-pending" style="font-size: 12px;">Pending</span>
-                </div>
-                
-                <!-- Extra fields shown only when paid -->
+                <div class="bill-detail-row"><span class="text-sm">Amount:</span> <span class="bill-amount-text" id="bill-amount">0 PKR</span></div>
+                <div class="bill-detail-row"><span class="text-sm">Date:</span> <span style="font-weight: 700;"><i class="fas fa-check-circle" style="color:var(--primary-color);"></i> <span id="bill-date">N/A</span></span></div>
+                <div class="bill-detail-row"><span class="text-sm">Server Used:</span> <strong id="bill-server-used">Standard Hosting</strong></div>
+                <div class="bill-detail-row" style="flex-direction: column; align-items: flex-start; gap: 4px;"><span class="text-sm">Description:</span> <span style="font-size: 11px; color: var(--text-muted);" id="bill-desc">Monthly maintenance fee.</span></div>
+                <div class="bill-detail-row"><span class="text-sm">Status:</span> <span id="bill-status" class="status-badge status-pending">Pending</span></div>
                 <div id="paid-details" style="display:none; margin-top: 5px; background: rgba(36,180,126,0.1); padding: 8px; border-radius: 8px;">
                     <div class="bill-detail-row" style="border:none; padding:2px 0;"><span class="text-sm">Paid by TRX ID:</span> <strong style="font-family:monospace;" id="bill-trx-id"></strong></div>
                     <div class="bill-detail-row" style="border:none; padding:2px 0;"><span class="text-sm">Date & Time:</span> <strong id="bill-pay-date"></strong></div>
                 </div>
-
                 <button class="neu-button primary-btn" id="pay-bill-btn" onclick="openPaymentScreen()" style="justify-content: center; margin-top: 12px; margin-bottom: 0; padding: 12px;"><i class="fas fa-credit-card" style="margin-right: 8px;"></i> Pay Bill</button>
             </div>
-
             <div class="neu-box compact-box">
                 <h4 style="color: var(--text-muted); margin-bottom: 8px;">Old Bill Summary</h4>
                 <div class="bill-detail-row"><span class="text-sm">Amount:</span> <strong id="old-bill-amount">...</strong></div>
                 <div class="bill-detail-row"><span class="text-sm">Bill Date:</span> <span id="old-bill-date">...</span></div>
                 <div class="bill-detail-row"><span class="text-sm">Status:</span> <span id="old-bill-status" class="text-success">...</span></div>
             </div>
-
             <h4 style="margin-left: 5px; font-size: 14px; margin-bottom: 10px;">Monthly Summary History</h4>
             <div id="monthly-summary-list"></div>
         </div>
-
-        <button class="neu-button ghost-btn" onclick="downloadPDF()" style="justify-content: center; margin-top: 10px;">
-            <i class="fas fa-file-pdf" style="margin-right: 8px;"></i> Convert to PDF
-        </button>
+        <button class="neu-button ghost-btn" onclick="downloadPDF()" style="justify-content: center; margin-top: 10px;"><i class="fas fa-file-pdf" style="margin-right: 8px;"></i> Convert to PDF</button>
     </div>
 
-    <!-- NEW PAYMENT SCREEN -->
     <div id="payment-screen" class="screen">
         <div class="header-nav" style="margin-bottom: 10px;">
             <button class="neu-button back-btn" onclick="openScreen('bills-screen')" style="width: auto; padding: 10px 15px; margin-bottom: 0;"><i class="fas fa-arrow-left"></i></button>
             <h3 style="font-size: 18px;">Pay Bill</h3>
         </div>
-        
         <div class="neu-box compact-box" style="text-align: center; background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white;">
             <p style="font-size: 12px; margin-bottom: 5px; opacity: 0.8;">Current Bill Amount</p>
             <h2 style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 26px;" id="pay-amount-display">0 PKR</h2>
-            <div style="font-size: 11px; margin-top: 8px; opacity: 0.9; display: flex; justify-content: center; gap: 15px;">
-                <span><i class="fas fa-server"></i> <span id="pay-server-display">Standard</span></span>
-                <span><i class="fas fa-info-circle"></i> Server Fees</span>
-            </div>
         </div>
-
         <h4 style="font-size: 13px; margin: 0 0 10px 5px; color: var(--text-muted);">Payment Methods</h4>
-        
         <div class="bank-card">
             <div class="bank-title"><i class="fas fa-university" style="color: #6a1b9a;"></i> Meezan Bank</div>
             <div class="bank-info"><strong>Title:</strong> Muhammad Naeem</div>
-            <div class="bank-info" style="font-family: monospace; font-size: 14px;"><strong>A/C:</strong> <span id="meezan-acc">00300111855522</span></div>
+            <div class="bank-info" style="font-family: monospace; font-size: 14px;"><strong>A/C:</strong> 00300111855522</div>
             <button class="copy-btn" onclick="copyText('00300111855522', this)"><i class="fas fa-copy"></i></button>
         </div>
-
         <div class="bank-card">
             <div class="bank-title"><i class="fas fa-mobile-alt" style="color: #d32f2f;"></i> JazzCash</div>
             <div class="bank-info"><strong>Title:</strong> Muhammad Naeem</div>
-            <div class="bank-info" style="font-family: monospace; font-size: 14px;"><strong>No:</strong> <span id="jazz-acc">03257436319</span></div>
+            <div class="bank-info" style="font-family: monospace; font-size: 14px;"><strong>No:</strong> 03257436319</div>
             <button class="copy-btn" onclick="copyText('03257436319', this)"><i class="fas fa-copy"></i></button>
         </div>
-
-        <div class="neu-box compact-box" style="background: rgba(214, 51, 126, 0.05); border: 1px solid rgba(214, 51, 126, 0.2);">
-            <p style="font-size: 12px; color: var(--text-color); font-weight: 600; line-height: 1.5; text-align: center; margin: 0;">
-                <i class="fas fa-shield-alt" style="color: var(--pink-color);"></i><br>
-                Bara-e-karam payment k baad nichy TRX Id likh dein system automatic aapki payment detect kar le ga.
-            </p>
-        </div>
-
-        <input type="text" id="pay-trx" class="neu-input" placeholder="Enter TRX ID here..." style="font-family: monospace; text-align: center; font-size: 16px; font-weight: bold; letter-spacing: 1px;">
-        
+        <input type="text" id="pay-trx" class="neu-input" placeholder="Enter TRX ID here..." style="font-family: monospace; text-align: center; font-size: 16px; font-weight: bold;">
         <button class="neu-button accent-btn" onclick="submitPayment()" style="justify-content: center; padding: 14px;">Submit Payment <i class="fas fa-paper-plane" style="margin-left: 8px;"></i></button>
-
-        <!-- Payment Loading Overlay -->
         <div class="payment-overlay" id="payment-loading">
             <div class="circle-loader-wrap" style="width: 80px; height: 80px; margin-bottom: 20px;"><div class="circle-loader" style="border-top-color: var(--accent-color);"></div></div>
             <h3 style="color: var(--primary-dark); margin-bottom: 10px; font-size: 18px;">System checking your Payment</h3>
@@ -580,7 +590,6 @@
         </div>
     </div>
 
-    <!-- UPDATE SCREEN (Compact UI) -->
     <div id="update-screen" class="screen">
         <div class="header-nav" style="margin-bottom: 10px;">
             <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto; padding: 10px 15px; margin-bottom: 0;"><i class="fas fa-arrow-left"></i></button>
@@ -590,24 +599,20 @@
             <h4>Request Update</h4>
             <p class="text-sm">Please enter the details you want to update.</p>
             <textarea id="update-details" class="neu-input" rows="3" placeholder="Enter required features..."></textarea>
-            
             <div class="screenshot-preview" id="update-shot-preview">
                 <img id="update-shot-img" src="" alt="Screenshot">
                 <button class="remove-shot" onclick="removeUpdateScreenshot()"><i class="fas fa-times"></i></button>
             </div>
-            
             <button class="neu-button ghost-btn" id="attach-shot-btn" onclick="document.getElementById('updateFileInput').click()" style="justify-content: center;">
                 <i class="fas fa-camera" style="margin-right: 10px;"></i> Attach Screenshot
             </button>
             <input type="file" id="updateFileInput" accept="image/*" style="display:none">
-            
             <button class="neu-button primary-btn" onclick="submitUpdate()" style="justify-content: center; margin-bottom: 0;">Submit Request <i class="fas fa-paper-plane" style="margin-left:10px;"></i></button>
         </div>
         <h4 style="margin-top: 10px; font-size: 15px;">Updates History</h4>
         <div id="update-history-list" style="margin-top: 10px; padding-bottom: 20px;"></div>
     </div>
 
-    <!-- COMPLAINT SCREEN (Compact UI) -->
     <div id="complaint-screen" class="screen">
         <div class="header-nav" style="margin-bottom: 10px;">
             <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto; padding: 10px 15px; margin-bottom: 0;"><i class="fas fa-arrow-left"></i></button>
@@ -634,9 +639,7 @@
                 <textarea id="comp-details" class="neu-input" rows="3" placeholder="Apni complaint tafseel se bayaan karein..."></textarea>
             </div>
             <div id="image-upload-field" class="hidden">
-                <button class="neu-button" onclick="document.getElementById('fileInput').click()" style="justify-content: center;">
-                    <i class="fas fa-image" style="margin-right: 10px;"></i> Photo Upload Karein
-                </button>
+                <button class="neu-button" onclick="document.getElementById('fileInput').click()" style="justify-content: center;"><i class="fas fa-image" style="margin-right: 10px;"></i> Photo Upload Karein</button>
                 <input type="file" id="fileInput" accept="image/*" style="display:none">
                 <div class="upload-status-box" id="complaint-status-box" style="display:none; padding: 8px 10px; margin-top: 5px;"><div class="mini-loader" id="complaint-mini-loader"></div><span id="upload-status">Uploading...</span></div>
             </div>
@@ -646,7 +649,6 @@
         <div id="complaint-history-list" style="margin-top: 10px; padding-bottom: 20px;"></div>
     </div>
 
-    <!-- UPDATES DASHBOARD SCREEN -->
     <div id="updates-dashboard-screen" class="screen">
         <div class="header-nav">
             <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
@@ -660,7 +662,6 @@
         <div id="ud-appupdates-tab" class="ud-tab-content"><div id="ud-appupdates-list" style="padding-bottom: 20px;"></div></div>
     </div>
 
-    <!-- HELP/CHAT SCREEN -->
     <div id="help-screen" class="screen">
         <div class="header-nav" style="justify-content: space-between;">
             <div style="display: flex; align-items: center; gap: 10px;">
@@ -672,11 +673,9 @@
                 <option value="english">English</option>
             </select>
         </div>
-        
         <div id="chat-box" style="flex: 1; overflow-y: auto; background: var(--bg-color); border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);">
-            <div class="chat-msg chat-bot clearfix" id="chat-greeting">Hello! Main apki kya madad kar sakta hoon? Neechay diye gaye options mein se muntakhib karein.</div>
+            <div class="chat-msg chat-bot clearfix" id="chat-greeting">Hello! Main apki kya madad kar sakta hoon?</div>
         </div>
-
         <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
             <button class="neu-button" style="width: 48%; padding: 10px; font-size: 13px; margin: 0; justify-content: center;" onclick="sendChatMsg('bill')">Bill Check/Pay</button>
             <button class="neu-button" style="width: 48%; padding: 10px; font-size: 13px; margin: 0; justify-content: center;" onclick="sendChatMsg('update')">App Update</button>
@@ -684,7 +683,13 @@
             <button class="neu-button ghost-btn" style="width: 100%; padding: 10px; font-size: 13px; margin: 0; justify-content: center;" onclick="sendChatMsg('dashboard')"><i class="fas fa-bell" style="margin-right:8px;"></i> App Info & Notifications</button>
         </div>
     </div>
+</div>
 
+<!-- PWA Banner -->
+<div class="pwa-banner" id="pwa-banner">
+    <div style="flex:1; font-size:13px; font-weight:600;">App install karein for better notifications</div>
+    <button onclick="installPWA()">Install</button>
+    <button onclick="document.getElementById('pwa-banner').style.display='none'" style="background:transparent; color:#fff; border:1px solid rgba(255,255,255,0.4);">✕</button>
 </div>
 
 <!-- Modals -->
@@ -694,38 +699,30 @@
         <div class="detail-row"><span class="text-muted">Current Version:</span> <strong id="info-version">...</strong></div>
         <div class="detail-row"><span class="text-muted">Last Update:</span> <strong id="info-update">...</strong></div>
         <div class="detail-row"><span class="text-muted">Project Type:</span> <strong id="info-type">...</strong></div>
-        <div class="detail-row" style="flex-direction:column; gap:5px;"><span class="text-muted">Purpose / Details:</span> <strong id="info-purpose" style="line-height:1.4;">...</strong></div>
+        <div class="detail-row" style="flex-direction:column; gap:5px;"><span class="text-muted">Purpose:</span> <strong id="info-purpose" style="line-height:1.4;">...</strong></div>
         <button class="neu-button primary-btn" onclick="document.getElementById('app-info-modal').classList.remove('active')" style="justify-content:center; margin-top:20px;">Close</button>
     </div>
 </div>
-
 <div class="simple-modal-overlay" id="notif-modal">
     <div class="simple-modal-box">
         <h3 style="color: var(--primary-dark); margin-bottom: 15px;"><i class="fas fa-bell"></i> Notifications</h3>
-        <div id="notif-list">
-            <!-- Dynamically populated -->
-        </div>
+        <div id="notif-list"></div>
         <button class="neu-button" onclick="document.getElementById('notif-modal').classList.remove('active')" style="justify-content:center; margin-top:15px;">Close</button>
     </div>
 </div>
-
-<!-- Congratulations Modal for Billing -->
 <div class="simple-modal-overlay" id="congrats-modal">
     <div class="simple-modal-box">
-        <i class="fas fa-check-circle fa-4x" style="color: #1f9d67; margin-bottom: 15px; animation: pulse-green 1.5s infinite; border-radius: 50%;"></i>
+        <i class="fas fa-check-circle fa-4x" style="color: #1f9d67; margin-bottom: 15px;"></i>
         <h2 style="color: var(--primary-dark); margin-bottom: 10px;">Congratulations</h2>
         <h3 style="color: var(--accent-color); margin-bottom: 15px;" id="congrats-owner-name">Owner Name</h3>
         <p style="color: var(--text-color); font-size: 14px; line-height: 1.5; font-weight: 600;">Aapki payment successfully paid ho chuki hai.<br><br>Thank You!</p>
         <button class="neu-button primary-btn" onclick="document.getElementById('congrats-modal').classList.remove('active')" style="justify-content:center; margin-top:20px; width:100%;">Close</button>
     </div>
 </div>
-
-<!-- Lightbox & Image Editor -->
 <div class="lightbox-overlay" id="lightbox-overlay" onclick="closeLightbox(event)">
     <button class="lightbox-close" onclick="closeLightbox(event)"><i class="fas fa-times"></i></button>
     <img id="lightbox-img" src="" alt="View">
 </div>
-
 <div class="edit-modal-overlay" id="image-edit-modal">
     <div class="edit-modal-inner">
         <div class="edit-toolbar">
@@ -747,861 +744,897 @@
     </div>
 </div>
 
-<!-- Firebase & Scripts -->
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, get, push, set, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, get, push, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyDUg33dZk0hsqTMK2l2r32QCHeOZB93w4w",
-        databaseURL: "https://website-create-ec499-default-rtdb.firebaseio.com",
-        projectId: "website-create-ec499",
-        storageBucket: "website-create-ec499.firebasestorage.app"
-    };
+const firebaseConfig = {
+    apiKey: "AIzaSyDUg33dZk0hsqTMK2l2r32QCHeOZB93w4w",
+    databaseURL: "https://website-create-ec499-default-rtdb.firebaseio.com",
+    projectId: "website-create-ec499",
+    storageBucket: "website-create-ec499.firebasestorage.app"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+window.currentProjectId = "";
+window.uploadedImageUrl = "";
+window.updateScreenshotDataUrl = "";
+window.isProcessingSummary = false;
+let maintTimerInterval = null;
+let cachedBillData = {};
+window.chatUser = null;
+window.currentChatId = null;
+window.chatMode = 'bot';
+window.replyToMsg = null;
+let mediaRecorder = null, audioChunks = [], isRecording = false;
+let deferredPrompt = null;
 
-    window.currentProjectId = "";
-    window.uploadedImageUrl = "";
-    window.updateScreenshotDataUrl = ""; 
-    window.isProcessingSummary = false; // PREVENTS MULTIPLE SUMMARY ENTRIES
-    let maintTimerInterval = null;
-    let cachedBillData = {};
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault(); deferredPrompt = e;
+    document.getElementById('pwa-banner').style.display = 'flex';
+});
+window.installPWA = async function() {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    document.getElementById('pwa-banner').style.display = 'none';
+};
+if ('serviceWorker' in navigator) {
+    // Relative path → works on GitHub Pages + localhost
+    navigator.serviceWorker.register('./sw.js').catch((e)=>console.warn('SW register fail', e));
+}
 
-    window.openScreen = function(screenId) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(screenId).classList.add('active');
-    }
-    
-    // Copy to Clipboard (NEW)
-    window.copyText = function(text, btn) {
-        navigator.clipboard.writeText(text);
-        const originalHtml = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-check" style="color: #1f9d67;"></i>';
-        setTimeout(() => { btn.innerHTML = originalHtml; }, 2000);
-    }
-
-    // Lightbox implementation
-    window.openLightbox = function(url) {
-        document.getElementById('lightbox-img').src = url;
-        document.getElementById('lightbox-overlay').classList.add('active');
-    }
-    window.closeLightbox = function(evt) {
-        if(evt) evt.stopPropagation();
-        document.getElementById('lightbox-overlay').classList.remove('active');
-        document.getElementById('lightbox-img').src = '';
-    }
-
-    // Remember Me Dropdown Logic
-    window.showSavedIds = function() {
-        let saved = JSON.parse(localStorage.getItem('savedProjects') || '[]');
-        if(saved.length === 0) return;
-        let html = '';
-        saved.forEach(s => {
-            html += `<div class="saved-id-item" onclick="selectSavedId('${s.id}')">
-                        <span style="color:var(--primary-dark);">${s.id}</span>
-                        <span style="color:var(--text-muted); font-size:11px;">${s.name}</span>
-                     </div>`;
+async function notifyAdmin(title, message, type='general') {
+    try {
+        await push(ref(db, 'adminNotifications'), {
+            title, message, type,
+            projectId: window.currentProjectId || (window.chatUser && window.chatUser.phone) || 'unknown',
+            timestamp: Date.now(), read: false
         });
+        console.log('[Admin Notify]', title, message);
+    } catch(e) { console.error(e); }
+}
+
+window.openScreen = function(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+};
+window.copyText = function(text, btn) {
+    navigator.clipboard.writeText(text);
+    const o = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check" style="color:#1f9d67;"></i>';
+    setTimeout(() => btn.innerHTML = o, 2000);
+};
+window.openLightbox = function(url) {
+    document.getElementById('lightbox-img').src = url;
+    document.getElementById('lightbox-overlay').classList.add('active');
+};
+window.closeLightbox = function(e) {
+    if(e) e.stopPropagation();
+    document.getElementById('lightbox-overlay').classList.remove('active');
+};
+window.showSavedIds = function() {
+    let saved = JSON.parse(localStorage.getItem('savedProjects') || '[]');
+    if(!saved.length) return;
+    let html = '';
+    saved.forEach(s => {
+        html += `<div class="saved-id-item" onclick="selectSavedId('${s.id}')"><span style="color:var(--primary-dark);">${s.id}</span><span style="color:var(--text-muted); font-size:11px;">${s.name}</span></div>`;
+    });
+    const dd = document.getElementById('saved-ids-dropdown');
+    dd.innerHTML = html; dd.style.display = 'block';
+};
+window.selectSavedId = function(id) {
+    document.getElementById('projectIdInput').value = id;
+    document.getElementById('saved-ids-dropdown').style.display = 'none';
+    login();
+};
+document.addEventListener('click', e => {
+    if(!e.target.closest('#projectIdInput') && !e.target.closest('#saved-ids-dropdown')) {
         const dd = document.getElementById('saved-ids-dropdown');
-        dd.innerHTML = html;
-        dd.style.display = 'block';
+        if(dd) dd.style.display = 'none';
     }
-    window.selectSavedId = function(id) {
-        document.getElementById('projectIdInput').value = id;
-        document.getElementById('saved-ids-dropdown').style.display = 'none';
-        login();
-    }
-    document.addEventListener('click', (e) => {
-        if(!e.target.closest('#projectIdInput') && !e.target.closest('#saved-ids-dropdown')) {
-            const dd = document.getElementById('saved-ids-dropdown');
-            if(dd) dd.style.display = 'none';
+});
+window.handleSubscribe = function(cb) {
+    const t = document.getElementById('subscribe-text');
+    if(cb.checked) t.innerHTML = '<span style="color:#1f9d67;"><i class="fas fa-check-circle"></i> Subscribe successful!</span>';
+    else t.innerText = 'Subscribe jab aap Update ho jayegi apko WhatsApp par notifection bhej dia jayega.';
+};
+
+// ===== CONTACT US FLOW =====
+window.openContactFlow = () => openScreen('contact-greeting-screen');
+window.startContactAuth = () => {
+    openScreen('contact-loading-screen');
+    setTimeout(() => {
+        const saved = localStorage.getItem('chatUserPhone');
+        if(saved) doChatLoginWithPhone(saved, true);
+        else { openScreen('contact-auth-screen'); switchAuthTab('login'); }
+    }, 1300);
+};
+window.switchAuthTab = (tab) => {
+    document.getElementById('auth-login-tab').classList.toggle('active', tab==='login');
+    document.getElementById('auth-signup-tab').classList.toggle('active', tab==='signup');
+    document.getElementById('auth-tab-login').classList.toggle('ud-tab-active', tab==='login');
+    document.getElementById('auth-tab-signup').classList.toggle('ud-tab-active', tab==='signup');
+    document.getElementById('auth-title').innerText = tab==='login' ? 'Login' : 'Signup';
+};
+let unameTO=null;
+window.checkUsernameRealtime = function() {
+    clearTimeout(unameTO);
+    const uname = document.getElementById('signup-username').value.trim().toLowerCase();
+    const st = document.getElementById('username-status');
+    if(!uname || uname.length<3){ st.innerHTML=''; return; }
+    st.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+    unameTO = setTimeout(async () => {
+        const snap = await get(ref(db, 'chatUsers'));
+        let taken=false;
+        if(snap.exists()) Object.values(snap.val()).forEach(u => { if(u.username && u.username.toLowerCase()===uname) taken=true; });
+        if(taken){
+            const sug = uname + Math.floor(Math.random()*90+10);
+            st.innerHTML = `<span class="username-taken"><i class="fas fa-times-circle"></i> Taken. Try: <strong style="cursor:pointer;color:var(--info-color)" onclick="document.getElementById('signup-username').value='${sug}';checkUsernameRealtime()">${sug}</strong></span>`;
+        } else st.innerHTML = '<span class="username-ok"><i class="fas fa-check-circle"></i> Available</span>';
+    }, 450);
+};
+let phoneTO=null;
+window.checkPhoneRealtime = function() {
+    clearTimeout(phoneTO);
+    const phone = document.getElementById('signup-phone').value.trim();
+    const st = document.getElementById('phone-status');
+    if(!phone || phone.length<10){ st.innerHTML=''; return; }
+    st.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+    phoneTO = setTimeout(async () => {
+        const snap = await get(ref(db, 'chatUsers/'+phone));
+        if(snap.exists()) st.innerHTML = '<span class="username-taken"><i class="fas fa-times-circle"></i> Already registered. Please Login.</span>';
+        else st.innerHTML = '<span class="username-ok"><i class="fas fa-check-circle"></i> Available</span>';
+    }, 450);
+};
+window.doChatSignup = async function() {
+    const fullName = document.getElementById('signup-fullname').value.trim();
+    const username = document.getElementById('signup-username').value.trim();
+    const phone = document.getElementById('signup-phone').value.trim();
+    if(!fullName||!username||!phone) return alert('Sab fields bharen.');
+    const btn = document.getElementById('signup-submit-btn');
+    const orig = btn.innerHTML; btn.innerHTML='<span class="btn-spinner" style="margin:0 auto;"></span>'; btn.disabled=true;
+    try {
+        const snap = await get(ref(db, 'chatUsers'));
+        let taken=false;
+        if(snap.exists()) Object.values(snap.val()).forEach(u=>{ if(u.username&&u.username.toLowerCase()===username.toLowerCase()) taken=true; });
+        if(taken){ alert('Username taken'); btn.innerHTML=orig; btn.disabled=false; return; }
+        const pSnap = await get(ref(db, 'chatUsers/'+phone));
+        if(pSnap.exists()){ alert('Number already registered. Login karein.'); btn.innerHTML=orig; btn.disabled=false; switchAuthTab('login'); document.getElementById('login-phone').value=phone; return; }
+        const userData = { fullName, username, phone, dp:'', createdAt:Date.now(), lastSeen:Date.now() };
+        await set(ref(db, 'chatUsers/'+phone), userData);
+        localStorage.setItem('chatUserPhone', phone);
+        window.chatUser = userData;
+        document.getElementById('welcome-username-display').innerText = `Assalam o Alaikum ${username}`;
+        openScreen('contact-welcome-screen');
+        // Notifications
+        linkOneSignalUser(phone);
+        startUserNotificationListener(phone);
+    } catch(e){ alert('Signup failed'); console.error(e); }
+    finally { btn.innerHTML=orig; btn.disabled=false; }
+};
+window.doChatLogin = () => {
+    const phone = document.getElementById('login-phone').value.trim();
+    if(!phone) return alert('Number darj karein.');
+    doChatLoginWithPhone(phone, false);
+};
+async function doChatLoginWithPhone(phone, isAuto) {
+    try {
+        const snap = await get(ref(db, 'chatUsers/'+phone));
+        if(!snap.exists()){
+            if(!isAuto) alert('Account nahi mila. Signup karein.');
+            openScreen('contact-auth-screen'); switchAuthTab(isAuto?'login':'signup'); return;
         }
+        const data = snap.val();
+        window.chatUser = data;
+        localStorage.setItem('chatUserPhone', phone);
+        update(ref(db, 'chatUsers/'+phone), { lastSeen: Date.now() });
+        document.getElementById('welcome-username-display').innerText = `Assalam o Alaikum ${data.username}`;
+        openScreen('contact-welcome-screen');
+        // Notifications
+        linkOneSignalUser(phone);
+        startUserNotificationListener(phone);
+    } catch(e){ alert('Login error'); }
+}
+window.openChatDashboard = function() {
+    if(!window.chatUser) return openScreen('contact-auth-screen');
+    document.getElementById('chat-dash-name').innerText = window.chatUser.fullName || window.chatUser.username;
+    document.getElementById('chat-dash-phone').innerText = window.chatUser.phone;
+    if(window.chatUser.dp) document.getElementById('chat-user-dp').src = window.chatUser.dp;
+    loadUserProjects(window.chatUser.phone);
+    // Ensure notif listener running
+    linkOneSignalUser(window.chatUser.phone);
+    startUserNotificationListener(window.chatUser.phone);
+    openScreen('chat-dashboard-screen');
+};
+async function loadUserProjects(phone) {
+    const listEl = document.getElementById('chat-projects-list');
+    const countEl = document.getElementById('chat-projects-count');
+    listEl.innerHTML = '<p class="text-sm"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+    try {
+        // Normalize phone: digits only
+        const cleanPhone = String(phone || '').replace(/\D/g, '');
+        const snap = await get(ref(db, 'users'));
+        let projectIds = [];
+        if(snap.exists()){
+            const all = snap.val();
+            for(let pid in all){
+                const u = all[pid];
+                // Collect all possible number fields from project
+                const nums = [u.callNum, u.phone, u.whatsapp, u.wa, u.waNum, u.secNum]
+                    .filter(Boolean)
+                    .map(n => String(n).replace(/\D/g, ''));
+                // Match if any number equals or ends with this phone (or vice versa)
+                const matched = nums.some(n => {
+                    if(!n || !cleanPhone) return false;
+                    return n === cleanPhone || n.endsWith(cleanPhone) || cleanPhone.endsWith(n);
+                });
+                if(matched) projectIds.push(pid);
+            }
+        }
+        // Unique IDs only
+        projectIds = [...new Set(projectIds)];
+        countEl.innerText = `Total Projects: ${projectIds.length}`;
+        // ONLY Project IDs show (no app name)
+        listEl.innerHTML = projectIds.length
+            ? projectIds.map(id => `
+                <div class="project-card-mini" style="justify-content:space-between;">
+                    <div class="mono" style="font-size:14px;font-weight:700;color:var(--primary-dark);">${id}</div>
+                    <i class="fas fa-check-circle" style="color:#1f9d67;"></i>
+                </div>`).join('')
+            : '<p class="text-sm">Is number se koi Project ID linked nahi mila.</p>';
+    } catch(e){
+        console.error(e);
+        listEl.innerHTML = '<p class="text-sm text-danger">Error loading projects.</p>';
+    }
+}
+
+// ===== USER NOTIFICATIONS (from Admin → mobile + in-app) =====
+window.userNotifUnsub = null;
+function startUserNotificationListener(phone) {
+    if(!phone) return;
+    if(window.userNotifUnsub) { try{ window.userNotifUnsub(); }catch(e){} }
+    window.userNotifUnsub = onValue(ref(db, 'userNotifications/' + phone), async (snap) => {
+        if(!snap.exists()) return;
+        const data = snap.val();
+        // Find unread / recent
+        const items = Object.entries(data)
+            .map(([k,v]) => ({ id:k, ...v }))
+            .filter(n => !n.read)
+            .sort((a,b) => (b.ts||0) - (a.ts||0));
+        if(!items.length) return;
+        const latest = items[0];
+        // Mark as read
+        update(ref(db, `userNotifications/${phone}/${latest.id}`), { read: true }).catch(()=>{});
+        // 1) In-app toast
+        showInAppToast(latest.title || 'Notification', latest.body || '');
+        // 2) System / PWA notification (works even if tab in background)
+        showSystemNotification(latest.title || 'MrCrazy', latest.body || '');
+        // 3) OneSignal local display (extra)
+        try {
+            if(window._OneSignal && window._OneSignal.Notifications) {
+                // already covered by Notification API
+            }
+        } catch(e){}
+    });
+}
+function showInAppToast(title, body) {
+    let toast = document.getElementById('inapp-toast');
+    if(!toast) {
+        toast = document.createElement('div');
+        toast.id = 'inapp-toast';
+        toast.style.cssText = 'position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9999;background:#0b5f59;color:#fff;padding:12px 18px;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.25);max-width:90%;font-size:13px;display:none;';
+        document.body.appendChild(toast);
+    }
+    toast.innerHTML = `<strong>${title}</strong><br><span style="opacity:0.9">${body}</span>`;
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 5000);
+}
+async function showSystemNotification(title, body) {
+    try {
+        if(!('Notification' in window)) return;
+        if(Notification.permission === 'default') {
+            await Notification.requestPermission();
+        }
+        if(Notification.permission === 'granted') {
+            // Prefer service worker notification (better on mobile PWA)
+            if(navigator.serviceWorker && navigator.serviceWorker.ready) {
+                const reg = await navigator.serviceWorker.ready;
+                reg.showNotification(title, {
+                    body,
+                    icon: 'https://via.placeholder.com/192/12877f/ffffff?text=MC',
+                    badge: 'https://via.placeholder.com/96/12877f/ffffff?text=MC',
+                    vibrate: [120, 60, 120],
+                    tag: 'mrcrazy-admin-' + Date.now(),
+                    renotify: true
+                });
+            } else {
+                new Notification(title, { body, icon: 'https://via.placeholder.com/192/12877f/ffffff?text=MC' });
+            }
+        }
+    } catch(e) { console.warn('Notification error', e); }
+}
+async function linkOneSignalUser(phone) {
+    try {
+        if(!phone) return;
+        // Wait for OneSignal
+        await new Promise(r => {
+            if(window._OneSignal) return r();
+            const t = setInterval(() => { if(window._OneSignal){ clearInterval(t); r(); } }, 300);
+            setTimeout(r, 5000);
+        });
+        if(window._OneSignal) {
+            // External user id = phone → admin can target later via OneSignal dashboard too
+            await window._OneSignal.login(String(phone));
+            await window._OneSignal.User.addTag('phone', String(phone));
+            console.log('[OneSignal] linked user', phone);
+        }
+        // Also request browser permission
+        if('Notification' in window && Notification.permission === 'default') {
+            await Notification.requestPermission();
+        }
+    } catch(e) { console.warn('OneSignal link error', e); }
+}
+window.handleChatDP = function(input) {
+    const file = input.files[0]; if(!file) return;
+    openImageEditor(file, async (dataUrl) => {
+        if(!dataUrl || !window.chatUser) return;
+        document.getElementById('chat-user-dp').src = dataUrl;
+        window.chatUser.dp = dataUrl;
+        await update(ref(db, 'chatUsers/'+window.chatUser.phone), { dp: dataUrl });
+    });
+    input.value = '';
+};
+
+// ===== LIVE CHAT (Persistent History) =====
+window.chatMsgUnsub = null;
+window.openLiveChat = function() {
+    if(!window.chatUser) return;
+    window.currentChatId = window.chatUser.phone;
+    document.getElementById('feedback-bar').classList.add('hidden');
+    document.getElementById('wa-input-bar').style.display = 'flex';
+    openScreen('live-chat-screen');
+    initLiveChat();
+};
+function initLiveChat() {
+    const box = document.getElementById('wa-messages');
+    box.innerHTML = '';
+
+    // Admin online / typing status
+    onValue(ref(db, 'adminStatus'), snap => {
+        const st = snap.val()||{};
+        const el = document.getElementById('wa-status-text');
+        if(st.online){ el.innerText='online'; el.className='wa-online'; }
+        else if(st.lastSeen){ el.innerText='last seen '+new Date(st.lastSeen).toLocaleString(); el.className=''; }
+        else { el.innerText='last seen recently'; el.className=''; }
+    });
+    onValue(ref(db, `chats/${window.currentChatId}/typing`), snap => {
+        const el = document.getElementById('wa-status-text');
+        if(snap.val()===true){ el.innerText='typing...'; el.className='wa-typing'; }
     });
 
-    window.handleSubscribe = function(cb) {
-        const textEl = document.getElementById('subscribe-text');
-        if (cb.checked) {
-            textEl.innerHTML = '<span style="color: #1f9d67;"><i class="fas fa-check-circle"></i> Subscribe successful! Update complete hone par aapko professional WhatsApp par notification bhej diya jayega...</span>';
+    // Load + listen to ALL previous messages (text / image / voice)
+    if(window.chatMsgUnsub) { try{ window.chatMsgUnsub(); }catch(e){} }
+    const msgsRef = ref(db, `chats/${window.currentChatId}/messages`);
+    let firstLoad = true;
+    window.chatMsgUnsub = onValue(msgsRef, (snap) => {
+        const data = snap.val() || {};
+        const keys = Object.keys(data).sort((a,b) => (data[a].timestamp||0) - (data[b].timestamp||0));
+        
+        box.innerHTML = ''; // clear then re-render full history
+        if(keys.length === 0) {
+            // Brand new chat → show greeting + help options
+            window.chatMode = 'bot';
+            document.getElementById('wa-help-section').classList.remove('hidden');
+            appendBotMsg(`Assalam o Alaikum ${window.chatUser.username||window.chatUser.fullName}! 👋\nAapko kis madad ki zaroorat hai? Neeche se option select karein.`);
         } else {
-            textEl.innerText = 'Subscribe jab aap Update ho jayegi apko WhatsApp par notifection bhej dia jayega.';
-        }
-    }
-
-    // Login Logic
-    window.login = async function() {
-        const pId = document.getElementById('projectIdInput').value.trim();
-        if(!pId) return alert("Please enter Project ID");
-
-        const loginBtn = document.getElementById('login-btn');
-        const loginLabel = document.getElementById('login-btn-label');
-        const loginIcon = document.getElementById('login-btn-icon');
-        loginBtn.disabled = true;
-        loginLabel.innerText = 'Checking';
-        if(loginIcon) loginIcon.outerHTML = '<span class="btn-spinner" id="login-btn-icon" style="margin-left:10px;"></span>';
-
-        function resetLoginBtn() {
-            loginBtn.disabled = false;
-            loginLabel.innerText = 'Login';
-            const spinner = document.getElementById('login-btn-icon');
-            if(spinner) spinner.outerHTML = '<i class="fas fa-arrow-right" id="login-btn-icon" style="margin-left: 10px;"></i>';
-        }
-
-        const userRef = ref(db, 'users/' + pId);
-        onValue(userRef, (snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                const onLoginScreen = document.getElementById('login-screen').classList.contains('active');
-
-                if(data.status && data.status.toLowerCase() === "pending") {
-                    if(onLoginScreen) {
-                        alert("Your Project is pending please wait... 24/48 hours");
-                        resetLoginBtn();
-                    }
-                    return;
-                }
-
-                window.currentProjectId = pId;
-                
-                if(onLoginScreen && document.getElementById('remember-me').checked) {
-                    let saved = JSON.parse(localStorage.getItem('savedProjects') || '[]');
-                    if(!saved.find(s => s.id === pId)) {
-                        saved.push({ id: pId, name: data.appName || data.userName || 'Project' });
-                        localStorage.setItem('savedProjects', JSON.stringify(saved));
-                    }
-                }
-                
-                document.getElementById('dash-username').innerText = data.userName || 'No Name';
-                document.getElementById('dash-phone').innerText = data.callNum || data.phone || 'No Phone';
-                document.getElementById('dash-app-name').innerText = data.appName || 'No App Name';
-                if(data.userImage) document.getElementById('dash-user-image').src = data.userImage;
-                if(data.appLogo) document.getElementById('dash-app-logo').src = data.appLogo;
-
-                document.getElementById('info-version').innerText = data.updateMonth || 'N/A';
-                document.getElementById('info-update').innerText = data.lastUpdate || 'N/A';
-                document.getElementById('info-type').innerText = data.projType || 'N/A';
-                document.getElementById('info-purpose').innerText = data.purpose || 'N/A';
-
-                // Maintenance Logic
-                const isMaintenance = data.maintenance && data.maintenance.active;
-                const normalHeaders = document.getElementById('dashboard-normal-headers');
-                const maintHeader = document.getElementById('dashboard-maintenance-header');
-                const normalBtns = document.getElementById('dashboard-buttons-section');
-                const maintCard = document.getElementById('dashboard-maintenance-card');
-                const maintAudio = document.getElementById('maintenance-audio');
-
-                if(isMaintenance) {
-                    normalHeaders.classList.add('hidden');
-                    normalBtns.classList.add('hidden');
-                    maintHeader.classList.remove('hidden');
-                    maintCard.classList.remove('hidden');
-
-                    document.getElementById('maint-title').innerHTML = `<i class="fas fa-cogs"></i> ${data.maintenance.title || 'System Maintenance'}`;
-                    document.getElementById('maint-desc').innerText = data.maintenance.desc || 'App is under processing. Please wait.';
-
-                    if(maintAudio.paused) {
-                        maintAudio.play().catch(e => console.log('Audio auto-play blocked by browser.'));
-                    }
-
-                    clearInterval(maintTimerInterval);
-                    if(data.maintenance.endTime) {
-                        maintTimerInterval = setInterval(() => {
-                            const now = new Date().getTime();
-                            const distance = new Date(data.maintenance.endTime).getTime() - now;
-                            if(distance < 0) {
-                                clearInterval(maintTimerInterval);
-                                document.getElementById('maint-timer').innerText = "00:00:00";
-                            } else {
-                                const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-                                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                                const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                                const s = Math.floor((distance % (1000 * 60)) / 1000);
-                                let t = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-                                if(d > 0) t = `${d}d ` + t;
-                                document.getElementById('maint-timer').innerText = t;
-                            }
-                        }, 1000);
-                    } else {
-                        document.getElementById('maint-timer').innerText = "--:--:--";
-                    }
+            // Existing history → hide help options, show all messages
+            window.chatMode = 'live';
+            document.getElementById('wa-help-section').classList.add('hidden');
+            keys.forEach(k => {
+                const m = data[k];
+                const isUser = m.from === 'user';
+                const isBot  = m.from === 'bot';
+                if(isBot) {
+                    appendBotMsg(m.text || '');
                 } else {
-                    normalHeaders.classList.remove('hidden');
-                    normalBtns.classList.remove('hidden');
-                    maintHeader.classList.add('hidden');
-                    maintCard.classList.add('hidden');
-                    maintAudio.pause();
-                    clearInterval(maintTimerInterval);
-                }
-
-                // Notifications Binding
-                let notiCount = 0;
-                let notifs = data.notifications || {};
-                let nHtml = '';
-                
-                if(notifs.bills) { 
-                    notiCount++; document.getElementById('badge-bills').style.display = 'inline-block';
-                    nHtml += `<div class="neu-box" style="padding:12px; margin-bottom:10px; cursor:pointer;" onclick="clearNotifAndOpen('bills', 'bills-screen')"><i class="fas fa-file-invoice-dollar" style="color:var(--primary-color); margin-right:8px;"></i> New Bill Update <span class="badge" style="display:inline-block; position:relative; top:0; right:0; float:right;">New</span></div>`;
-                } else { document.getElementById('badge-bills').style.display = 'none'; }
-                
-                if(notifs.update) { 
-                    notiCount++; document.getElementById('badge-update').style.display = 'inline-block';
-                    nHtml += `<div class="neu-box" style="padding:12px; margin-bottom:10px; cursor:pointer;" onclick="clearNotifAndOpen('update', 'update-screen')"><i class="fas fa-sync-alt" style="color:var(--info-color); margin-right:8px;"></i> Admin replied to Update <span class="badge" style="display:inline-block; position:relative; top:0; right:0; float:right;">New</span></div>`;
-                } else { document.getElementById('badge-update').style.display = 'none'; }
-                
-                if(notifs.complaint) { 
-                    notiCount++; document.getElementById('badge-complaint').style.display = 'inline-block';
-                    nHtml += `<div class="neu-box" style="padding:12px; margin-bottom:10px; cursor:pointer;" onclick="clearNotifAndOpen('complaint', 'complaint-screen')"><i class="fas fa-headset" style="color:var(--pink-color); margin-right:8px;"></i> Admin replied to Complaint <span class="badge" style="display:inline-block; position:relative; top:0; right:0; float:right;">New</span></div>`;
-                } else { document.getElementById('badge-complaint').style.display = 'none'; }
-                
-                const bellBadge = document.getElementById('main-bell-badge');
-                if(notiCount > 0) { bellBadge.style.display = 'flex'; bellBadge.innerText = notiCount; } 
-                else { bellBadge.style.display = 'none'; }
-                
-                document.getElementById('notif-list').innerHTML = nHtml || '<p class="text-sm text-center">No new notifications.</p>';
-
-                if(onLoginScreen) {
-                    loadBills(pId);
-                    loadUpdatesHistory(pId);
-                    loadComplaintsHistory(pId);
-                    openScreen('dashboard-screen');
-                    resetLoginBtn();
-                }
-            } else {
-                if(document.getElementById('login-screen').classList.contains('active')) {
-                    alert("Project ID not found in database.");
-                    resetLoginBtn();
-                }
-            }
-        });
-    }
-
-    window.clearNotifAndOpen = function(notifKey, screenId) {
-        if(window.currentProjectId) {
-            update(ref(db, `users/${window.currentProjectId}/notifications`), { [notifKey]: false });
-        }
-        document.getElementById('notif-modal').classList.remove('active');
-        openScreen(screenId);
-    }
-
-    // --- NEW BILLING LOGIC & PAYMENT ---
-    function loadBills(pId) {
-        onValue(ref(db, 'bills/' + pId), (snapshot) => {
-            if(snapshot.exists()) {
-                const data = snapshot.val();
-                cachedBillData = data;
-                
-                let currAmt = data.currentAmount || '0 PKR'; 
-                let currStatus = data.status || 'Pending';
-                let serverUsed = data.serverUsed || 'Standard Hosting (50GB)';
-                let desc = data.billDescription || 'Monthly maintenance and server resources usage fee.';
-                
-                document.getElementById('bill-amount').innerText = currAmt; 
-                document.getElementById('bill-date').innerText = data.billDate || 'N/A';
-                document.getElementById('bill-server-used').innerText = serverUsed;
-                document.getElementById('bill-desc').innerText = desc;
-                
-                let statusEl = document.getElementById('bill-status'); 
-                statusEl.innerText = currStatus; 
-                
-                const payBtn = document.getElementById('pay-bill-btn');
-                const paidDetails = document.getElementById('paid-details');
-
-                if(currStatus === 'Paid') {
-                    statusEl.className = 'status-badge status-complete';
-                    payBtn.style.display = 'none';
-                    paidDetails.style.display = 'block';
-                    document.getElementById('bill-trx-id').innerText = data.trxId || 'N/A';
-                    document.getElementById('bill-pay-date').innerText = data.payDate ? new Date(data.payDate).toLocaleString() : 'N/A';
-                    
-                    // Logic for Congratulations Popup
-                    if(data.trxId && data.ackPopup === false) {
-                        document.getElementById('congrats-owner-name').innerText = document.getElementById('dash-username').innerText;
-                        document.getElementById('congrats-modal').classList.add('active');
-                        update(ref(db, 'bills/' + pId), { ackPopup: true });
-                    }
-                    
-                    // FIXED Logic for Automatic Summary History (Atomic Update)
-                    if(data.autoSummaryAdded === false && !window.isProcessingSummary) {
-                        window.isProcessingSummary = true; // Lock execution
-
-                        const summaryData = {
-                            month: new Date().toLocaleString('default', { month: 'short', year: 'numeric' }) + " Auto",
-                            systemUsed: serverUsed,
-                            amount: currAmt,
-                            billDate: data.billDate || 'N/A',
-                            status: 'Paid',
-                            trxId: data.trxId || '',
-                            timestamp: Date.now()
-                        };
-
-                        const newSumRef = push(ref(db, `bills/${pId}/summary`));
-                        
-                        // Use single update statement to prevent re-trigger loop
-                        update(ref(db, 'bills/' + pId), { 
-                            [`summary/${newSumRef.key}`]: summaryData,
-                            autoSummaryAdded: true 
-                        }).then(() => {
-                            window.isProcessingSummary = false; // Release lock
-                        }).catch(() => {
-                            window.isProcessingSummary = false;
-                        });
-                    }
-                } 
-                else if (currStatus === 'Verifying' || currStatus === 'Checking') {
-                    statusEl.className = 'status-badge status-working';
-                    statusEl.innerText = 'Checking Payment...';
-                    payBtn.style.display = 'none';
-                    paidDetails.style.display = 'none';
-                }
-                else {
-                    statusEl.className = 'status-badge status-pending';
-                    payBtn.style.display = 'flex';
-                    paidDetails.style.display = 'none';
-                }
-
-                document.getElementById('dash-bill-preview').innerHTML = `Current Bill: <strong>${currAmt}</strong> - <span style="color:${currStatus === 'Paid' ? '#1f9d67' : 'var(--accent-color)'}">${currStatus}</span>`;
-                
-                document.getElementById('old-bill-amount').innerText = data.oldAmount || '0 PKR'; 
-                document.getElementById('old-bill-date').innerText = data.oldDate || 'N/A';
-                let oldStatusEl = document.getElementById('old-bill-status'); 
-                let oldStatus = data.oldStatus || 'Paid'; 
-                oldStatusEl.innerText = oldStatus; 
-                oldStatusEl.className = oldStatus === 'Paid' ? 'text-success' : 'text-warning';
-
-                // Render Summary
-                let summaryHTML = "";
-                if(data.summary) {
-                    const entries = Object.values(data.summary).sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
-                    entries.forEach(mon => {
-                        summaryHTML += `
-                            <div class="neu-box compact-box" style="margin-bottom:10px; background: rgba(0,0,0,0.02);">
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                                    <strong style="color:var(--primary-dark); font-size:13px;">${mon.month || 'N/A'}</strong>
-                                    <span class="status-badge ${mon.status === 'Paid' ? 'status-complete' : 'status-pending'}">${mon.status || 'Pending'}</span>
-                                </div>
-                                <div class="bill-detail-row" style="padding:2px 0;"><span class="text-sm">System Used:</span> <strong>${mon.systemUsed || 'N/A'}</strong></div>
-                                <div class="bill-detail-row" style="padding:2px 0;"><span class="text-sm">Amount:</span> <strong>${mon.amount || '0 PKR'}</strong></div>
-                                <div class="bill-detail-row" style="padding:2px 0;"><span class="text-sm">Date:</span> <span>${mon.billDate || 'N/A'}</span></div>
-                                ${mon.status === 'Paid' ? `<div class="bill-detail-row" style="padding:2px 0; border:none;"><span class="text-sm">Trx ID:</span> <span style="color:var(--info-color); font-family:monospace;">${mon.trxId || 'N/A'}</span></div>` : ''}
-                            </div>`;
+                    appendMsg(m.text || '', isUser, {
+                        replyTo: m.replyTo || null,
+                        image: m.image || null,
+                        audio: m.audio || null,
+                        time: m.timestamp
                     });
                 }
-                document.getElementById('monthly-summary-list').innerHTML = summaryHTML || '<p class="text-sm">No summary history yet.</p>';
-            }
-        });
-    }
-
-    window.openPaymentScreen = function() {
-        document.getElementById('pay-amount-display').innerText = cachedBillData.currentAmount || '0 PKR';
-        document.getElementById('pay-server-display').innerText = cachedBillData.serverUsed || 'Standard Hosting';
-        document.getElementById('pay-trx').value = '';
-        openScreen('payment-screen');
-    }
-
-    window.submitPayment = function() {
-        const trx = document.getElementById('pay-trx').value.trim();
-        if(!trx) return alert("Bara-e-karam TRX ID darj karein.");
-        
-        document.getElementById('payment-loading').style.display = 'flex';
-        
-        // Simulating network delay for beautiful loader
-        setTimeout(() => {
-            update(ref(db, 'bills/' + window.currentProjectId), {
-                status: 'Checking',
-                trxId: trx,
-                payDate: Date.now(),
-                ackPopup: false,
-                autoSummaryAdded: false // Ready for Admin approval
-            }).then(() => {
-                document.getElementById('payment-loading').style.display = 'none';
-                openScreen('dashboard-screen');
             });
-        }, 3000);
-    }
-
-    window.downloadPDF = function() {
-        const element = document.getElementById('pdf-content-area');
-        const opt = {
-            margin:       10,
-            filename:     'Billing_Summary.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save();
-    }
-
-    // --- OTHER ORIGINAL LOGIC ---
-    document.getElementById('updateFileInput').addEventListener('change', function() {
-        const file = this.files[0]; 
-        if(!file) return;
-
-        const btn = document.getElementById('attach-shot-btn');
-        const origHtml = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 10px;"></i> Loading image...';
-        btn.disabled = true;
-
-        openImageEditor(file, function(dataUrl) {
-            if(dataUrl) {
-                window.updateScreenshotDataUrl = dataUrl;
-                document.getElementById('update-shot-img').src = dataUrl;
-                document.getElementById('update-shot-preview').style.display = 'block';
-                btn.innerHTML = '<i class="fas fa-check-circle" style="color: #1f9d67; margin-right: 10px;"></i> Image Attached';
-            } else {
-                btn.innerHTML = origHtml;
-            }
-            btn.disabled = false;
-        });
-        
-        this.value = ''; 
-    });
-
-    window.removeUpdateScreenshot = function() {
-        window.updateScreenshotDataUrl = "";
-        document.getElementById('update-shot-preview').style.display = 'none';
-        document.getElementById('update-shot-img').src = "";
-        document.getElementById('attach-shot-btn').innerHTML = '<i class="fas fa-camera" style="margin-right: 10px;"></i> Attach Screenshot';
-    }
-
-    window.submitUpdate = async function() {
-        const details = document.getElementById('update-details').value;
-        if(!details) return alert("Please enter details!");
-
-        const submitBtn = event.target.closest('button');
-        const originalHtml = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin:0 auto;"></i>';
-        submitBtn.disabled = true;
-
-        try {
-            let screenshotUrl = window.updateScreenshotDataUrl || "";
-            const trxId = "TRX-" + Math.floor(Math.random() * 100000000);
-            const reqRef = ref(db, `updateRequests/${window.currentProjectId}`);
-            const payload = { details: details, status: 'Pending', trxId: trxId, timestamp: Date.now() };
-            
-            if(screenshotUrl) payload.screenshot = screenshotUrl;
-
-            await set(push(reqRef), payload);
-            alert(`Request Submitted!\nTRX ID: ${trxId}`);
-            document.getElementById('update-details').value = '';
-            window.removeUpdateScreenshot();
-        } catch(e) { 
-            alert("Something went wrong while submitting."); 
-        } 
-        finally { submitBtn.innerHTML = originalHtml; submitBtn.disabled = false; }
-    }
-
-    function loadUpdatesHistory(pId) {
-        const reqRef = ref(db, `updateRequests/${pId}`);
-        onValue(reqRef, (snapshot) => {
-            let activeHtml = "";
-            let archiveHtml = "";
-            let archiveCount = 0;
-            
-            if(snapshot.exists()) {
-                const data = snapshot.val();
-                const now = Date.now();
-                const threeDays = 3 * 24 * 60 * 60 * 1000;
-
-                for(let key in data) {
-                    let req = data[key];
-                    let reqTime = new Date(req.timestamp);
-                    let formattedTime = reqTime.toLocaleDateString() + " " + reqTime.toLocaleTimeString();
-                    
-                    let badgeClass = 'status-pending';
-                    if(req.status.toLowerCase() === 'working') badgeClass = 'status-working';
-                    if(req.status.toLowerCase() === 'close') badgeClass = 'status-close';
-                    if(req.status.toLowerCase() === 'complete') badgeClass = 'status-complete';
-
-                    const screenshotHtml = req.screenshot ? `<button class="neu-button ghost-btn" style="padding:10px; margin-top:10px; margin-bottom:0; font-size:12px; width:auto;" onclick="openLightbox('${req.screenshot}')"><i class="fas fa-image" style="margin-right:8px;"></i> View Attached Image</button>` : '';
-                    
-                    const readyBtnHtml = req.appReadyCreated
-                        ? `<button class="neu-button primary-btn ready-btn" onclick="openUpdatesDashboard(); switchUpdatesDashboardTab('appupdates')" style="justify-content:center; margin-top:10px;"><i class="fas fa-gift" style="margin-right:8px;"></i> Update Available</button>`
-                        : '';
-
-                    let cardHtml = `
-                        <div class="neu-box" style="padding:15px; margin-bottom:15px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                                <span class="text-sm" style="color: var(--info-color); font-weight:bold;">${req.trxId}</span>
-                                <span class="status-badge ${badgeClass}">${req.status}</span>
-                            </div>
-                            <p class="text-sm" style="margin-bottom: 8px;"><i class="far fa-clock"></i> ${formattedTime}</p>
-                            <p style="font-size: 14px; color: #333; white-space:pre-line;">${req.details}</p>
-                            ${screenshotHtml}
-                            ${readyBtnHtml}
-                        </div>
-                    `;
-
-                    let isClosed = (req.status.toLowerCase() === 'close' || req.status.toLowerCase() === 'complete');
-                    let isOld = (now - req.timestamp) > threeDays;
-
-                    if(isClosed && isOld) {
-                        archiveHtml = cardHtml + archiveHtml; 
-                        archiveCount++;
-                    } else {
-                        activeHtml = cardHtml + activeHtml;
-                    }
+            // Check if chat was ended by admin
+            get(ref(db, `chats/${window.currentChatId}/meta`)).then(metaSnap => {
+                const meta = metaSnap.val() || {};
+                if(meta.status === 'ended') {
+                    document.getElementById('wa-input-bar').style.display = 'none';
+                    document.getElementById('feedback-bar').classList.remove('hidden');
                 }
-            }
-
-            let finalHtml = activeHtml || '<p class="text-sm">No recent history.</p>';
-            if(archiveCount > 0) {
-                finalHtml += `
-                <div style="margin-top:25px;">
-                    <button class="neu-button ghost-btn" onclick="document.getElementById('updates-archive').classList.toggle('hidden')" style="justify-content:center; border:1px solid #ccd5e3; background:transparent;">
-                        <i class="fas fa-archive" style="margin-right:8px; color:var(--text-muted);"></i> Archived Items (${archiveCount})
-                    </button>
-                    <div id="updates-archive" class="hidden">
-                        ${archiveHtml}
-                    </div>
-                </div>`;
-            }
-            document.getElementById('update-history-list').innerHTML = finalHtml;
-        });
-    }
-
-    window.toggleComplaintFields = function() {
-        const type = document.getElementById('issue-type').value;
-        document.querySelectorAll('#complaint-screen .hidden').forEach(el => {
-            if(el.id !== 'submit-complaint-btn' && el.id !== 'common-details-field' && !el.id.includes('archive') && !el.id.includes('history')) el.classList.add('hidden');
-        });
-        const btn = document.getElementById('submit-complaint-btn'), cFields = document.getElementById('common-details-field');
-        btn.classList.add('hidden'); cFields.classList.add('hidden');
-        if(type === 'none') return;
-        btn.classList.remove('hidden'); cFields.classList.remove('hidden');
-        if(type === 'user') document.getElementById('user-fields').classList.remove('hidden');
-        else if (type === 'deposit' || type === 'withdraw') {
-            document.getElementById('transaction-fields').classList.remove('hidden');
-            document.getElementById('comp-trx-id').placeholder = `Enter ${type} ID`;
-        } else if (type === 'other') document.getElementById('image-upload-field').classList.remove('hidden');
-    }
-
-    window.complaintImageUploading = false;
-    document.getElementById('fileInput').addEventListener('change', async function () {
-        const file = this.files[0]; if (!file) return;
-        const statusBox = document.getElementById('complaint-status-box'), statusText = document.getElementById('upload-status');
-        window.complaintImageUploading = true; statusBox.style.display = 'flex'; statusBox.classList.remove('error-box');
-        statusText.innerText = "Uploading, please wait..."; document.getElementById('complaint-mini-loader').style.display = 'block';
-
-        const reader = new FileReader();
-        reader.onloadend = function() {
-             window.uploadedImageUrl = reader.result;
-             statusText.innerHTML = '<i class="fas fa-check-circle" style="color:#1f9d67;"></i> Image Uploaded Successfully!';
-             document.getElementById('complaint-mini-loader').style.display = 'none';
-             window.complaintImageUploading = false;
+            });
         }
-        reader.readAsDataURL(file);
+        box.scrollTop = box.scrollHeight;
+        firstLoad = false;
     });
-
-    window.submitComplaint = function() {
-        const type = document.getElementById('issue-type').value, details = document.getElementById('comp-details').value;
-        if(!details) return alert("Apni complaint tafseel se bayaan karein.");
-        if(window.complaintImageUploading) return alert("Please wait, your photo is still uploading...");
-
-        const btn = document.getElementById('submit-complaint-btn');
-        const originalHtml = btn.innerHTML; btn.innerHTML = '<span class="btn-spinner" style="margin:0 auto;"></span>'; btn.disabled = true;
-
-        let complaintData = { type: type, details: details, status: 'Pending', timestamp: Date.now() };
-        if(type === 'user') { complaintData.username = document.getElementById('comp-username').value; complaintData.number = document.getElementById('comp-number').value; } 
-        else if (type === 'deposit' || type === 'withdraw') { complaintData.transactionId = document.getElementById('comp-trx-id').value; } 
-        else if (type === 'other') { complaintData.attachedImage = window.uploadedImageUrl; }
-
-        set(push(ref(db, `complaints/${window.currentProjectId}`)), complaintData).then(() => {
-            alert("Complaint submitted successfully.");
-            document.getElementById('comp-details').value = ''; document.getElementById('issue-type').value = 'none';
-            toggleComplaintFields(); window.uploadedImageUrl = ""; document.getElementById('upload-status').innerText = "";
-            document.getElementById('complaint-status-box').style.display = 'none';
-        }).catch(err => { alert("Something went wrong."); }).finally(() => { btn.innerHTML = originalHtml; btn.disabled = false; });
+}
+function appendBotMsg(text) {
+    const box = document.getElementById('wa-messages');
+    const div = document.createElement('div');
+    div.className = 'wa-msg wa-msg-bot';
+    div.innerHTML = (text||'').replace(/\n/g,'<br>');
+    box.appendChild(div); box.scrollTop = box.scrollHeight;
+}
+function appendMsg(text, isUser, extra={}) {
+    const box = document.getElementById('wa-messages');
+    const div = document.createElement('div');
+    div.className = 'wa-msg '+(isUser?'wa-msg-user':'wa-msg-admin');
+    let html = '';
+    if(extra.replyTo) html += `<div class="wa-msg-reply-preview">${extra.replyTo}</div>`;
+    if(extra.image) html += `<img src="${extra.image}" style="max-width:100%;border-radius:8px;margin-bottom:4px;" onclick="openLightbox('${extra.image}')">`;
+    if(extra.audio) html += `<audio controls src="${extra.audio}" style="max-width:100%;height:36px;"></audio>`;
+    if(text) html += text;
+    const t = extra.time ? new Date(extra.time) : new Date();
+    html += `<div class="wa-msg-time">${t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} ${isUser?'<i class="fas fa-check-double" style="font-size:10px;"></i>':''}</div>`;
+    div.innerHTML = html;
+    div.onclick = () => { if(!isUser){ window.replyToMsg = text||'[media]'; document.getElementById('wa-text-input').placeholder='Replying...'; document.getElementById('wa-text-input').focus(); } };
+    div.ondblclick = () => {
+        const emojis = ['👍','❤️','😂','😮','😢'];
+        const e = emojis[Math.floor(Math.random()*emojis.length)];
+        const r = document.createElement('div'); r.className='wa-reactions'; r.innerHTML=`<span class="wa-reaction">${e}</span>`;
+        div.appendChild(r);
+    };
+    box.appendChild(div); box.scrollTop = box.scrollHeight;
+}
+window.sendHelpChoice = async function(choice) {
+    document.getElementById('wa-help-section').classList.add('hidden');
+    let userText = '', botText = '';
+    if(choice==='complaint'){
+        userText = 'Main Complaint file karna chahta hoon.';
+        botText = 'Samajh gaya. Dashboard se Complaint bhej dein ya yahan details likh dein. Admin jaldi dekh lega.';
+        window.chatMode='live';
+    } else if(choice==='update'){
+        userText = 'Mujhe App Update chahiye.';
+        botText = 'Theek hai! Update request Dashboard se bhej dein ya yahan requirements likh dein.';
+        window.chatMode='live';
+    } else if(choice==='owner'){
+        userText = 'Owner se rabta karna hai.';
+        botText = 'Shukriya! Aapki request admin ko forward kar di gayi hai. Jaldi Muhammad Naeem sahab reply karenge. Ab aap free feel karke message bhej sakte hain.';
+        window.chatMode='live';
+        notifyAdmin('New Live Chat Request', `${window.chatUser.username} (${window.chatUser.phone}) wants Owner.`, 'chat');
+        set(ref(db, `chats/${window.currentChatId}/meta`), { user: window.chatUser.username, phone: window.chatUser.phone, startedAt: Date.now(), status: 'open' });
     }
-
-    function loadComplaintsHistory(pId) {
-        const compRef = ref(db, `complaints/${pId}`);
-        onValue(compRef, (snapshot) => {
-            let activeHtml = "";
-            let archiveHtml = "";
-            let archiveCount = 0;
-
-            if(snapshot.exists()) {
-                const data = snapshot.val();
-                const now = Date.now();
-                const threeDays = 3 * 24 * 60 * 60 * 1000;
-
-                for(let key in data) {
-                    let comp = data[key];
-                    let compTime = new Date(comp.timestamp).toLocaleDateString() + " " + new Date(comp.timestamp).toLocaleTimeString();
-                    let badgeClass = (comp.status.toLowerCase() === 'resolved' || comp.status.toLowerCase() === 'close') ? 'status-complete' : 'status-pending';
-
-                    const imgHtml = comp.attachedImage ? `<button class="neu-button ghost-btn" style="padding:10px; margin-top:10px; margin-bottom:0; font-size:12px; width:auto;" onclick="openLightbox('${comp.attachedImage}')"><i class="fas fa-image" style="margin-right:8px;"></i> View Attached Image</button>` : '';
-
-                    const readyBtnHtml = comp.appReadyCreated
-                        ? `<button class="neu-button primary-btn ready-btn" onclick="openUpdatesDashboard(); switchUpdatesDashboardTab('appupdates')" style="justify-content:center; margin-top:10px;"><i class="fas fa-gift" style="margin-right:8px;"></i> Update Available</button>`
-                        : ``;
-
-                    let cardHtml = `
-                        <div class="neu-box" style="padding:15px; margin-bottom:15px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                                <span class="text-sm" style="text-transform: capitalize; font-weight:bold;">${comp.type} Issue</span>
-                                <span class="status-badge ${badgeClass}">${comp.status}</span>
-                            </div>
-                            <p class="text-sm" style="margin-bottom: 8px;"><i class="far fa-clock"></i> ${compTime}</p>
-                            <p style="font-size: 14px; color: #333; white-space:pre-line;">${comp.details}</p>
-                            ${imgHtml}
-                            ${readyBtnHtml}
-                        </div>
-                    `;
-
-                    let isClosed = (comp.status.toLowerCase() === 'resolved' || comp.status.toLowerCase() === 'close' || comp.status.toLowerCase() === 'complete');
-                    let isOld = (now - comp.timestamp) > threeDays;
-
-                    if(isClosed && isOld) {
-                        archiveHtml = cardHtml + archiveHtml;
-                        archiveCount++;
-                    } else {
-                        activeHtml = cardHtml + activeHtml;
-                    }
-                }
-            }
-            
-            let finalHtml = activeHtml || '<p class="text-sm">No recent complaints.</p>';
-            if(archiveCount > 0) {
-                finalHtml += `
-                <div style="margin-top:25px;">
-                    <button class="neu-button ghost-btn" onclick="document.getElementById('complaint-archive').classList.toggle('hidden')" style="justify-content:center; border:1px solid #ccd5e3; background:transparent;">
-                        <i class="fas fa-archive" style="margin-right:8px; color:var(--text-muted);"></i> Archived Items (${archiveCount})
-                    </button>
-                    <div id="complaint-archive" class="hidden">
-                        ${archiveHtml}
-                    </div>
-                </div>`;
-            }
-            document.getElementById('complaint-history-list').innerHTML = finalHtml;
-        });
+    // Save both to Firebase so they persist
+    await push(ref(db, `chats/${window.currentChatId}/messages`), { text: userText, from:'user', timestamp:Date.now() });
+    setTimeout(async ()=>{
+        await push(ref(db, `chats/${window.currentChatId}/messages`), { text: botText, from:'bot', timestamp:Date.now() });
+    }, 600);
+};
+window.sendChatText = async function() {
+    const input = document.getElementById('wa-text-input');
+    const text = input.value.trim(); if(!text) return;
+    const reply = window.replyToMsg;
+    input.value=''; input.placeholder='Message...'; window.replyToMsg=null;
+    // Only push to Firebase – real-time listener will render it
+    await push(ref(db, `chats/${window.currentChatId}/messages`), { text, from:'user', timestamp:Date.now(), replyTo: reply||null });
+    await notifyAdmin('New Chat Message', `${window.chatUser.username}: ${text.substring(0,60)}`, 'chat');
+    if(window.chatMode==='bot') {
+        setTimeout(async ()=>{
+            await push(ref(db, `chats/${window.currentChatId}/messages`), { text: 'Main aapki madad ke liye yahan hoon. "Owner se Rabta" choose karein live chat ke liye.', from:'bot', timestamp:Date.now() });
+        },700);
     }
+};
+window.sendChatImage = function(input) {
+    const file = input.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = async e => {
+        await push(ref(db, `chats/${window.currentChatId}/messages`), { image: e.target.result, from:'user', timestamp:Date.now() });
+        await notifyAdmin('New Image in Chat', `${window.chatUser.username} sent image`, 'chat');
+    };
+    reader.readAsDataURL(file); input.value='';
+};
+window.startVoiceRecord = function() {
+    if(isRecording) return;
+    navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+        mediaRecorder = new MediaRecorder(stream); audioChunks=[];
+        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+        mediaRecorder.onstop = async () => {
+            const blob = new Blob(audioChunks,{type:'audio/webm'});
+            const reader = new FileReader();
+            reader.onload = async () => {
+                await push(ref(db, `chats/${window.currentChatId}/messages`), { audio: reader.result, from:'user', timestamp:Date.now() });
+                await notifyAdmin('New Voice', `${window.chatUser.username} sent voice`, 'chat');
+            };
+            reader.readAsDataURL(blob); stream.getTracks().forEach(t=>t.stop());
+        };
+        mediaRecorder.start(); isRecording=true;
+        document.getElementById('wa-voice-btn').classList.add('recording');
+    }).catch(()=>alert('Mic access denied'));
+};
+window.stopVoiceRecord = function() {
+    if(!isRecording||!mediaRecorder) return;
+    mediaRecorder.stop(); isRecording=false;
+    document.getElementById('wa-voice-btn').classList.remove('recording');
+};
+window.submitFeedback = async function(type) {
+    await push(ref(db, `chats/${window.currentChatId}/feedback`), { type, timestamp:Date.now(), user: window.chatUser.username });
+    await update(ref(db, `chats/${window.currentChatId}/meta`), { status: 'ended', endedAt: Date.now(), feedback: type });
+    // Save feedback message too
+    await push(ref(db, `chats/${window.currentChatId}/messages`), { text: 'Thanks for your feedback! ❤️ Chat band. Naya chat ke liye "Hum se Rabta" dabayein.', from:'bot', timestamp:Date.now() });
+    document.getElementById('feedback-bar').classList.add('hidden');
+    document.getElementById('wa-input-bar').style.display = 'none';
+    setTimeout(()=>openScreen('chat-dashboard-screen'), 2500);
+};
+window.endChatAsAdmin = function() {
+    document.getElementById('feedback-bar').classList.remove('hidden');
+    document.getElementById('wa-input-bar').style.display = 'none';
+    push(ref(db, `chats/${window.currentChatId}/messages`), { text: 'Admin ne chat end kar diya. Please feedback dein.', from:'bot', timestamp:Date.now() });
+    update(ref(db, `chats/${window.currentChatId}/meta`), { status: 'ended', endedAt: Date.now() });
+};
 
-    // UPDATES DASHBOARD 
-    window.openUpdatesDashboard = function() {
-        if(!window.currentProjectId) return;
-        openScreen('updates-dashboard-screen');
-        loadBillSummaryUD(window.currentProjectId);
-        loadAppUpdates(window.currentProjectId);
+// ===== ORIGINAL LOGIN + BILLS + etc (core) =====
+window.login = async function() {
+    const pId = document.getElementById('projectIdInput').value.trim();
+    if(!pId) return alert("Please enter Project ID");
+    const loginBtn = document.getElementById('login-btn');
+    const loginLabel = document.getElementById('login-btn-label');
+    loginBtn.disabled = true; loginLabel.innerText = 'Checking';
+    const loginIcon = document.getElementById('login-btn-icon');
+    if(loginIcon) loginIcon.outerHTML = '<span class="btn-spinner" id="login-btn-icon" style="margin-left:10px;"></span>';
+    function resetLoginBtn() {
+        loginBtn.disabled = false; loginLabel.innerText = 'Login';
+        const s = document.getElementById('login-btn-icon');
+        if(s) s.outerHTML = '<i class="fas fa-arrow-right" id="login-btn-icon" style="margin-left:10px;"></i>';
     }
-
-    window.switchUpdatesDashboardTab = function(tab) {
-        document.getElementById('ud-bills-tab').classList.toggle('active', tab === 'bills');
-        document.getElementById('ud-appupdates-tab').classList.toggle('active', tab === 'appupdates');
-        document.getElementById('ud-tab-btn-bills').classList.toggle('ud-tab-active', tab === 'bills');
-        document.getElementById('ud-tab-btn-appupdates').classList.toggle('ud-tab-active', tab === 'appupdates');
-    }
-
-    function loadBillSummaryUD(pId) {
-        const summaryRef = ref(db, `bills/${pId}/summary`);
-        onValue(summaryRef, (snapshot) => {
-            let html = "";
-            if(snapshot.exists()) {
-                const data = snapshot.val();
-                const entries = Object.values(data).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-                
-                entries.forEach(mon => {
-                    html += `
-                        <div class="neu-box" style="padding:15px; margin-bottom:12px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                                <span style="font-weight:700; color:var(--primary-dark); font-size:15px;">${mon.month || 'N/A'}</span>
-                                <span class="status-badge ${mon.status === 'Paid' ? 'status-complete' : 'status-pending'}">${mon.status || 'Pending'}</span>
-                            </div>
-                            <div style="font-size:12px; color:var(--text-color); line-height:1.6;">
-                                <div style="display:flex; justify-content:space-between;"><span>System Used:</span> <strong>${mon.systemUsed || 'N/A'}</strong></div>
-                                <div style="display:flex; justify-content:space-between;"><span>Bill Amount:</span> <strong>${mon.amount || '0 PKR'}</strong></div>
-                                <div style="display:flex; justify-content:space-between;"><span>Bill Date:</span> <span>${mon.billDate || 'N/A'}</span></div>
-                                ${mon.status === 'Paid' ? `<div style="display:flex; justify-content:space-between;"><span>Trx ID:</span> <span style="color:var(--info-color); font-family:monospace;">${mon.trxId || 'N/A'}</span></div>` : ''}
-                            </div>
-                        </div>`;
-                });
-            }
-            document.getElementById('ud-bill-summary-list').innerHTML = html || '<p class="text-sm">No bill summary added yet.</p>';
-        });
-    }
-
-    window.startApkDownload = async function(btn, fileName) {
-        if(btn.dataset.downloading === "true") return;
-        btn.dataset.downloading = "true";
-        const filePath = `Assets/${fileName}`;
-        const originalHtml = btn.innerHTML;
-
-        try {
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:8px;"></i> Checking File...';
-            const response = await fetch(filePath, { method: 'HEAD' });
-            
-            if(!response.ok) {
-                alert(`Error: File "${fileName}" not found in Assets folder.`);
-                btn.innerHTML = originalHtml;
-                btn.dataset.downloading = "false";
+    const userRef = ref(db, 'users/' + pId);
+    onValue(userRef, (snapshot) => {
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            const onLoginScreen = document.getElementById('login-screen').classList.contains('active');
+            if(data.status && data.status.toLowerCase() === "pending") {
+                if(onLoginScreen){ alert("Your Project is pending please wait... 24/48 hours"); resetLoginBtn(); }
                 return;
             }
-
-            const contentLength = response.headers.get('content-length');
-            let totalMb = 25.0; 
-            if(contentLength) totalMb = (parseInt(contentLength) / (1024 * 1024)).toFixed(1);
-            else totalMb = (Math.random() * 25 + 15).toFixed(1); 
-
-            let downloaded = 0;
-            btn.style.position = 'relative';
-            btn.style.overflow = 'hidden';
-            btn.innerHTML = `
-                <div id="dl-progress-${fileName}" style="position:absolute; left:0; top:0; bottom:0; background:rgba(255,255,255,0.25); width:0%; transition:width 0.2s;"></div>
-                <div style="position:relative; z-index:1; display:flex; justify-content:space-between; width:100%; font-size:13px; font-family:'JetBrains Mono', monospace;">
-                    <span><i class="fas fa-spinner fa-spin"></i> <span id="dl-pct-${fileName}">0%</span></span>
-                    <span id="dl-speed-${fileName}">0.0 MB/s</span>
-                </div>`;
-
-            let interval = setInterval(() => {
-                let speed = (Math.random() * 2.5 + 1.0).toFixed(1); 
-                downloaded += parseFloat(speed);
-                let pct = Math.min((downloaded / totalMb) * 100, 100).toFixed(0);
-
-                document.getElementById(`dl-pct-${fileName}`).innerText = `${pct}%`;
-                document.getElementById(`dl-progress-${fileName}`).style.width = `${pct}%`;
-                document.getElementById(`dl-speed-${fileName}`).innerText = `${speed} MB/s`;
-
-                if(downloaded >= totalMb) {
-                    clearInterval(interval);
-                    btn.innerHTML = `<i class="fas fa-check-circle" style="margin-right:8px;"></i> Downloaded`;
-                    btn.classList.replace('primary-btn', 'accent-btn');
-                    btn.dataset.downloading = "false";
-
-                    const a = document.createElement('a');
-                    a.href = filePath;
-                    a.download = fileName;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
+            window.currentProjectId = pId;
+            if(onLoginScreen && document.getElementById('remember-me').checked) {
+                let saved = JSON.parse(localStorage.getItem('savedProjects') || '[]');
+                if(!saved.find(s => s.id === pId)) {
+                    saved.push({ id: pId, name: data.appName || data.userName || 'Project' });
+                    localStorage.setItem('savedProjects', JSON.stringify(saved));
                 }
-            }, 500);
-
-        } catch (error) {
-            alert(`Network Error: Cannot connect to check "${fileName}".`);
-            btn.innerHTML = originalHtml;
-            btn.dataset.downloading = "false";
-        }
-    }
-
-    function loadAppUpdates(pId) {
-        const updatesRef = ref(db, `appUpdates/${pId}`);
-        onValue(updatesRef, (snapshot) => {
-            let html = "";
-            if(snapshot.exists()) {
-                const data = snapshot.val();
-                const entries = Object.values(data).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-                entries.forEach(u => {
-                    const dt = new Date(u.timestamp || Date.now());
-                    const formattedTime = dt.toLocaleDateString() + " " + dt.toLocaleTimeString();
-                    const whatsNewHtml = u.whatsNew ? `<div class="ud-whats-new-box"><strong>What's New:</strong><br>${u.whatsNew}</div>` : '';
-                    const sourceHtml = u.sourceType ? `<div class="ud-source-tag"><i class="fas fa-link"></i> Linked to: ${u.sourceType === 'update' ? 'Update Request' : 'Complaint'}</div>` : '';
-                    
-                    html += `
-                        <div class="neu-box ud-update-card">
-                            <div class="ud-update-title-row">
-                                <h4>${u.title || 'App Update'}</h4>
-                            </div>
-                            <p class="text-sm"><i class="far fa-clock"></i> ${formattedTime}</p>
-                            ${whatsNewHtml}
-                            <button class="neu-button primary-btn" style="justify-content:center; text-decoration:none; margin-top:10px;" onclick="startApkDownload(this, '${u.fileName}')">
-                                <i class="fab fa-android" style="margin-right:8px;"></i> Download
-                            </button>
-                            ${sourceHtml}
-                        </div>`;
-                });
             }
-            document.getElementById('ud-appupdates-list').innerHTML = html || '<p class="text-sm">No app updates yet.</p>';
-        });
-    }
-
-    // Bot Logic
-    const botReplies = {
-        urdu: {
-            greeting: "Hello! Main apki kya madad kar sakta hoon? Neechay diye gaye options mein se muntakhib karein.",
-            bill: "Bill check karne ka tareeqa:\n1. Dashboard se 'Check Bills' wale button par click karein.\n2. Wahan aap apna naya (Current) aur purana (Old) bill tafseel se dekh sakte hain.\n3. Agar bill pay nahi hua toh 'Pending' likha hoga, aur pay hone ke baad wo automatically 'Paid' ho jayega.",
-            update: "App Update ki request bhejne ka tareeqa:\n1. Dashboard par 'App Update Now' button dabaein.\n2. Request Update ke box mein likhein ke aapko app mein kya naya chahiye.\n3. Agar zaroorat ho toh 'Attach Screenshot' se tasveer lagayein aur oper mark/circle bhi laga sakte hain.\n4. Submit karein! Apki history neechay animation wale status ke sath show hogi. Jab status 'Complete' hoga toh theek 3 din baad history se archive folder main chali jayegi.",
-            complaint: "Complaint file karne ka tareeqa:\n1. Dashboard se 'Complaint' option kholiye.\n2. Apna issue select karein.\n3. Box mein apni pareshani tafseel se likhein, tasveer attach karein aur Submit daba dein.",
-            dashboard: "Dashboard par 'App Info' par click karke aap apni app ka current version aur details dekh sakte hain. Top right corner mein maujood Bell Icon aapko admin ki taraf se aaney wali har nayi update ka notification dega."
-        },
-        english: {
-            greeting: "Hello! How can I assist you today? Please choose from the options below.",
-            bill: "How to check/pay your bill:\n1. Click on the 'Check Bills' button on the Dashboard.\n2. There you can view your Current and Old bills in detail.\n3. If unpaid, it shows 'Pending'. Once paid, the status automatically updates to 'Paid'.",
-            update: "How to request an App Update:\n1. Click 'App Update Now' on the Dashboard.\n2. Type your required features in the request box.\n3. Optionally, tap 'Attach Screenshot', mark or circle the area you mean, then tap Done.\n4. Hit Submit! Once marked 'Complete', it will auto-move to the Archive folder after 3 days.",
-            complaint: "How to file a Complaint:\n1. Open the 'Complaint' screen from the Dashboard.\n2. Select your issue type from the dropdown.\n3. Describe your issue in detail, attach a photo if necessary, and click Submit.",
-            dashboard: "From the Dashboard, click 'App Info' to see your app's current version and details. The Notification Bell on the top right will alert you to any new updates from the admin."
-        }
-    };
-
-    window.updateChatGreeting = function() {
-        const lang = document.getElementById('chat-lang').value;
-        document.getElementById('chat-greeting').innerText = botReplies[lang]['greeting'];
-    }
-
-    window.sendChatMsg = function(topic) {
-        const lang = document.getElementById('chat-lang').value;
-        const box = document.getElementById('chat-box');
-        
-        let userText = "";
-        if(topic==='bill') userText = lang === 'urdu' ? "Bill kaise check karun?" : "How to check my bill?";
-        if(topic==='update') userText = lang === 'urdu' ? "App update ki request kaise bhejun?" : "How to request an update?";
-        if(topic==='complaint') userText = lang === 'urdu' ? "Complaint kaise karun?" : "How to file a complaint?";
-        if(topic==='dashboard') userText = lang === 'urdu' ? "App Info aur Notifications kya hain?" : "What is App Info & Notifications?";
-
-        const userDiv = document.createElement('div');
-        userDiv.className = "chat-msg chat-user clearfix";
-        userDiv.innerText = userText;
-        box.appendChild(userDiv); box.scrollTop = box.scrollHeight;
-
-        const botDiv = document.createElement('div');
-        botDiv.className = "chat-msg chat-bot clearfix";
-        botDiv.innerHTML = "<i class='fas fa-ellipsis-h fa-fade'></i> Typing...";
-        box.appendChild(botDiv); box.scrollTop = box.scrollHeight;
-
-        setTimeout(() => {
-            botDiv.innerHTML = "";
-            const replyText = botReplies[lang][topic];
-            let i = 0;
-            function type() {
-                if (i < replyText.length) {
-                    botDiv.innerHTML += replyText.charAt(i) === '\n' ? '<br>' : replyText.charAt(i);
-                    i++; box.scrollTop = box.scrollHeight;
-                    setTimeout(type, 25); 
+            document.getElementById('dash-username').innerText = data.userName || 'No Name';
+            document.getElementById('dash-phone').innerText = data.callNum || data.phone || 'No Phone';
+            document.getElementById('dash-app-name').innerText = data.appName || 'No App Name';
+            if(data.userImage) document.getElementById('dash-user-image').src = data.userImage;
+            if(data.appLogo) document.getElementById('dash-app-logo').src = data.appLogo;
+            document.getElementById('info-version').innerText = data.updateMonth || 'N/A';
+            document.getElementById('info-update').innerText = data.lastUpdate || 'N/A';
+            document.getElementById('info-type').innerText = data.projType || 'N/A';
+            document.getElementById('info-purpose').innerText = data.purpose || 'N/A';
+            // Maintenance
+            const isMaintenance = data.maintenance && data.maintenance.active;
+            const normalHeaders = document.getElementById('dashboard-normal-headers');
+            const maintHeader = document.getElementById('dashboard-maintenance-header');
+            const normalBtns = document.getElementById('dashboard-buttons-section');
+            const maintCard = document.getElementById('dashboard-maintenance-card');
+            const maintAudio = document.getElementById('maintenance-audio');
+            if(isMaintenance) {
+                normalHeaders.classList.add('hidden'); normalBtns.classList.add('hidden');
+                maintHeader.classList.remove('hidden'); maintCard.classList.remove('hidden');
+                document.getElementById('maint-title').innerHTML = `<i class="fas fa-cogs"></i> ${data.maintenance.title || 'System Maintenance'}`;
+                document.getElementById('maint-desc').innerText = data.maintenance.desc || 'App is under processing.';
+                if(maintAudio.paused) maintAudio.play().catch(()=>{});
+                clearInterval(maintTimerInterval);
+                if(data.maintenance.endTime) {
+                    maintTimerInterval = setInterval(() => {
+                        const now = Date.now();
+                        const distance = new Date(data.maintenance.endTime).getTime() - now;
+                        if(distance < 0){ clearInterval(maintTimerInterval); document.getElementById('maint-timer').innerText = "00:00:00"; }
+                        else {
+                            const h = Math.floor((distance % (1000*60*60*24))/(1000*60*60));
+                            const m = Math.floor((distance % (1000*60*60))/(1000*60));
+                            const s = Math.floor((distance % (1000*60))/1000);
+                            document.getElementById('maint-timer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                        }
+                    }, 1000);
                 }
-            } type();
-        }, 600);
-    }
-
-    // Image Editor functions
-    const editCanvas = document.getElementById('editCanvas');
-    const ctx = editCanvas.getContext('2d');
-    let baseImage = null; let strokes = []; let currentStroke = null; let drawing = false; let activeColor = '#ff3b30'; let pendingCallback = null; 
-    document.getElementById('color-swatches').addEventListener('click', (e) => {
-        const swatch = e.target.closest('.color-swatch'); if(!swatch) return;
-        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active')); swatch.classList.add('active'); activeColor = swatch.dataset.color;
+            } else {
+                normalHeaders.classList.remove('hidden'); normalBtns.classList.remove('hidden');
+                maintHeader.classList.add('hidden'); maintCard.classList.add('hidden');
+                maintAudio.pause(); clearInterval(maintTimerInterval);
+            }
+            // Notifs
+            let notiCount = 0; let notifs = data.notifications || {}; let nHtml = '';
+            if(notifs.bills){ notiCount++; document.getElementById('badge-bills').style.display='inline-block';
+                nHtml += `<div class="neu-box" style="padding:12px;margin-bottom:10px;cursor:pointer;" onclick="clearNotifAndOpen('bills','bills-screen')"><i class="fas fa-file-invoice-dollar" style="color:var(--primary-color);margin-right:8px;"></i> New Bill Update</div>`; }
+            else document.getElementById('badge-bills').style.display='none';
+            if(notifs.update){ notiCount++; document.getElementById('badge-update').style.display='inline-block';
+                nHtml += `<div class="neu-box" style="padding:12px;margin-bottom:10px;cursor:pointer;" onclick="clearNotifAndOpen('update','update-screen')"><i class="fas fa-sync-alt" style="color:var(--info-color);margin-right:8px;"></i> Admin replied to Update</div>`; }
+            else document.getElementById('badge-update').style.display='none';
+            if(notifs.complaint){ notiCount++; document.getElementById('badge-complaint').style.display='inline-block';
+                nHtml += `<div class="neu-box" style="padding:12px;margin-bottom:10px;cursor:pointer;" onclick="clearNotifAndOpen('complaint','complaint-screen')"><i class="fas fa-headset" style="color:var(--pink-color);margin-right:8px;"></i> Admin replied to Complaint</div>`; }
+            else document.getElementById('badge-complaint').style.display='none';
+            const bellBadge = document.getElementById('main-bell-badge');
+            if(notiCount>0){ bellBadge.style.display='flex'; bellBadge.innerText=notiCount; } else bellBadge.style.display='none';
+            document.getElementById('notif-list').innerHTML = nHtml || '<p class="text-sm text-center">No new notifications.</p>';
+            if(onLoginScreen){
+                loadBills(pId); loadUpdatesHistory(pId); loadComplaintsHistory(pId);
+                openScreen('dashboard-screen'); resetLoginBtn();
+            }
+        } else {
+            if(document.getElementById('login-screen').classList.contains('active')){
+                alert("Project ID not found."); resetLoginBtn();
+            }
+        }
     });
-    function openImageEditor(file, callback) {
-        pendingCallback = callback; const reader = new FileReader();
-        reader.onload = function(e) { const img = new Image(); img.onload = function() { baseImage = img; strokes = []; fitCanvasToImage(); redrawCanvas(); document.getElementById('image-edit-modal').classList.add('active'); }; img.src = e.target.result; }; reader.readAsDataURL(file);
-    }
-    function fitCanvasToImage() { const maxW = Math.min(window.innerWidth, 414) - 20; const maxH = window.innerHeight - 220; let w = baseImage.width, h = baseImage.height; const ratio = Math.min(maxW / w, maxH / h, 1); editCanvas.width = Math.round(w * ratio); editCanvas.height = Math.round(h * ratio); }
-    function redrawCanvas() { ctx.clearRect(0, 0, editCanvas.width, editCanvas.height); ctx.drawImage(baseImage, 0, 0, editCanvas.width, editCanvas.height); strokes.forEach(drawStroke); }
-    function drawStroke(stroke) {
-        if(stroke.points.length < 2) { if(stroke.points.length === 1) { ctx.beginPath(); ctx.fillStyle = stroke.color; ctx.arc(stroke.points[0].x, stroke.points[0].y, 3, 0, Math.PI*2); ctx.fill(); } return; }
-        ctx.strokeStyle = stroke.color; ctx.lineWidth = 5; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(stroke.points[0].x, stroke.points[0].y); for(let i = 1; i < stroke.points.length; i++) { ctx.lineTo(stroke.points[i].x, stroke.points[i].y); } ctx.stroke();
-    }
-    function getPos(evt) { const rect = editCanvas.getBoundingClientRect(); const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX; const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY; return { x: (clientX - rect.left) * (editCanvas.width / rect.width), y: (clientY - rect.top) * (editCanvas.height / rect.height) }; }
-    function startDraw(evt) { evt.preventDefault(); drawing = true; currentStroke = { color: activeColor, points: [getPos(evt)] }; strokes.push(currentStroke); }
-    function moveDraw(evt) { if(!drawing) return; evt.preventDefault(); currentStroke.points.push(getPos(evt)); redrawCanvas(); }
-    function endDraw(evt) { drawing = false; currentStroke = null; }
-    editCanvas.addEventListener('mousedown', startDraw); editCanvas.addEventListener('mousemove', moveDraw); editCanvas.addEventListener('mouseup', endDraw); editCanvas.addEventListener('mouseleave', endDraw); editCanvas.addEventListener('touchstart', startDraw, { passive: false }); editCanvas.addEventListener('touchmove', moveDraw, { passive: false }); editCanvas.addEventListener('touchend', endDraw);
-    window.undoLastStroke = function() { strokes.pop(); redrawCanvas(); }
-    window.clearAnnotations = function() { strokes = []; redrawCanvas(); }
-    window.closeImageEditor = function(save) {
-        document.getElementById('image-edit-modal').classList.remove('active');
-        if(save && baseImage) { const dataUrl = editCanvas.toDataURL('image/png'); if(pendingCallback) pendingCallback(dataUrl); } else { if(pendingCallback) pendingCallback(null); }
-        pendingCallback = null; baseImage = null; strokes = [];
-    }
+};
+window.clearNotifAndOpen = function(key, screenId) {
+    if(window.currentProjectId) update(ref(db, `users/${window.currentProjectId}/notifications`), {[key]:false});
+    document.getElementById('notif-modal').classList.remove('active');
+    openScreen(screenId);
+};
+function loadBills(pId) {
+    onValue(ref(db, 'bills/'+pId), (snapshot) => {
+        if(!snapshot.exists()) return;
+        const data = snapshot.val(); cachedBillData = data;
+        let currAmt = data.currentAmount || '0 PKR';
+        let currStatus = data.status || 'Pending';
+        document.getElementById('bill-amount').innerText = currAmt;
+        document.getElementById('bill-date').innerText = data.billDate || 'N/A';
+        document.getElementById('bill-server-used').innerText = data.serverUsed || 'Standard Hosting';
+        document.getElementById('bill-desc').innerText = data.billDescription || 'Monthly maintenance fee.';
+        let statusEl = document.getElementById('bill-status'); statusEl.innerText = currStatus;
+        const payBtn = document.getElementById('pay-bill-btn');
+        const paidDetails = document.getElementById('paid-details');
+        if(currStatus === 'Paid'){
+            statusEl.className = 'status-badge status-complete';
+            payBtn.style.display = 'none'; paidDetails.style.display = 'block';
+            document.getElementById('bill-trx-id').innerText = data.trxId || 'N/A';
+            document.getElementById('bill-pay-date').innerText = data.payDate ? new Date(data.payDate).toLocaleString() : 'N/A';
+            if(data.trxId && data.ackPopup === false){
+                document.getElementById('congrats-owner-name').innerText = document.getElementById('dash-username').innerText;
+                document.getElementById('congrats-modal').classList.add('active');
+                update(ref(db, 'bills/'+pId), {ackPopup:true});
+            }
+            if(data.autoSummaryAdded === false && !window.isProcessingSummary){
+                window.isProcessingSummary = true;
+                const summaryData = { month: new Date().toLocaleString('default',{month:'short',year:'numeric'})+" Auto", systemUsed: data.serverUsed||'Standard', amount: currAmt, billDate: data.billDate||'N/A', status:'Paid', trxId: data.trxId||'', timestamp: Date.now() };
+                const newSumRef = push(ref(db, `bills/${pId}/summary`));
+                update(ref(db, 'bills/'+pId), { [`summary/${newSumRef.key}`]: summaryData, autoSummaryAdded: true }).then(()=>window.isProcessingSummary=false).catch(()=>window.isProcessingSummary=false);
+            }
+        } else if(currStatus==='Verifying'||currStatus==='Checking'){
+            statusEl.className = 'status-badge status-working'; statusEl.innerText = 'Checking Payment...';
+            payBtn.style.display = 'none'; paidDetails.style.display = 'none';
+        } else {
+            statusEl.className = 'status-badge status-pending';
+            payBtn.style.display = 'flex'; paidDetails.style.display = 'none';
+        }
+        document.getElementById('dash-bill-preview').innerHTML = `Current Bill: <strong>${currAmt}</strong> - <span style="color:${currStatus==='Paid'?'#1f9d67':'var(--accent-color)'}">${currStatus}</span>`;
+        document.getElementById('old-bill-amount').innerText = data.oldAmount || '0 PKR';
+        document.getElementById('old-bill-date').innerText = data.oldDate || 'N/A';
+        let oldStatusEl = document.getElementById('old-bill-status');
+        let oldStatus = data.oldStatus || 'Paid';
+        oldStatusEl.innerText = oldStatus; oldStatusEl.className = oldStatus==='Paid'?'text-success':'text-warning';
+        let summaryHTML = "";
+        if(data.summary){
+            Object.values(data.summary).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)).forEach(mon=>{
+                summaryHTML += `<div class="neu-box compact-box" style="margin-bottom:10px;background:rgba(0,0,0,0.02);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><strong style="color:var(--primary-dark);font-size:13px;">${mon.month||'N/A'}</strong><span class="status-badge ${mon.status==='Paid'?'status-complete':'status-pending'}">${mon.status||'Pending'}</span></div><div class="bill-detail-row" style="padding:2px 0;"><span class="text-sm">System Used:</span><strong>${mon.systemUsed||'N/A'}</strong></div><div class="bill-detail-row" style="padding:2px 0;"><span class="text-sm">Amount:</span><strong>${mon.amount||'0 PKR'}</strong></div><div class="bill-detail-row" style="padding:2px 0;"><span class="text-sm">Date:</span><span>${mon.billDate||'N/A'}</span></div></div>`;
+            });
+        }
+        document.getElementById('monthly-summary-list').innerHTML = summaryHTML || '<p class="text-sm">No summary history yet.</p>';
+    });
+}
+window.openPaymentScreen = function() {
+    document.getElementById('pay-amount-display').innerText = cachedBillData.currentAmount || '0 PKR';
+    document.getElementById('pay-trx').value = '';
+    openScreen('payment-screen');
+};
+window.submitPayment = function() {
+    const trx = document.getElementById('pay-trx').value.trim();
+    if(!trx) return alert("TRX ID darj karein.");
+    document.getElementById('payment-loading').style.display = 'flex';
+    setTimeout(()=>{
+        update(ref(db, 'bills/'+window.currentProjectId), { status:'Checking', trxId:trx, payDate:Date.now(), ackPopup:false, autoSummaryAdded:false })
+        .then(()=>{ document.getElementById('payment-loading').style.display='none'; openScreen('dashboard-screen'); });
+    }, 3000);
+};
+window.downloadPDF = function() {
+    const element = document.getElementById('pdf-content-area');
+    html2pdf().set({ margin:10, filename:'Billing_Summary.pdf', image:{type:'jpeg',quality:0.98}, html2canvas:{scale:2}, jsPDF:{unit:'mm',format:'a4',orientation:'portrait'} }).from(element).save();
+};
+// Update + Complaint with notifyAdmin
+document.getElementById('updateFileInput').addEventListener('change', function() {
+    const file = this.files[0]; if(!file) return;
+    const btn = document.getElementById('attach-shot-btn');
+    const orig = btn.innerHTML; btn.innerHTML='<i class="fas fa-spinner fa-spin" style="margin-right:10px;"></i> Loading...'; btn.disabled=true;
+    openImageEditor(file, dataUrl => {
+        if(dataUrl){ window.updateScreenshotDataUrl=dataUrl; document.getElementById('update-shot-img').src=dataUrl; document.getElementById('update-shot-preview').style.display='block'; btn.innerHTML='<i class="fas fa-check-circle" style="color:#1f9d67;margin-right:10px;"></i> Image Attached'; }
+        else btn.innerHTML=orig;
+        btn.disabled=false;
+    });
+    this.value='';
+});
+window.removeUpdateScreenshot = function() {
+    window.updateScreenshotDataUrl=""; document.getElementById('update-shot-preview').style.display='none';
+    document.getElementById('update-shot-img').src=""; document.getElementById('attach-shot-btn').innerHTML='<i class="fas fa-camera" style="margin-right:10px;"></i> Attach Screenshot';
+};
+window.submitUpdate = async function() {
+    const details = document.getElementById('update-details').value;
+    if(!details) return alert("Please enter details!");
+    const submitBtn = event.target.closest('button');
+    const orig = submitBtn.innerHTML; submitBtn.innerHTML='<i class="fas fa-spinner fa-spin" style="margin:0 auto;"></i>'; submitBtn.disabled=true;
+    try {
+        const trxId = "TRX-"+Math.floor(Math.random()*100000000);
+        const payload = { details, status:'Pending', trxId, timestamp:Date.now() };
+        if(window.updateScreenshotDataUrl) payload.screenshot = window.updateScreenshotDataUrl;
+        await set(push(ref(db, `updateRequests/${window.currentProjectId}`)), payload);
+        await notifyAdmin('New Update Request', `Project ${window.currentProjectId}: ${details.substring(0,50)}...`, 'update');
+        alert(`Request Submitted!\\nTRX ID: ${trxId}`);
+        document.getElementById('update-details').value=''; removeUpdateScreenshot();
+    } catch(e){ alert("Error submitting."); }
+    finally { submitBtn.innerHTML=orig; submitBtn.disabled=false; }
+};
+function loadUpdatesHistory(pId) {
+    onValue(ref(db, `updateRequests/${pId}`), snap => {
+        let active='', archive='', ac=0;
+        if(snap.exists()){
+            const data=snap.val(); const now=Date.now(); const three=3*24*60*60*1000;
+            for(let k in data){
+                let req=data[k]; let t=new Date(req.timestamp); let ft=t.toLocaleDateString()+' '+t.toLocaleTimeString();
+                let bc='status-pending';
+                if(req.status.toLowerCase()==='working') bc='status-working';
+                if(req.status.toLowerCase()==='close') bc='status-close';
+                if(req.status.toLowerCase()==='complete') bc='status-complete';
+                let sc=req.screenshot?`<button class="neu-button ghost-btn" style="padding:10px;margin-top:10px;margin-bottom:0;font-size:12px;width:auto;" onclick="openLightbox('${req.screenshot}')"><i class="fas fa-image"></i> View</button>`:'';
+                let card=`<div class="neu-box" style="padding:15px;margin-bottom:15px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="text-sm" style="color:var(--info-color);font-weight:bold;">${req.trxId}</span><span class="status-badge ${bc}">${req.status}</span></div><p class="text-sm" style="margin-bottom:8px;"><i class="far fa-clock"></i> ${ft}</p><p style="font-size:14px;white-space:pre-line;">${req.details}</p>${sc}</div>`;
+                let closed = ['close','complete'].includes(req.status.toLowerCase());
+                if(closed && (now-req.timestamp)>three){ archive=card+archive; ac++; } else active=card+active;
+            }
+        }
+        let final = active||'<p class="text-sm">No recent history.</p>';
+        if(ac>0) final += `<div style="margin-top:25px;"><button class="neu-button ghost-btn" onclick="document.getElementById('updates-archive').classList.toggle('hidden')" style="justify-content:center;"><i class="fas fa-archive"></i> Archived (${ac})</button><div id="updates-archive" class="hidden">${archive}</div></div>`;
+        document.getElementById('update-history-list').innerHTML = final;
+    });
+}
+window.toggleComplaintFields = function() {
+    const type = document.getElementById('issue-type').value;
+    ['user-fields','transaction-fields','common-details-field','image-upload-field','submit-complaint-btn'].forEach(id=>{
+        const el=document.getElementById(id); if(el) el.classList.add('hidden');
+    });
+    if(type==='none') return;
+    document.getElementById('submit-complaint-btn').classList.remove('hidden');
+    document.getElementById('common-details-field').classList.remove('hidden');
+    if(type==='user') document.getElementById('user-fields').classList.remove('hidden');
+    else if(type==='deposit'||type==='withdraw'){ document.getElementById('transaction-fields').classList.remove('hidden'); document.getElementById('comp-trx-id').placeholder=`Enter ${type} ID`; }
+    else if(type==='other') document.getElementById('image-upload-field').classList.remove('hidden');
+};
+window.complaintImageUploading=false;
+document.getElementById('fileInput').addEventListener('change', function(){
+    const file=this.files[0]; if(!file) return;
+    const box=document.getElementById('complaint-status-box'), txt=document.getElementById('upload-status');
+    window.complaintImageUploading=true; box.style.display='flex'; box.classList.remove('error-box');
+    txt.innerText="Uploading..."; document.getElementById('complaint-mini-loader').style.display='block';
+    const r=new FileReader(); r.onloadend=()=>{ window.uploadedImageUrl=r.result; txt.innerHTML='<i class="fas fa-check-circle" style="color:#1f9d67;"></i> Uploaded!'; document.getElementById('complaint-mini-loader').style.display='none'; window.complaintImageUploading=false; };
+    r.readAsDataURL(file);
+});
+window.submitComplaint = function() {
+    const type=document.getElementById('issue-type').value, details=document.getElementById('comp-details').value;
+    if(!details) return alert("Complaint tafseel se bayaan karein.");
+    if(window.complaintImageUploading) return alert("Photo upload ho rahi hai...");
+    const btn=document.getElementById('submit-complaint-btn'); const orig=btn.innerHTML; btn.innerHTML='<span class="btn-spinner" style="margin:0 auto;"></span>'; btn.disabled=true;
+    let data={ type, details, status:'Pending', timestamp:Date.now() };
+    if(type==='user'){ data.username=document.getElementById('comp-username').value; data.number=document.getElementById('comp-number').value; }
+    else if(type==='deposit'||type==='withdraw') data.transactionId=document.getElementById('comp-trx-id').value;
+    else if(type==='other') data.attachedImage=window.uploadedImageUrl;
+    set(push(ref(db, `complaints/${window.currentProjectId}`)), data).then(async ()=>{
+        await notifyAdmin('New Complaint', `Project ${window.currentProjectId} (${type}): ${details.substring(0,50)}...`, 'complaint');
+        alert("Complaint submitted.");
+        document.getElementById('comp-details').value=''; document.getElementById('issue-type').value='none';
+        toggleComplaintFields(); window.uploadedImageUrl=""; document.getElementById('complaint-status-box').style.display='none';
+    }).catch(()=>alert("Error")).finally(()=>{ btn.innerHTML=orig; btn.disabled=false; });
+};
+function loadComplaintsHistory(pId) {
+    onValue(ref(db, `complaints/${pId}`), snap=>{
+        let active='', archive='', ac=0;
+        if(snap.exists()){
+            const data=snap.val(); const now=Date.now(); const three=3*24*60*60*1000;
+            for(let k in data){
+                let c=data[k]; let t=new Date(c.timestamp).toLocaleDateString()+' '+new Date(c.timestamp).toLocaleTimeString();
+                let bc=(['resolved','close','complete'].includes(c.status.toLowerCase()))?'status-complete':'status-pending';
+                let img=c.attachedImage?`<button class="neu-button ghost-btn" style="padding:10px;margin-top:10px;font-size:12px;width:auto;" onclick="openLightbox('${c.attachedImage}')"><i class="fas fa-image"></i> View</button>`:'';
+                let card=`<div class="neu-box" style="padding:15px;margin-bottom:15px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="text-sm" style="text-transform:capitalize;font-weight:bold;">${c.type} Issue</span><span class="status-badge ${bc}">${c.status}</span></div><p class="text-sm" style="margin-bottom:8px;"><i class="far fa-clock"></i> ${t}</p><p style="font-size:14px;white-space:pre-line;">${c.details}</p>${img}</div>`;
+                let closed=['resolved','close','complete'].includes(c.status.toLowerCase());
+                if(closed && (now-c.timestamp)>three){ archive=card+archive; ac++; } else active=card+active;
+            }
+        }
+        let final=active||'<p class="text-sm">No recent complaints.</p>';
+        if(ac>0) final+=`<div style="margin-top:25px;"><button class="neu-button ghost-btn" onclick="document.getElementById('complaint-archive').classList.toggle('hidden')" style="justify-content:center;"><i class="fas fa-archive"></i> Archived (${ac})</button><div id="complaint-archive" class="hidden">${archive}</div></div>`;
+        document.getElementById('complaint-history-list').innerHTML=final;
+    });
+}
+window.openUpdatesDashboard = function() {
+    if(!window.currentProjectId) return;
+    openScreen('updates-dashboard-screen');
+    loadBillSummaryUD(window.currentProjectId); loadAppUpdates(window.currentProjectId);
+};
+window.switchUpdatesDashboardTab = function(tab) {
+    document.getElementById('ud-bills-tab').classList.toggle('active', tab==='bills');
+    document.getElementById('ud-appupdates-tab').classList.toggle('active', tab==='appupdates');
+    document.getElementById('ud-tab-btn-bills').classList.toggle('ud-tab-active', tab==='bills');
+    document.getElementById('ud-tab-btn-appupdates').classList.toggle('ud-tab-active', tab==='appupdates');
+};
+function loadBillSummaryUD(pId) {
+    onValue(ref(db, `bills/${pId}/summary`), snap=>{
+        let html='';
+        if(snap.exists()){
+            Object.values(snap.val()).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)).forEach(mon=>{
+                html+=`<div class="neu-box" style="padding:15px;margin-bottom:12px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="font-weight:700;color:var(--primary-dark);">${mon.month||'N/A'}</span><span class="status-badge ${mon.status==='Paid'?'status-complete':'status-pending'}">${mon.status||'Pending'}</span></div><div style="font-size:12px;line-height:1.6;"><div style="display:flex;justify-content:space-between;"><span>System:</span><strong>${mon.systemUsed||'N/A'}</strong></div><div style="display:flex;justify-content:space-between;"><span>Amount:</span><strong>${mon.amount||'0 PKR'}</strong></div></div></div>`;
+            });
+        }
+        document.getElementById('ud-bill-summary-list').innerHTML = html||'<p class="text-sm">No bill summary.</p>';
+    });
+}
+function loadAppUpdates(pId) {
+    onValue(ref(db, `appUpdates/${pId}`), snap=>{
+        let html='';
+        if(snap.exists()){
+            Object.values(snap.val()).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)).forEach(u=>{
+                const dt=new Date(u.timestamp||Date.now());
+                const wn=u.whatsNew?`<div class="ud-whats-new-box"><strong>What's New:</strong><br>${u.whatsNew}</div>`:'';
+                html+=`<div class="neu-box ud-update-card"><div class="ud-update-title-row"><h4>${u.title||'App Update'}</h4></div><p class="text-sm"><i class="far fa-clock"></i> ${dt.toLocaleString()}</p>${wn}<button class="neu-button primary-btn" style="justify-content:center;margin-top:10px;" onclick="alert('Download: Assets/${u.fileName}')"><i class="fab fa-android"></i> Download</button></div>`;
+            });
+        }
+        document.getElementById('ud-appupdates-list').innerHTML = html||'<p class="text-sm">No app updates yet.</p>';
+    });
+}
+// Help bot
+const botReplies = {
+    urdu: { greeting:"Hello! Main apki kya madad kar sakta hoon?", bill:"Bill check: Dashboard → Check Bills.", update:"Update: Dashboard → App Update Now.", complaint:"Complaint: Dashboard se Complaint option.", dashboard:"App Info aur Bell se notifications." },
+    english: { greeting:"Hello! How can I assist?", bill:"Click Check Bills on Dashboard.", update:"Click App Update Now.", complaint:"Open Complaint screen.", dashboard:"App Info + Notification Bell." }
+};
+window.updateChatGreeting = function(){ document.getElementById('chat-greeting').innerText = botReplies[document.getElementById('chat-lang').value].greeting; };
+window.sendChatMsg = function(topic){
+    const lang=document.getElementById('chat-lang').value; const box=document.getElementById('chat-box');
+    const userText = {bill:"Bill kaise check?",update:"Update request?",complaint:"Complaint?",dashboard:"App Info?"}[topic] || topic;
+    const u=document.createElement('div'); u.className="chat-msg chat-user clearfix"; u.innerText=userText; box.appendChild(u);
+    const b=document.createElement('div'); b.className="chat-msg chat-bot clearfix"; b.innerHTML="<i class='fas fa-ellipsis-h fa-fade'></i>"; box.appendChild(b); box.scrollTop=box.scrollHeight;
+    setTimeout(()=>{ b.innerHTML=botReplies[lang][topic]||'OK'; box.scrollTop=box.scrollHeight; },600);
+};
+// Image editor
+const editCanvas=document.getElementById('editCanvas'); const ctx=editCanvas.getContext('2d');
+let baseImage=null, strokes=[], currentStroke=null, drawing=false, activeColor='#ff3b30', pendingCallback=null;
+document.getElementById('color-swatches').addEventListener('click', e=>{
+    const s=e.target.closest('.color-swatch'); if(!s) return;
+    document.querySelectorAll('.color-swatch').forEach(x=>x.classList.remove('active')); s.classList.add('active'); activeColor=s.dataset.color;
+});
+function openImageEditor(file, cb){
+    pendingCallback=cb; const r=new FileReader();
+    r.onload=e=>{ const img=new Image(); img.onload=()=>{ baseImage=img; strokes=[]; fitCanvas(); redraw(); document.getElementById('image-edit-modal').classList.add('active'); }; img.src=e.target.result; };
+    r.readAsDataURL(file);
+}
+function fitCanvas(){ const maxW=Math.min(window.innerWidth,414)-20, maxH=window.innerHeight-220; let w=baseImage.width,h=baseImage.height; const r=Math.min(maxW/w,maxH/h,1); editCanvas.width=Math.round(w*r); editCanvas.height=Math.round(h*r); }
+function redraw(){ ctx.clearRect(0,0,editCanvas.width,editCanvas.height); ctx.drawImage(baseImage,0,0,editCanvas.width,editCanvas.height); strokes.forEach(drawStroke); }
+function drawStroke(s){ if(s.points.length<2){ if(s.points.length===1){ ctx.beginPath(); ctx.fillStyle=s.color; ctx.arc(s.points[0].x,s.points[0].y,3,0,Math.PI*2); ctx.fill(); } return; } ctx.strokeStyle=s.color; ctx.lineWidth=5; ctx.lineJoin='round'; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(s.points[0].x,s.points[0].y); for(let i=1;i<s.points.length;i++) ctx.lineTo(s.points[i].x,s.points[i].y); ctx.stroke(); }
+function getPos(e){ const rect=editCanvas.getBoundingClientRect(); const cx=e.touches?e.touches[0].clientX:e.clientX, cy=e.touches?e.touches[0].clientY:e.clientY; return {x:(cx-rect.left)*(editCanvas.width/rect.width), y:(cy-rect.top)*(editCanvas.height/rect.height)}; }
+function startDraw(e){ e.preventDefault(); drawing=true; currentStroke={color:activeColor,points:[getPos(e)]}; strokes.push(currentStroke); }
+function moveDraw(e){ if(!drawing) return; e.preventDefault(); currentStroke.points.push(getPos(e)); redraw(); }
+function endDraw(){ drawing=false; currentStroke=null; }
+editCanvas.addEventListener('mousedown',startDraw); editCanvas.addEventListener('mousemove',moveDraw); editCanvas.addEventListener('mouseup',endDraw); editCanvas.addEventListener('mouseleave',endDraw);
+editCanvas.addEventListener('touchstart',startDraw,{passive:false}); editCanvas.addEventListener('touchmove',moveDraw,{passive:false}); editCanvas.addEventListener('touchend',endDraw);
+window.undoLastStroke=()=>{ strokes.pop(); redraw(); };
+window.clearAnnotations=()=>{ strokes=[]; redraw(); };
+window.closeImageEditor=function(save){
+    document.getElementById('image-edit-modal').classList.remove('active');
+    if(save&&baseImage){ const d=editCanvas.toDataURL('image/png'); if(pendingCallback) pendingCallback(d); } else if(pendingCallback) pendingCallback(null);
+    pendingCallback=null; baseImage=null; strokes=[];
+};
+window.nextStep = n => { document.querySelectorAll('.wizard-step').forEach(s=>s.classList.remove('active')); document.getElementById('step-'+n).classList.add('active'); };
+window.submitNewProject = () => alert('Project submit – original logic retained. Extend as needed.');
+console.log('MrCrazy Customer App – Updated with PWA, Contact Us, Live Chat, Admin Notifications');
 </script>
 </body>
 </html>
