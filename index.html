@@ -16,15 +16,16 @@
           appId: "a291449e-5e47-42c5-b575-ed24970d5c91",
           allowLocalhostAsSecureOrigin: true,
           notifyButton: { enable: false },
+          autoResubscribe: true,
           serviceWorkerParam: { scope: '/' },
           serviceWorkerPath: 'OneSignalSDKWorker.js'
         });
         window._OneSignal = OneSignal;
-        // Ask permission early (browser + PWA)
+        // EVERY visitor (login or not) -> permission + subscribe for push
+        try { await OneSignal.Notifications.requestPermission(); } catch(e) {}
         try {
-          const perm = await OneSignal.Notifications.permissionNative;
-          if (perm !== 'granted') {
-            await OneSignal.Notifications.requestPermission();
+          if ('Notification' in window && Notification.permission === 'default') {
+            await Notification.requestPermission();
           }
         } catch(e) {}
       });
@@ -756,6 +757,15 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+// Expose for broadcast listener + non-module helpers
+window.db = db;
+window.fbRef = ref;
+window.fbOnValue = onValue;
+window.fbGet = get;
+window.fbPush = push;
+window.fbSet = set;
+window.fbUpdate = update;
+window.fbRemove = remove;
 
 window.currentProjectId = "";
 window.uploadedImageUrl = "";
@@ -785,6 +795,57 @@ if ('serviceWorker' in navigator) {
     // Relative path → works on GitHub Pages + localhost
     navigator.serviceWorker.register('./sw.js').catch((e)=>console.warn('SW register fail', e));
 }
+
+// ===== BROADCAST NOTIFICATIONS (ALL users, login or not) =====
+(function startBroadcastListener() {
+    // Wait for Firebase module globals
+    const tryStart = () => {
+        if (typeof window.fbOnValue === 'undefined' || typeof window.fbRef === 'undefined' || typeof window.db === 'undefined') {
+            setTimeout(tryStart, 400);
+            return;
+        }
+        // Track last seen id so we don't re-fire old ones on every load
+        let lastSeenTs = Number(localStorage.getItem('broadcastLastTs') || '0');
+        window.fbOnValue(window.fbRef(window.db, 'broadcastNotifications'), async (snap) => {
+            if (!snap.exists()) return;
+            const all = snap.val();
+            const items = Object.entries(all).map(([id, v]) => ({ id, ...v }))
+                .filter(n => (n.ts || 0) > lastSeenTs)
+                .sort((a,b) => (a.ts||0) - (b.ts||0));
+            for (const n of items) {
+                lastSeenTs = Math.max(lastSeenTs, n.ts || 0);
+                localStorage.setItem('broadcastLastTs', String(lastSeenTs));
+                const title = n.title || 'MrCrazy';
+                const body = n.body || n.message || '';
+                // In-app toast if function exists
+                if (typeof showInAppToast === 'function') showInAppToast(title, body);
+                // System / lock-screen style notification via SW
+                if (typeof showSystemNotification === 'function') {
+                    showSystemNotification(title, body);
+                } else if ('Notification' in window && Notification.permission === 'granted') {
+                    try {
+                        if (navigator.serviceWorker) {
+                            const reg = await navigator.serviceWorker.ready;
+                            reg.showNotification(title, {
+                                body,
+                                icon: 'https://via.placeholder.com/192/12877f/ffffff?text=MC',
+                                badge: 'https://via.placeholder.com/96/12877f/ffffff?text=MC',
+                                vibrate: [160, 80, 160],
+                                tag: 'broadcast-' + (n.id || Date.now()),
+                                renotify: true,
+                                requireInteraction: false
+                            });
+                        } else {
+                            new Notification(title, { body });
+                        }
+                    } catch (e) { console.warn(e); }
+                }
+            }
+        });
+        console.log('[Broadcast] listener started');
+    };
+    tryStart();
+})();
 
 async function notifyAdmin(title, message, type='general') {
     try {
@@ -1020,7 +1081,7 @@ function startUserNotificationListener(phone) {
         } catch(e){}
     });
 }
-function showInAppToast(title, body) {
+window.showInAppToast = function(title, body) {
     let toast = document.getElementById('inapp-toast');
     if(!toast) {
         toast = document.createElement('div');
@@ -1032,7 +1093,7 @@ function showInAppToast(title, body) {
     toast.style.display = 'block';
     setTimeout(() => { toast.style.display = 'none'; }, 5000);
 }
-async function showSystemNotification(title, body) {
+window.showSystemNotification = async function(title, body) {
     try {
         if(!('Notification' in window)) return;
         if(Notification.permission === 'default') {
