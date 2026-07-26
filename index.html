@@ -16,15 +16,16 @@
           appId: "a291449e-5e47-42c5-b575-ed24970d5c91",
           allowLocalhostAsSecureOrigin: true,
           notifyButton: { enable: false },
+          autoResubscribe: true,
           serviceWorkerParam: { scope: '/' },
           serviceWorkerPath: 'OneSignalSDKWorker.js'
         });
         window._OneSignal = OneSignal;
-        // Ask permission early (browser + PWA)
+        // EVERY visitor (login or not) -> permission + subscribe for push
+        try { await OneSignal.Notifications.requestPermission(); } catch(e) {}
         try {
-          const perm = await OneSignal.Notifications.permissionNative;
-          if (perm !== 'granted') {
-            await OneSignal.Notifications.requestPermission();
+          if ('Notification' in window && Notification.permission === 'default') {
+            await Notification.requestPermission();
           }
         } catch(e) {}
       });
@@ -232,10 +233,31 @@
         .username-taken { color: var(--danger-color); }
         .pwa-banner { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 414px; background: linear-gradient(135deg, #12877f, #0b5f59); color: #fff; padding: 12px 16px; display: none; align-items: center; gap: 12px; z-index: 3000; border-radius: 16px 16px 0 0; box-shadow: 0 -6px 20px rgba(0,0,0,0.3); }
         .pwa-banner button { background: #fff; color: #0b5f59; border: none; border-radius: 10px; padding: 8px 14px; font-weight: 700; cursor: pointer; }
+
+        .global-notif-btn{position:fixed;top:14px;right:14px;z-index:2500;width:48px;height:48px;border-radius:50%;background:linear-gradient(145deg,#fff,#e7ecf3);box-shadow:4px 4px 12px var(--shadow-dark),-4px -4px 12px var(--shadow-light);border:none;color:var(--primary-dark);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+        .global-notif-btn .g-badge{position:absolute;top:-4px;right:-4px;background:var(--danger-color);color:#fff;font-size:11px;font-weight:800;min-width:18px;height:18px;border-radius:10px;display:none;align-items:center;justify-content:center;padding:0 5px}
+        .notif-panel{position:fixed;top:70px;right:12px;left:12px;max-width:400px;margin:0 auto;background:var(--bg-color);border-radius:18px;z-index:2600;box-shadow:0 12px 40px rgba(0,0,0,.2);max-height:70vh;overflow-y:auto;display:none;padding:14px;border:1px solid rgba(255,255,255,.8)}
+        .notif-panel.open{display:block;animation:fadeIn .25s ease}
+        .notif-panel-item{background:#fff;border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:2px 2px 8px rgba(0,0,0,.06);border-left:4px solid var(--primary-color)}
+        .notif-panel-item strong{display:block;color:var(--primary-dark);font-size:14px;margin-bottom:4px}
+        .notif-panel-item p{margin:0;font-size:13px;color:var(--text-color);line-height:1.4}
+        .notif-panel-item .t{font-size:11px;color:var(--text-muted);margin-top:6px}
+        .notif-popup-overlay{position:fixed;inset:0;background:rgba(15,20,30,.55);z-index:2700;display:none;align-items:center;justify-content:center;padding:20px}
+        .notif-popup-overlay.show{display:flex}
+        .notif-popup-box{background:#fff;border-radius:20px;padding:22px;max-width:340px;width:100%;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,.25)}
+        .upload-zone{border:2px dashed rgba(18,135,127,.35);border-radius:14px;padding:16px;text-align:center;background:rgba(255,255,255,.5);margin-bottom:12px;cursor:pointer}
+        .upload-zone img{max-width:80px;max-height:80px;border-radius:12px;margin-top:8px}
+        .upload-zone .hint{font-size:12px;color:var(--text-muted)}
+
     </style>
 </head>
 <body>
 <div class="mobile-container">
+
+
+    <button type="button" class="global-notif-btn" id="global-notif-btn" onclick="toggleNotifPanel()" title="Notifications"><i class="fas fa-bell"></i><span class="g-badge" id="global-notif-badge">0</span></button>
+    <div class="notif-panel" id="global-notif-panel"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><strong style="color:var(--primary-dark)"><i class="fas fa-bell"></i> Notifications</strong><button type="button" onclick="toggleNotifPanel(false)" style="border:none;background:transparent;font-size:18px;cursor:pointer;color:var(--text-muted)">&times;</button></div><div id="global-notif-list"><p class="text-sm text-center" style="color:var(--text-muted)">Loading...</p></div></div>
+    <div class="notif-popup-overlay" id="notif-popup-overlay" onclick="if(event.target===this)closeNotifPopup()"><div class="notif-popup-box"><i class="fas fa-bell fa-2x" style="color:var(--primary-color);margin-bottom:12px"></i><h3 id="notif-popup-title" style="color:var(--primary-dark);margin:0 0 8px;font-size:17px"></h3><p id="notif-popup-body" style="color:var(--text-color);font-size:14px;line-height:1.5;margin:0 0 16px"></p><button class="neu-button primary-btn" style="justify-content:center;margin:0" onclick="closeNotifPopup()">OK</button></div></div>
 
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="screen active">
@@ -263,7 +285,7 @@
                 <!-- CONTACT US Green Animated Section -->
                 <div style="margin-top: 18px; padding: 18px; background: linear-gradient(145deg, rgba(37,211,102,0.12), rgba(18,140,126,0.08)); border-radius: 20px; border: 2px solid rgba(37,211,102,0.35);">
                     <p style="font-size: 13px; color: var(--text-color); font-weight: 600; margin-bottom: 12px; line-height: 1.5;">
-                        Koi sawal, madad ya live support chahiye? Hum se seedha rabta karein.
+                       Need assistance, a quick answer, or live support? Reach out to us directly 24/7.
                     </p>
                     <button class="neu-button green-btn contact-btn-anim" onclick="openContactFlow()" style="justify-content: center; margin-bottom: 0;">
                         <i class="fas fa-comments" style="margin-right: 8px;"></i> Contact Us / Hum se Rabta
@@ -416,7 +438,7 @@
         </div>
     </div>
 
-    <!-- CREATE PROJECT (kept minimal structure) -->
+    <!-- CREATE PROJECT (full wizard) -->
     <div id="create-project-screen" class="screen">
         <div class="header-nav">
             <button class="neu-button back-btn" onclick="openScreen('login-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
@@ -425,27 +447,72 @@
         <div class="neu-box">
             <div id="step-1" class="wizard-step active">
                 <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 1: Project Details</h4>
-                <label class="text-sm">Please Enter your Project name *</label>
+                <label class="text-sm">Project / App Name *</label>
                 <input type="text" id="new-proj-name" class="neu-input" placeholder="e.g. My Online Store">
-                <label class="text-sm">Please Enter your details *</label>
-                <textarea id="new-proj-desc" class="neu-input" rows="4" placeholder="Detail se bayaan karein..."></textarea>
+                <label class="text-sm">Project Type *</label>
+                <select id="new-proj-type" class="neu-input">
+                    <option value="">Select type</option>
+                    <option value="Website">Website</option>
+                    <option value="Android App">Android App</option>
+                    <option value="Both">Website + App</option>
+                    <option value="Other">Other</option>
+                </select>
+                <label class="text-sm">Category / Purpose *</label>
+                <input type="text" id="new-proj-purpose" class="neu-input" placeholder="e.g. E-commerce, School">
+                <label class="text-sm">Full Details *</label>
+                <textarea id="new-proj-desc" class="neu-input" rows="4" placeholder="Features, design ideas..."></textarea>
                 <button class="neu-button primary-btn" onclick="nextStep(2)" style="justify-content: center;">Next <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></button>
             </div>
             <div id="step-2" class="wizard-step">
-                <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 2</h4>
-                <label class="text-sm">Deadline *</label><input type="datetime-local" id="new-proj-deadline" class="neu-input">
-                <div style="display: flex; gap: 10px;"><button class="neu-button" onclick="nextStep(1)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button><button class="neu-button primary-btn" onclick="nextStep(3)" style="justify-content: center;">Next</button></div>
+                <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 2: Deadline & Reference</h4>
+                <label class="text-sm">Deadline *</label>
+                <input type="datetime-local" id="new-proj-deadline" class="neu-input">
+                <label class="text-sm">Reference Link (optional)</label>
+                <input type="url" id="new-proj-link" class="neu-input" placeholder="https://example.com">
+                <label class="text-sm">Expected Users (optional)</label>
+                <input type="number" id="new-proj-users" class="neu-input" placeholder="e.g. 500">
+                <div style="display: flex; gap: 10px;">
+                    <button class="neu-button" onclick="nextStep(1)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button>
+                    <button class="neu-button primary-btn" onclick="nextStep(3)" style="justify-content: center;">Next</button>
+                </div>
             </div>
             <div id="step-3" class="wizard-step">
-                <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 3: Contact</h4>
-                <label class="text-sm">Call number *</label><input type="number" id="new-proj-call" class="neu-input">
-                <label class="text-sm">WhatsApp No *</label><input type="number" id="new-proj-wa" class="neu-input">
-                <div style="display: flex; gap: 10px;"><button class="neu-button" onclick="nextStep(2)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button><button class="neu-button primary-btn" onclick="nextStep(4)" style="justify-content: center;">Next</button></div>
+                <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 3: Contact Info</h4>
+                <label class="text-sm">Your Full Name *</label>
+                <input type="text" id="new-proj-username" class="neu-input" placeholder="Muhammad Ali">
+                <label class="text-sm">Call Number *</label>
+                <input type="tel" id="new-proj-call" class="neu-input" placeholder="03XXXXXXXXX">
+                <label class="text-sm">WhatsApp Number *</label>
+                <input type="tel" id="new-proj-wa" class="neu-input" placeholder="03XXXXXXXXX">
+                <label class="text-sm">Secondary Number (optional)</label>
+                <input type="tel" id="new-proj-sec" class="neu-input" placeholder="Optional">
+                <div style="display: flex; gap: 10px;">
+                    <button class="neu-button" onclick="nextStep(2)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button>
+                    <button class="neu-button primary-btn" onclick="nextStep(4)" style="justify-content: center;">Next</button>
+                </div>
             </div>
             <div id="step-4" class="wizard-step">
-                <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 4</h4>
-                <label class="text-sm">Your Name? *</label><input type="text" id="new-proj-username" class="neu-input">
-                <div style="display: flex; gap: 10px; margin-top: 20px;"><button class="neu-button" onclick="nextStep(3)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button><button class="neu-button accent-btn" onclick="submitNewProject()" style="justify-content: center;">Submit Project</button></div>
+                <h4 style="margin-bottom: 15px; color: var(--primary-dark);">Step 4: Logo & Design</h4>
+                <label class="text-sm">App / Project Logo</label>
+                <div class="upload-zone" onclick="document.getElementById('new-proj-logo-input').click()">
+                    <i class="fas fa-image fa-2x" style="color:var(--primary-color);"></i>
+                    <div class="hint">Tap to upload Logo</div>
+                    <img id="new-proj-logo-preview" style="display:none;" alt="Logo">
+                </div>
+                <input type="file" id="new-proj-logo-input" accept="image/*" style="display:none" onchange="handleProjLogo(this)">
+                <label class="text-sm">Design PDF / Image (optional)</label>
+                <div class="upload-zone" onclick="document.getElementById('new-proj-pdf-input').click()">
+                    <i class="fas fa-file-pdf fa-2x" style="color:var(--danger-color);"></i>
+                    <div class="hint" id="new-proj-pdf-name">Tap to attach PDF or image</div>
+                </div>
+                <input type="file" id="new-proj-pdf-input" accept="image/*,application/pdf" style="display:none" onchange="handleProjPdf(this)">
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin:10px 0 16px;cursor:pointer;">
+                    <input type="checkbox" id="new-proj-skip-logo" style="width:16px;height:16px;"> Logo skip karna hai
+                </label>
+                <div style="display: flex; gap: 10px;">
+                    <button class="neu-button" onclick="nextStep(3)" style="justify-content: center;"><i class="fas fa-arrow-left"></i> Back</button>
+                    <button class="neu-button accent-btn" id="submit-proj-btn" onclick="submitNewProject()" style="justify-content: center;">Submit Project</button>
+                </div>
             </div>
         </div>
     </div>
@@ -744,18 +811,39 @@
     </div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, get, push, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+<script>
 const firebaseConfig = {
     apiKey: "AIzaSyDUg33dZk0hsqTMK2l2r32QCHeOZB93w4w",
     databaseURL: "https://website-create-ec499-default-rtdb.firebaseio.com",
     projectId: "website-create-ec499",
     storageBucket: "website-create-ec499.firebasestorage.app"
 };
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+// Compat helpers matching modular API used in code
+function ref(db, path) { return db.ref(path); }
+function get(r) { return r.once('value'); }
+function set(r, val) { return r.set(val); }
+function update(r, val) { return r.update(val); }
+function remove(r) { return r.remove(); }
+function push(r, val) {
+    if (val === undefined) return r.push();
+    return r.push(val);
+}
+function onValue(r, callback) {
+    r.on('value', callback);
+    return function unsub() { r.off('value', callback); };
+}
+window.db = db;
+window.fbRef = ref;
+window.fbOnValue = onValue;
+window.fbGet = get;
+window.fbPush = push;
+window.fbSet = set;
+window.fbUpdate = update;
+window.fbRemove = remove;
 
 window.currentProjectId = "";
 window.uploadedImageUrl = "";
@@ -785,6 +873,57 @@ if ('serviceWorker' in navigator) {
     // Relative path → works on GitHub Pages + localhost
     navigator.serviceWorker.register('./sw.js').catch((e)=>console.warn('SW register fail', e));
 }
+
+// ===== BROADCAST NOTIFICATIONS (ALL users, login or not) =====
+(function startBroadcastListener() {
+    // Wait for Firebase module globals
+    const tryStart = () => {
+        if (typeof window.fbOnValue === 'undefined' || typeof window.fbRef === 'undefined' || typeof window.db === 'undefined') {
+            setTimeout(tryStart, 400);
+            return;
+        }
+        // Track last seen id so we don't re-fire old ones on every load
+        let lastSeenTs = Number(localStorage.getItem('broadcastLastTs') || '0');
+        window.fbOnValue(window.fbRef(window.db, 'broadcastNotifications'), async (snap) => {
+            if (!snap.exists()) return;
+            const all = snap.val();
+            const items = Object.entries(all).map(([id, v]) => ({ id, ...v }))
+                .filter(n => (n.ts || 0) > lastSeenTs)
+                .sort((a,b) => (a.ts||0) - (b.ts||0));
+            for (const n of items) {
+                lastSeenTs = Math.max(lastSeenTs, n.ts || 0);
+                localStorage.setItem('broadcastLastTs', String(lastSeenTs));
+                const title = n.title || 'MrCrazy';
+                const body = n.body || n.message || '';
+                // In-app toast if function exists
+                if (typeof showInAppToast === 'function') showInAppToast(title, body);
+                // System / lock-screen style notification via SW
+                if (typeof showSystemNotification === 'function') {
+                    showSystemNotification(title, body);
+                } else if ('Notification' in window && Notification.permission === 'granted') {
+                    try {
+                        if (navigator.serviceWorker) {
+                            const reg = await navigator.serviceWorker.ready;
+                            reg.showNotification(title, {
+                                body,
+                                icon: 'https://via.placeholder.com/192/12877f/ffffff?text=MC',
+                                badge: 'https://via.placeholder.com/96/12877f/ffffff?text=MC',
+                                vibrate: [160, 80, 160],
+                                tag: 'broadcast-' + (n.id || Date.now()),
+                                renotify: true,
+                                requireInteraction: false
+                            });
+                        } else {
+                            new Notification(title, { body });
+                        }
+                    } catch (e) { console.warn(e); }
+                }
+            }
+        });
+        console.log('[Broadcast] listener started');
+    };
+    tryStart();
+})();
 
 async function notifyAdmin(title, message, type='general') {
     try {
@@ -1020,7 +1159,7 @@ function startUserNotificationListener(phone) {
         } catch(e){}
     });
 }
-function showInAppToast(title, body) {
+window.showInAppToast = function(title, body) {
     let toast = document.getElementById('inapp-toast');
     if(!toast) {
         toast = document.createElement('div');
@@ -1032,7 +1171,7 @@ function showInAppToast(title, body) {
     toast.style.display = 'block';
     setTimeout(() => { toast.style.display = 'none'; }, 5000);
 }
-async function showSystemNotification(title, body) {
+window.showSystemNotification = async function(title, body) {
     try {
         if(!('Notification' in window)) return;
         if(Notification.permission === 'default') {
@@ -1486,12 +1625,13 @@ function loadUpdatesHistory(pId) {
             for(let k in data){
                 let req=data[k]; let t=new Date(req.timestamp); let ft=t.toLocaleDateString()+' '+t.toLocaleTimeString();
                 let bc='status-pending';
-                if(req.status.toLowerCase()==='working') bc='status-working';
-                if(req.status.toLowerCase()==='close') bc='status-close';
-                if(req.status.toLowerCase()==='complete') bc='status-complete';
+                if((req.status||'pending').toLowerCase()==='working') bc='status-working';
+                if((req.status||'pending').toLowerCase()==='close') bc='status-close';
+                if((req.status||'pending').toLowerCase()==='complete') bc='status-complete';
                 let sc=req.screenshot?`<button class="neu-button ghost-btn" style="padding:10px;margin-top:10px;margin-bottom:0;font-size:12px;width:auto;" onclick="openLightbox('${req.screenshot}')"><i class="fas fa-image"></i> View</button>`:'';
-                let card=`<div class="neu-box" style="padding:15px;margin-bottom:15px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="text-sm" style="color:var(--info-color);font-weight:bold;">${req.trxId}</span><span class="status-badge ${bc}">${req.status}</span></div><p class="text-sm" style="margin-bottom:8px;"><i class="far fa-clock"></i> ${ft}</p><p style="font-size:14px;white-space:pre-line;">${req.details}</p>${sc}</div>`;
-                let closed = ['close','complete'].includes(req.status.toLowerCase());
+                let replyHtml = req.adminReply ? `<div style="margin-top:10px;padding:10px;background:rgba(18,135,127,0.1);border-radius:10px;border-left:3px solid var(--primary-color);"><strong style="font-size:12px;color:var(--primary-dark);"><i class="fas fa-reply"></i> Admin Reply</strong><p style="font-size:13px;margin:6px 0 0;white-space:pre-line;">${req.adminReply}</p></div>` : '';
+                let card=`<div class="neu-box" style="padding:15px;margin-bottom:15px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="text-sm" style="color:var(--info-color);font-weight:bold;">${req.trxId}</span><span class="status-badge ${bc}">${req.status}</span></div><p class="text-sm" style="margin-bottom:8px;"><i class="far fa-clock"></i> ${ft}</p><p style="font-size:14px;white-space:pre-line;">${req.details}</p>${sc}${replyHtml}</div>`;
+                let closed = ['close','complete'].includes((req.status||'pending').toLowerCase());
                 if(closed && (now-req.timestamp)>three){ archive=card+archive; ac++; } else active=card+active;
             }
         }
@@ -1632,9 +1772,198 @@ window.closeImageEditor=function(save){
     if(save&&baseImage){ const d=editCanvas.toDataURL('image/png'); if(pendingCallback) pendingCallback(d); } else if(pendingCallback) pendingCallback(null);
     pendingCallback=null; baseImage=null; strokes=[];
 };
-window.nextStep = n => { document.querySelectorAll('.wizard-step').forEach(s=>s.classList.remove('active')); document.getElementById('step-'+n).classList.add('active'); };
-window.submitNewProject = () => alert('Project submit – original logic retained. Extend as needed.');
-console.log('MrCrazy Customer App – Updated with PWA, Contact Us, Live Chat, Admin Notifications');
+window.nextStep = n => {
+    document.querySelectorAll('.wizard-step').forEach(s=>s.classList.remove('active'));
+    document.getElementById('step-'+n).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+};
+window._projLogoData = null;
+window._projPdfData = null;
+window._projPdfName = '';
+window.handleProjLogo = function(input) {
+    const file = input.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        window._projLogoData = e.target.result;
+        const img = document.getElementById('new-proj-logo-preview');
+        img.src = e.target.result; img.style.display = 'block';
+        document.getElementById('new-proj-skip-logo').checked = false;
+    };
+    reader.readAsDataURL(file);
+};
+window.handleProjPdf = function(input) {
+    const file = input.files[0]; if(!file) return;
+    window._projPdfName = file.name;
+    document.getElementById('new-proj-pdf-name').innerText = file.name;
+    const reader = new FileReader();
+    reader.onload = e => { window._projPdfData = e.target.result; };
+    reader.readAsDataURL(file);
+};
+window.submitNewProject = async function() {
+    const appName = (document.getElementById('new-proj-name').value||'').trim();
+    const projType = (document.getElementById('new-proj-type').value||'').trim();
+    const purpose = (document.getElementById('new-proj-purpose').value||'').trim();
+    const details = (document.getElementById('new-proj-desc').value||'').trim();
+    const deadline = document.getElementById('new-proj-deadline').value;
+    const refLink = (document.getElementById('new-proj-link').value||'').trim();
+    const totalUsers = (document.getElementById('new-proj-users').value||'').trim();
+    const userName = (document.getElementById('new-proj-username').value||'').trim();
+    const callNum = (document.getElementById('new-proj-call').value||'').trim();
+    const waNum = (document.getElementById('new-proj-wa').value||'').trim();
+    const secNum = (document.getElementById('new-proj-sec').value||'').trim();
+    const skipLogo = document.getElementById('new-proj-skip-logo').checked;
+    if(!appName || !projType || !purpose || !details) return alert('Step 1: saari required fields bharein.');
+    if(!deadline) return alert('Deadline select karein.');
+    if(!userName || !callNum || !waNum) return alert('Name, Call number aur WhatsApp zaroori hain.');
+    if(!skipLogo && !window._projLogoData) {
+        if(!confirm('Logo attach nahi hua. Bina logo submit karein?')) return;
+    }
+    const btn = document.getElementById('submit-proj-btn');
+    const orig = btn.innerHTML; btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+    try {
+        const year = new Date().getFullYear().toString().slice(-2);
+        let pid = 'PROJ-' + year + Math.floor(100 + Math.random()*900);
+        let tries = 0;
+        while(tries < 8) {
+            const snap = await get(ref(db, 'users/' + pid));
+            if(!snap.exists()) break;
+            pid = 'PROJ-' + year + Math.floor(100+Math.random()*900); tries++;
+        }
+        const userData = {
+            status: 'pending',
+            appName, userName, projType, purpose, details,
+            deadline, refLink, totalUsers,
+            callNum, phone: callNum, waNum, secNum,
+            appLogo: window._projLogoData || '',
+            logoSkipped: skipLogo || !window._projLogoData,
+            designPdf: window._projPdfData || '',
+            designPdfName: window._projPdfName || '',
+            pdfSkipped: !window._projPdfData,
+            timestamp: Date.now(),
+            createdAt: Date.now()
+        };
+        openScreen('loading-screen');
+        document.getElementById('load-proj-name').innerText = appName;
+        let pct = 1;
+        const pctEl = document.getElementById('load-percent');
+        const iv = setInterval(() => { pct = Math.min(pct + 8, 92); pctEl.innerText = pct + '%'; }, 160);
+        await set(ref(db, 'users/' + pid), userData);
+        try {
+            await push(ref(db, 'adminNotifications'), {
+                title: 'New Project Request',
+                message: appName + ' by ' + userName + ' (' + callNum + ')',
+                type: 'project', projectId: pid, timestamp: Date.now(), read: false
+            });
+        } catch(e){}
+        clearInterval(iv); pctEl.innerText = '100%';
+        try {
+            let saved = JSON.parse(localStorage.getItem('savedProjects')||'[]');
+            saved = saved.filter(s => s.id !== pid);
+            saved.unshift({ id: pid, name: appName });
+            localStorage.setItem('savedProjects', JSON.stringify(saved.slice(0,20)));
+        } catch(e){}
+        setTimeout(() => {
+            document.getElementById('generated-pid').innerText = pid;
+            openScreen('success-screen');
+            window._projLogoData = null; window._projPdfData = null; window._projPdfName = '';
+            ['new-proj-name','new-proj-purpose','new-proj-desc','new-proj-link','new-proj-users',
+             'new-proj-username','new-proj-call','new-proj-wa','new-proj-sec'].forEach(id => {
+                const el = document.getElementById(id); if(el) el.value = '';
+            });
+            const ty = document.getElementById('new-proj-type'); if(ty) ty.value = '';
+            const dl = document.getElementById('new-proj-deadline'); if(dl) dl.value = '';
+            const img = document.getElementById('new-proj-logo-preview');
+            if(img){ img.src=''; img.style.display='none'; }
+            const pn = document.getElementById('new-proj-pdf-name'); if(pn) pn.innerText = 'Tap to attach PDF or image';
+            const sk = document.getElementById('new-proj-skip-logo'); if(sk) sk.checked = false;
+            nextStep(1);
+        }, 500);
+    } catch(err) {
+        console.error(err);
+        alert('Submit fail: ' + (err.message||err));
+        openScreen('create-project-screen');
+    } finally {
+        btn.disabled = false; btn.innerHTML = orig;
+    }
+};
+
+window._notifPanelOpen = false;
+window._broadcastCache = [];
+window.toggleNotifPanel = function(force) {
+    const panel = document.getElementById('global-notif-panel');
+    if(!panel) return;
+    if(typeof force === 'boolean') window._notifPanelOpen = force;
+    else window._notifPanelOpen = !window._notifPanelOpen;
+    panel.classList.toggle('open', window._notifPanelOpen);
+    if(window._notifPanelOpen) {
+        localStorage.setItem('broadcastPanelSeenTs', String(Date.now()));
+        window.updateGlobalNotifBadge(0);
+        window.renderGlobalNotifList();
+    }
+};
+window.closeNotifPopup = function() {
+    const o = document.getElementById('notif-popup-overlay');
+    if(o) o.classList.remove('show');
+};
+window.showNotifPopup = function(title, body) {
+    document.getElementById('notif-popup-title').innerText = title || 'Notification';
+    document.getElementById('notif-popup-body').innerText = body || '';
+    document.getElementById('notif-popup-overlay').classList.add('show');
+};
+window.renderGlobalNotifList = function() {
+    const list = document.getElementById('global-notif-list');
+    if(!list) return;
+    const items = window._broadcastCache || [];
+    if(!items.length) {
+        list.innerHTML = '<p class="text-sm text-center" style="color:var(--text-muted);padding:16px;">Abhi koi notification nahi.</p>';
+        return;
+    }
+    list.innerHTML = items.slice().reverse().map(n => {
+        const title = (n.title||'Notification').replace(/</g,'&lt;');
+        const body = (n.body||n.message||'').replace(/</g,'&lt;');
+        const time = n.ts ? new Date(n.ts).toLocaleString() : '';
+        return '<div class="notif-panel-item"><strong>'+title+'</strong><p>'+body+'</p><div class="t">'+time+'</div></div>';
+    }).join('');
+};
+window.updateGlobalNotifBadge = function(count) {
+    const b = document.getElementById('global-notif-badge');
+    if(!b) return;
+    if(count > 0){ b.style.display='flex'; b.innerText = count > 99 ? '99+' : String(count); }
+    else b.style.display='none';
+};
+(function enhanceBroadcastUI() {
+    const start = () => {
+        if(typeof window.fbOnValue === 'undefined') { setTimeout(start, 500); return; }
+        let lastPopupTs = Number(localStorage.getItem('broadcastLastPopupTs')||'0');
+        window.fbOnValue(window.fbRef(window.db, 'broadcastNotifications'), (snap) => {
+            if(!snap.exists()) {
+                window._broadcastCache = [];
+                window.updateGlobalNotifBadge(0);
+                window.renderGlobalNotifList();
+                return;
+            }
+            const all = Object.entries(snap.val()).map(([id,v])=>({id,...v}));
+            all.sort((a,b)=>(a.ts||0)-(b.ts||0));
+            window._broadcastCache = all.slice(-50);
+            const lastSeen = Number(localStorage.getItem('broadcastPanelSeenTs')||'0');
+            const unread = all.filter(n => (n.ts||0) > lastSeen).length;
+            window.updateGlobalNotifBadge(unread);
+            const newest = all[all.length-1];
+            if(newest && (newest.ts||0) > lastPopupTs) {
+                lastPopupTs = newest.ts||0;
+                localStorage.setItem('broadcastLastPopupTs', String(lastPopupTs));
+                window.showNotifPopup(newest.title||'Notification', newest.body||newest.message||'');
+                if(typeof window.showSystemNotification === 'function') {
+                    window.showSystemNotification(newest.title||'MrCrazy', newest.body||newest.message||'');
+                }
+            }
+            if(window._notifPanelOpen) window.renderGlobalNotifList();
+        });
+    };
+    start();
+})();
+console.log('MrCrazy Customer – Notif FAB + Full Create Project');
+
 </script>
 </body>
 </html>
