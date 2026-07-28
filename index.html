@@ -786,6 +786,24 @@
         <button class="neu-button primary-btn" onclick="document.getElementById('congrats-modal').classList.remove('active')" style="justify-content:center; margin-top:20px; width:100%;">Close</button>
     </div>
 </div>
+
+<!-- NAYI DOWNLOAD PROGRESS MODAL YAHAN ADD KI HAI -->
+<div class="simple-modal-overlay" id="download-progress-modal">
+    <div class="simple-modal-box">
+        <h3 style="color: var(--primary-dark); margin-bottom: 15px;"><i class="fas fa-download"></i> Downloading Update</h3>
+        <p id="dl-filename" style="font-size: 13px; font-weight: bold; margin-bottom: 10px; word-break: break-all; color: var(--primary-color);"></p>
+        <div style="background: rgba(0,0,0,0.1); border-radius: 10px; height: 12px; width: 100%; overflow: hidden; margin-bottom: 10px; border: 1px solid rgba(0,0,0,0.05);">
+            <div id="dl-progress-bar" style="background: linear-gradient(90deg, var(--primary-color), var(--info-color)); width: 0%; height: 100%; transition: width 0.3s ease;"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; font-weight: 600; color: var(--text-color);">
+            <span id="dl-stats">0 MB / 0 MB</span>
+            <span id="dl-speed" style="color: var(--info-color);">0 KB/s</span>
+        </div>
+        <p id="dl-percent" style="font-weight: 800; font-size: 18px; color: var(--primary-dark); margin-bottom: 15px;">0%</p>
+        <button class="neu-button ghost-btn" onclick="cancelDownload()" style="justify-content:center; margin-bottom: 0; padding: 10px;" id="dl-cancel-btn">Cancel</button>
+    </div>
+</div>
+
 <div class="lightbox-overlay" id="lightbox-overlay" onclick="closeLightbox(event)">
     <button class="lightbox-close" onclick="closeLightbox(event)"><i class="fas fa-times"></i></button>
     <img id="lightbox-img" src="" alt="View">
@@ -1718,6 +1736,8 @@ function loadBillSummaryUD(pId) {
         document.getElementById('ud-bill-summary-list').innerHTML = html||'<p class="text-sm">No bill summary.</p>';
     });
 }
+
+// ==== APP UPDATE LIST (CHANGED ALERTS TO REAL DOWNLOAD METHOD) ==== //
 function loadAppUpdates(pId) {
     onValue(ref(db, `appUpdates/${pId}`), snap=>{
         let html='';
@@ -1725,12 +1745,117 @@ function loadAppUpdates(pId) {
             Object.values(snap.val()).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)).forEach(u=>{
                 const dt=new Date(u.timestamp||Date.now());
                 const wn=u.whatsNew?`<div class="ud-whats-new-box"><strong>What's New:</strong><br>${u.whatsNew}</div>`:'';
-                html+=`<div class="neu-box ud-update-card"><div class="ud-update-title-row"><h4>${u.title||'App Update'}</h4></div><p class="text-sm"><i class="far fa-clock"></i> ${dt.toLocaleString()}</p>${wn}<button class="neu-button primary-btn" style="justify-content:center;margin-top:10px;" onclick="alert('Download: Assets/${u.fileName}')"><i class="fab fa-android"></i> Download</button></div>`;
+                html+=`<div class="neu-box ud-update-card"><div class="ud-update-title-row"><h4>${u.title||'App Update'}</h4></div><p class="text-sm"><i class="far fa-clock"></i> ${dt.toLocaleString()}</p>${wn}<button class="neu-button primary-btn" style="justify-content:center;margin-top:10px;" onclick="downloadUpdateFile('${u.fileName}')"><i class="fab fa-android"></i> Download</button></div>`;
             });
         }
         document.getElementById('ud-appupdates-list').innerHTML = html||'<p class="text-sm">No app updates yet.</p>';
     });
 }
+
+// ==== HIDDEN NATIVE REAL-TIME DOWNLOAD SYSTEM ==== //
+window.currentDownloadXHR = null;
+window.downloadUpdateFile = function(fileName) {
+    if(!fileName || fileName === 'undefined') return alert("File not found!");
+    
+    const fileUrl = 'Assets/' + fileName;
+
+    // Reset and open UI Modal
+    document.getElementById('download-progress-modal').classList.add('active');
+    document.getElementById('dl-filename').innerText = fileName;
+    document.getElementById('dl-progress-bar').style.width = '0%';
+    document.getElementById('dl-stats').innerText = '0 MB / 0 MB';
+    document.getElementById('dl-speed').innerText = '0 KB/s';
+    document.getElementById('dl-percent').innerText = '0%';
+    document.getElementById('dl-cancel-btn').innerText = 'Cancel';
+    document.getElementById('dl-cancel-btn').disabled = false;
+
+    let startTime = new Date().getTime();
+    let prevLoaded = 0;
+
+    const xhr = new XMLHttpRequest();
+    window.currentDownloadXHR = xhr;
+    
+    // Nocache parameter to make sure it tracks real file size correctly
+    xhr.open('GET', fileUrl + '?nocache=' + new Date().getTime(), true);
+    xhr.responseType = 'blob';
+
+    xhr.onprogress = function(e) {
+        if (e.lengthComputable) {
+            let percentComplete = (e.loaded / e.total) * 100;
+            document.getElementById('dl-progress-bar').style.width = percentComplete + '%';
+            document.getElementById('dl-percent').innerText = Math.floor(percentComplete) + '%';
+
+            let loadedMB = (e.loaded / (1024 * 1024)).toFixed(2);
+            let totalMB = (e.total / (1024 * 1024)).toFixed(2);
+            document.getElementById('dl-stats').innerText = `${loadedMB} MB / ${totalMB} MB`;
+
+            // Calculate current Speed
+            let currentTime = new Date().getTime();
+            let timeDiff = (currentTime - startTime) / 1000;
+            if (timeDiff >= 0.5) { 
+                let loadedDiff = e.loaded - prevLoaded;
+                let speedBps = loadedDiff / timeDiff;
+                if (speedBps > (1024 * 1024)) {
+                    document.getElementById('dl-speed').innerText = (speedBps / (1024 * 1024)).toFixed(2) + ' MB/s';
+                } else {
+                    document.getElementById('dl-speed').innerText = (speedBps / 1024).toFixed(2) + ' KB/s';
+                }
+                startTime = currentTime;
+                prevLoaded = e.loaded;
+            }
+        } else {
+            // Agar server file size nah de to
+            let loadedMB = (e.loaded / (1024 * 1024)).toFixed(2);
+            document.getElementById('dl-stats').innerText = `${loadedMB} MB / ??? MB`;
+            document.getElementById('dl-progress-bar').style.width = '100%';
+            document.getElementById('dl-progress-bar').style.background = '#d6337e'; 
+        }
+    };
+
+    xhr.onload = function() {
+        if (xhr.status === 200 || xhr.status === 206) {
+            document.getElementById('dl-percent').innerText = '100% - Saving to Device...';
+            
+            // Background main create blob for native download manager
+            const blob = xhr.response;
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = fileName; // Download automatically is name se hoga jo admin dega
+            document.body.appendChild(a);
+            a.click();
+            
+            // Clean up cache & hide modal silently
+            setTimeout(() => {
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                document.getElementById('dl-cancel-btn').innerText = 'Close';
+                document.getElementById('download-progress-modal').classList.remove('active');
+            }, 1000);
+        } else {
+            alert("Download Failed! Status: " + xhr.status + ". Lagta hai file Assets folder mein majood nahi.");
+            document.getElementById('download-progress-modal').classList.remove('active');
+        }
+    };
+
+    xhr.onerror = function() {
+        alert("Network Error ho gaya download karte waqt.");
+        document.getElementById('download-progress-modal').classList.remove('active');
+    };
+
+    xhr.send();
+};
+
+window.cancelDownload = function() {
+    if(window.currentDownloadXHR) {
+        window.currentDownloadXHR.abort();
+        window.currentDownloadXHR = null;
+    }
+    document.getElementById('download-progress-modal').classList.remove('active');
+};
+
+
 // Help bot
 const botReplies = {
     urdu: { greeting:"Hello! Main apki kya madad kar sakta hoon?", bill:"Bill check: Dashboard → Check Bills.", update:"Update: Dashboard → App Update Now.", complaint:"Complaint: Dashboard se Complaint option.", dashboard:"App Info aur Bell se notifications." },
