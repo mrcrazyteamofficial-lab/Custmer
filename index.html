@@ -21,7 +21,6 @@
           serviceWorkerPath: 'OneSignalSDKWorker.js'
         });
         window._OneSignal = OneSignal;
-        // EVERY visitor (login or not) -> permission + subscribe for push
         try { await OneSignal.Notifications.requestPermission(); } catch(e) {}
         try {
           if ('Notification' in window && Notification.permission === 'default') {
@@ -185,7 +184,6 @@
         .bank-info { font-size: 12px; color: var(--text-color); margin-bottom: 2px; }
         .copy-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: #fff; border: 1px solid #ccd5e3; border-radius: 8px; width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; cursor: pointer; color: var(--primary-color); box-shadow: 2px 2px 6px rgba(0,0,0,0.05); }
         .payment-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.9); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 32px; }
-        /* Contact Us + Chat styles */
         .contact-welcome-box { background: linear-gradient(145deg, #e8f8f0, #d1f0e0); border: 2px solid #25D366; border-radius: 20px; padding: 22px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.2); }
         .contact-welcome-box h3 { color: #075E54; margin-bottom: 12px; font-size: 18px; }
         .contact-welcome-box p { font-size: 14px; line-height: 1.6; color: #1a3c34; margin-bottom: 18px; }
@@ -248,12 +246,10 @@
         .upload-zone{border:2px dashed rgba(18,135,127,.35);border-radius:14px;padding:16px;text-align:center;background:rgba(255,255,255,.5);margin-bottom:12px;cursor:pointer}
         .upload-zone img{max-width:80px;max-height:80px;border-radius:12px;margin-top:8px}
         .upload-zone .hint{font-size:12px;color:var(--text-muted)}
-
     </style>
 </head>
 <body>
 <div class="mobile-container">
-
 
     <button type="button" class="global-notif-btn" id="global-notif-btn" onclick="toggleNotifPanel()" title="Notifications"><i class="fas fa-bell"></i><span class="g-badge" id="global-notif-badge">0</span></button>
     <div class="notif-panel" id="global-notif-panel"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><strong style="color:var(--primary-dark)"><i class="fas fa-bell"></i> Notifications</strong><button type="button" onclick="toggleNotifPanel(false)" style="border:none;background:transparent;font-size:18px;cursor:pointer;color:var(--text-muted)">&times;</button></div><div id="global-notif-list"><p class="text-sm text-center" style="color:var(--text-muted)">Loading...</p></div></div>
@@ -282,7 +278,6 @@
                         <i class="fas fa-plus-circle" style="margin-right: 8px;"></i> Create new project
                     </button>
                 </div>
-                <!-- CONTACT US Green Animated Section -->
                 <div style="margin-top: 18px; padding: 18px; background: linear-gradient(145deg, rgba(37,211,102,0.12), rgba(18,140,126,0.08)); border-radius: 20px; border: 2px solid rgba(37,211,102,0.35);">
                     <p style="font-size: 13px; color: var(--text-color); font-weight: 600; margin-bottom: 12px; line-height: 1.5;">
                        Need assistance, a quick answer, or live support? Reach out to us directly 24/7.
@@ -438,7 +433,7 @@
         </div>
     </div>
 
-    <!-- CREATE PROJECT (full wizard) -->
+    <!-- CREATE PROJECT -->
     <div id="create-project-screen" class="screen">
         <div class="header-nav">
             <button class="neu-button back-btn" onclick="openScreen('login-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
@@ -531,7 +526,7 @@
         <button class="neu-button primary-btn" onclick="openScreen('login-screen')" style="justify-content: center;">Back</button>
     </div>
 
-    <!-- DASHBOARD (core) -->
+    <!-- DASHBOARD -->
     <div id="dashboard-screen" class="screen">
         <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
             <div style="position: relative; background: #ffffff; padding: 14px 16px; border-radius: 18px; box-shadow: 5px 5px 15px var(--shadow-dark), -5px -5px 15px var(--shadow-light); cursor: pointer; border: 2px solid var(--primary-color);" onclick="document.getElementById('notif-modal').classList.add('active')">
@@ -594,7 +589,7 @@
         <div class="slime-bot" onclick="openScreen('help-screen')"><i class="fas fa-robot"></i><span>Help</span></div>
     </div>
 
-    <!-- BILLS / PAYMENT / UPDATE / COMPLAINT / UPDATES DASH / HELP - keep structure, full logic in JS -->
+    <!-- BILLS / PAYMENT / UPDATE / COMPLAINT / UPDATES DASH / HELP -->
     <div id="bills-screen" class="screen">
         <div class="header-nav" style="margin-bottom: 10px;">
             <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto; padding: 10px 15px; margin-bottom: 0;"><i class="fas fa-arrow-left"></i></button>
@@ -787,7 +782,6 @@
     </div>
 </div>
 
-<!-- NAYI DOWNLOAD PROGRESS MODAL YAHAN ADD KI HAI -->
 <div class="simple-modal-overlay" id="download-progress-modal">
     <div class="simple-modal-box">
         <h3 style="color: var(--primary-dark); margin-bottom: 15px;"><i class="fas fa-download"></i> Downloading Update</h3>
@@ -840,7 +834,6 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-// Compat helpers matching modular API used in code
 function ref(db, path) { return db.ref(path); }
 function get(r) { return r.once('value'); }
 function set(r, val) { return r.set(val); }
@@ -888,19 +881,15 @@ window.installPWA = async function() {
     document.getElementById('pwa-banner').style.display = 'none';
 };
 if ('serviceWorker' in navigator) {
-    // Relative path → works on GitHub Pages + localhost
     navigator.serviceWorker.register('./sw.js').catch((e)=>console.warn('SW register fail', e));
 }
 
-// ===== BROADCAST NOTIFICATIONS (ALL users, login or not) =====
 (function startBroadcastListener() {
-    // Wait for Firebase module globals
     const tryStart = () => {
         if (typeof window.fbOnValue === 'undefined' || typeof window.fbRef === 'undefined' || typeof window.db === 'undefined') {
             setTimeout(tryStart, 400);
             return;
         }
-        // Track last seen id so we don't re-fire old ones on every load
         let lastSeenTs = Number(localStorage.getItem('broadcastLastTs') || '0');
         window.fbOnValue(window.fbRef(window.db, 'broadcastNotifications'), async (snap) => {
             if (!snap.exists()) return;
@@ -913,9 +902,7 @@ if ('serviceWorker' in navigator) {
                 localStorage.setItem('broadcastLastTs', String(lastSeenTs));
                 const title = n.title || 'MrCrazy';
                 const body = n.body || n.message || '';
-                // In-app toast if function exists
                 if (typeof showInAppToast === 'function') showInAppToast(title, body);
-                // System / lock-screen style notification via SW
                 if (typeof showSystemNotification === 'function') {
                     showSystemNotification(title, body);
                 } else if ('Notification' in window && Notification.permission === 'granted') {
@@ -938,7 +925,6 @@ if ('serviceWorker' in navigator) {
                 }
             }
         });
-        console.log('[Broadcast] listener started');
     };
     tryStart();
 })();
@@ -950,7 +936,6 @@ async function notifyAdmin(title, message, type='general') {
             projectId: window.currentProjectId || (window.chatUser && window.chatUser.phone) || 'unknown',
             timestamp: Date.now(), read: false
         });
-        console.log('[Admin Notify]', title, message);
     } catch(e) { console.error(e); }
 }
 
@@ -999,7 +984,6 @@ window.handleSubscribe = function(cb) {
     else t.innerText = 'Subscribe jab aap Update ho jayegi apko WhatsApp par notifection bhej dia jayega.';
 };
 
-// ===== CONTACT US FLOW =====
 window.openContactFlow = () => openScreen('contact-greeting-screen');
 window.startContactAuth = () => {
     openScreen('contact-loading-screen');
@@ -1066,10 +1050,9 @@ window.doChatSignup = async function() {
         window.chatUser = userData;
         document.getElementById('welcome-username-display').innerText = `Assalam o Alaikum ${username}`;
         openScreen('contact-welcome-screen');
-        // Notifications
         linkOneSignalUser(phone);
         startUserNotificationListener(phone);
-    } catch(e){ alert('Signup failed'); console.error(e); }
+    } catch(e){ alert('Signup failed'); }
     finally { btn.innerHTML=orig; btn.disabled=false; }
 };
 window.doChatLogin = () => {
@@ -1090,7 +1073,6 @@ async function doChatLoginWithPhone(phone, isAuto) {
         update(ref(db, 'chatUsers/'+phone), { lastSeen: Date.now() });
         document.getElementById('welcome-username-display').innerText = `Assalam o Alaikum ${data.username}`;
         openScreen('contact-welcome-screen');
-        // Notifications
         linkOneSignalUser(phone);
         startUserNotificationListener(phone);
     } catch(e){ alert('Login error'); }
@@ -1101,7 +1083,6 @@ window.openChatDashboard = function() {
     document.getElementById('chat-dash-phone').innerText = window.chatUser.phone;
     if(window.chatUser.dp) document.getElementById('chat-user-dp').src = window.chatUser.dp;
     loadUserProjects(window.chatUser.phone);
-    // Ensure notif listener running
     linkOneSignalUser(window.chatUser.phone);
     startUserNotificationListener(window.chatUser.phone);
     openScreen('chat-dashboard-screen');
@@ -1111,7 +1092,6 @@ async function loadUserProjects(phone) {
     const countEl = document.getElementById('chat-projects-count');
     listEl.innerHTML = '<p class="text-sm"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
     try {
-        // Normalize phone: digits only
         const cleanPhone = String(phone || '').replace(/\D/g, '');
         const snap = await get(ref(db, 'users'));
         let projectIds = [];
@@ -1119,11 +1099,9 @@ async function loadUserProjects(phone) {
             const all = snap.val();
             for(let pid in all){
                 const u = all[pid];
-                // Collect all possible number fields from project
                 const nums = [u.callNum, u.phone, u.whatsapp, u.wa, u.waNum, u.secNum]
                     .filter(Boolean)
                     .map(n => String(n).replace(/\D/g, ''));
-                // Match if any number equals or ends with this phone (or vice versa)
                 const matched = nums.some(n => {
                     if(!n || !cleanPhone) return false;
                     return n === cleanPhone || n.endsWith(cleanPhone) || cleanPhone.endsWith(n);
@@ -1131,10 +1109,8 @@ async function loadUserProjects(phone) {
                 if(matched) projectIds.push(pid);
             }
         }
-        // Unique IDs only
         projectIds = [...new Set(projectIds)];
         countEl.innerText = `Total Projects: ${projectIds.length}`;
-        // ONLY Project IDs show (no app name)
         listEl.innerHTML = projectIds.length
             ? projectIds.map(id => `
                 <div class="project-card-mini" style="justify-content:space-between;">
@@ -1143,12 +1119,10 @@ async function loadUserProjects(phone) {
                 </div>`).join('')
             : '<p class="text-sm">Is number se koi Project ID linked nahi mila.</p>';
     } catch(e){
-        console.error(e);
         listEl.innerHTML = '<p class="text-sm text-danger">Error loading projects.</p>';
     }
 }
 
-// ===== USER NOTIFICATIONS (from Admin → mobile + in-app) =====
 window.userNotifUnsub = null;
 function startUserNotificationListener(phone) {
     if(!phone) return;
@@ -1156,25 +1130,15 @@ function startUserNotificationListener(phone) {
     window.userNotifUnsub = onValue(ref(db, 'userNotifications/' + phone), async (snap) => {
         if(!snap.exists()) return;
         const data = snap.val();
-        // Find unread / recent
         const items = Object.entries(data)
             .map(([k,v]) => ({ id:k, ...v }))
             .filter(n => !n.read)
             .sort((a,b) => (b.ts||0) - (a.ts||0));
         if(!items.length) return;
         const latest = items[0];
-        // Mark as read
         update(ref(db, `userNotifications/${phone}/${latest.id}`), { read: true }).catch(()=>{});
-        // 1) In-app toast
         showInAppToast(latest.title || 'Notification', latest.body || '');
-        // 2) System / PWA notification (works even if tab in background)
         showSystemNotification(latest.title || 'MrCrazy', latest.body || '');
-        // 3) OneSignal local display (extra)
-        try {
-            if(window._OneSignal && window._OneSignal.Notifications) {
-                // already covered by Notification API
-            }
-        } catch(e){}
     });
 }
 window.showInAppToast = function(title, body) {
@@ -1196,7 +1160,6 @@ window.showSystemNotification = async function(title, body) {
             await Notification.requestPermission();
         }
         if(Notification.permission === 'granted') {
-            // Prefer service worker notification (better on mobile PWA)
             if(navigator.serviceWorker && navigator.serviceWorker.ready) {
                 const reg = await navigator.serviceWorker.ready;
                 reg.showNotification(title, {
@@ -1211,28 +1174,24 @@ window.showSystemNotification = async function(title, body) {
                 new Notification(title, { body, icon: 'https://via.placeholder.com/192/12877f/ffffff?text=MC' });
             }
         }
-    } catch(e) { console.warn('Notification error', e); }
+    } catch(e) {}
 }
 async function linkOneSignalUser(phone) {
     try {
         if(!phone) return;
-        // Wait for OneSignal
         await new Promise(r => {
             if(window._OneSignal) return r();
             const t = setInterval(() => { if(window._OneSignal){ clearInterval(t); r(); } }, 300);
             setTimeout(r, 5000);
         });
         if(window._OneSignal) {
-            // External user id = phone → admin can target later via OneSignal dashboard too
             await window._OneSignal.login(String(phone));
             await window._OneSignal.User.addTag('phone', String(phone));
-            console.log('[OneSignal] linked user', phone);
         }
-        // Also request browser permission
         if('Notification' in window && Notification.permission === 'default') {
             await Notification.requestPermission();
         }
-    } catch(e) { console.warn('OneSignal link error', e); }
+    } catch(e) {}
 }
 window.handleChatDP = function(input) {
     const file = input.files[0]; if(!file) return;
@@ -1245,7 +1204,6 @@ window.handleChatDP = function(input) {
     input.value = '';
 };
 
-// ===== LIVE CHAT (Persistent History) =====
 window.chatMsgUnsub = null;
 window.openLiveChat = function() {
     if(!window.chatUser) return;
@@ -1258,8 +1216,6 @@ window.openLiveChat = function() {
 function initLiveChat() {
     const box = document.getElementById('wa-messages');
     box.innerHTML = '';
-
-    // Admin online / typing status
     onValue(ref(db, 'adminStatus'), snap => {
         const st = snap.val()||{};
         const el = document.getElementById('wa-status-text');
@@ -1272,22 +1228,17 @@ function initLiveChat() {
         if(snap.val()===true){ el.innerText='typing...'; el.className='wa-typing'; }
     });
 
-    // Load + listen to ALL previous messages (text / image / voice)
     if(window.chatMsgUnsub) { try{ window.chatMsgUnsub(); }catch(e){} }
     const msgsRef = ref(db, `chats/${window.currentChatId}/messages`);
-    let firstLoad = true;
     window.chatMsgUnsub = onValue(msgsRef, (snap) => {
         const data = snap.val() || {};
         const keys = Object.keys(data).sort((a,b) => (data[a].timestamp||0) - (data[b].timestamp||0));
-        
-        box.innerHTML = ''; // clear then re-render full history
+        box.innerHTML = '';
         if(keys.length === 0) {
-            // Brand new chat → show greeting + help options
             window.chatMode = 'bot';
             document.getElementById('wa-help-section').classList.remove('hidden');
             appendBotMsg(`Assalam o Alaikum ${window.chatUser.username||window.chatUser.fullName}! 👋\nAapko kis madad ki zaroorat hai? Neeche se option select karein.`);
         } else {
-            // Existing history → hide help options, show all messages
             window.chatMode = 'live';
             document.getElementById('wa-help-section').classList.add('hidden');
             keys.forEach(k => {
@@ -1305,7 +1256,6 @@ function initLiveChat() {
                     });
                 }
             });
-            // Check if chat was ended by admin
             get(ref(db, `chats/${window.currentChatId}/meta`)).then(metaSnap => {
                 const meta = metaSnap.val() || {};
                 if(meta.status === 'ended') {
@@ -1315,7 +1265,6 @@ function initLiveChat() {
             });
         }
         box.scrollTop = box.scrollHeight;
-        firstLoad = false;
     });
 }
 function appendBotMsg(text) {
@@ -1338,12 +1287,6 @@ function appendMsg(text, isUser, extra={}) {
     html += `<div class="wa-msg-time">${t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} ${isUser?'<i class="fas fa-check-double" style="font-size:10px;"></i>':''}</div>`;
     div.innerHTML = html;
     div.onclick = () => { if(!isUser){ window.replyToMsg = text||'[media]'; document.getElementById('wa-text-input').placeholder='Replying...'; document.getElementById('wa-text-input').focus(); } };
-    div.ondblclick = () => {
-        const emojis = ['👍','❤️','😂','😮','😢'];
-        const e = emojis[Math.floor(Math.random()*emojis.length)];
-        const r = document.createElement('div'); r.className='wa-reactions'; r.innerHTML=`<span class="wa-reaction">${e}</span>`;
-        div.appendChild(r);
-    };
     box.appendChild(div); box.scrollTop = box.scrollHeight;
 }
 window.sendHelpChoice = async function(choice) {
@@ -1359,12 +1302,11 @@ window.sendHelpChoice = async function(choice) {
         window.chatMode='live';
     } else if(choice==='owner'){
         userText = 'Owner se rabta karna hai.';
-        botText = 'Shukriya! Aapki request admin ko forward kar di gayi hai. Jaldi Muhammad Naeem sahab reply karenge. Ab aap free feel karke message bhej sakte hain.';
+        botText = 'Shukriya! Aapki request admin ko forward kar di gayi hai. Jaldi Muhammad Naeem sahab reply karenge.';
         window.chatMode='live';
         notifyAdmin('New Live Chat Request', `${window.chatUser.username} (${window.chatUser.phone}) wants Owner.`, 'chat');
         set(ref(db, `chats/${window.currentChatId}/meta`), { user: window.chatUser.username, phone: window.chatUser.phone, startedAt: Date.now(), status: 'open' });
     }
-    // Save both to Firebase so they persist
     await push(ref(db, `chats/${window.currentChatId}/messages`), { text: userText, from:'user', timestamp:Date.now() });
     setTimeout(async ()=>{
         await push(ref(db, `chats/${window.currentChatId}/messages`), { text: botText, from:'bot', timestamp:Date.now() });
@@ -1375,14 +1317,8 @@ window.sendChatText = async function() {
     const text = input.value.trim(); if(!text) return;
     const reply = window.replyToMsg;
     input.value=''; input.placeholder='Message...'; window.replyToMsg=null;
-    // Only push to Firebase – real-time listener will render it
     await push(ref(db, `chats/${window.currentChatId}/messages`), { text, from:'user', timestamp:Date.now(), replyTo: reply||null });
     await notifyAdmin('New Chat Message', `${window.chatUser.username}: ${text.substring(0,60)}`, 'chat');
-    if(window.chatMode==='bot') {
-        setTimeout(async ()=>{
-            await push(ref(db, `chats/${window.currentChatId}/messages`), { text: 'Main aapki madad ke liye yahan hoon. "Owner se Rabta" choose karein live chat ke liye.', from:'bot', timestamp:Date.now() });
-        },700);
-    }
 };
 window.sendChatImage = function(input) {
     const file = input.files[0]; if(!file) return;
@@ -1419,20 +1355,12 @@ window.stopVoiceRecord = function() {
 window.submitFeedback = async function(type) {
     await push(ref(db, `chats/${window.currentChatId}/feedback`), { type, timestamp:Date.now(), user: window.chatUser.username });
     await update(ref(db, `chats/${window.currentChatId}/meta`), { status: 'ended', endedAt: Date.now(), feedback: type });
-    // Save feedback message too
-    await push(ref(db, `chats/${window.currentChatId}/messages`), { text: 'Thanks for your feedback! ❤️ Chat band. Naya chat ke liye "Hum se Rabta" dabayein.', from:'bot', timestamp:Date.now() });
+    await push(ref(db, `chats/${window.currentChatId}/messages`), { text: 'Thanks for your feedback! ❤️ Chat band.', from:'bot', timestamp:Date.now() });
     document.getElementById('feedback-bar').classList.add('hidden');
     document.getElementById('wa-input-bar').style.display = 'none';
     setTimeout(()=>openScreen('chat-dashboard-screen'), 2500);
 };
-window.endChatAsAdmin = function() {
-    document.getElementById('feedback-bar').classList.remove('hidden');
-    document.getElementById('wa-input-bar').style.display = 'none';
-    push(ref(db, `chats/${window.currentChatId}/messages`), { text: 'Admin ne chat end kar diya. Please feedback dein.', from:'bot', timestamp:Date.now() });
-    update(ref(db, `chats/${window.currentChatId}/meta`), { status: 'ended', endedAt: Date.now() });
-};
 
-// ===== ORIGINAL LOGIN + BILLS + etc (core) =====
 window.login = async function() {
     const pId = document.getElementById('projectIdInput').value.trim();
     if(!pId) return alert("Please enter Project ID");
@@ -1472,7 +1400,7 @@ window.login = async function() {
             document.getElementById('info-update').innerText = data.lastUpdate || 'N/A';
             document.getElementById('info-type').innerText = data.projType || 'N/A';
             document.getElementById('info-purpose').innerText = data.purpose || 'N/A';
-            // Maintenance
+            
             const isMaintenance = data.maintenance && data.maintenance.active;
             const normalHeaders = document.getElementById('dashboard-normal-headers');
             const maintHeader = document.getElementById('dashboard-maintenance-header');
@@ -1504,7 +1432,7 @@ window.login = async function() {
                 maintHeader.classList.add('hidden'); maintCard.classList.add('hidden');
                 maintAudio.pause(); clearInterval(maintTimerInterval);
             }
-            // Notifs
+
             let notiCount = 0; let notifs = data.notifications || {}; let nHtml = '';
             if(notifs.bills){ notiCount++; document.getElementById('badge-bills').style.display='inline-block';
                 nHtml += `<div class="neu-box" style="padding:12px;margin-bottom:10px;cursor:pointer;" onclick="clearNotifAndOpen('bills','bills-screen')"><i class="fas fa-file-invoice-dollar" style="color:var(--primary-color);margin-right:8px;"></i> New Bill Update</div>`; }
@@ -1603,7 +1531,7 @@ window.downloadPDF = function() {
     const element = document.getElementById('pdf-content-area');
     html2pdf().set({ margin:10, filename:'Billing_Summary.pdf', image:{type:'jpeg',quality:0.98}, html2canvas:{scale:2}, jsPDF:{unit:'mm',format:'a4',orientation:'portrait'} }).from(element).save();
 };
-// Update + Complaint with notifyAdmin
+
 document.getElementById('updateFileInput').addEventListener('change', function() {
     const file = this.files[0]; if(!file) return;
     const btn = document.getElementById('attach-shot-btn');
@@ -1623,18 +1551,27 @@ window.submitUpdate = async function() {
     const details = document.getElementById('update-details').value;
     if(!details) return alert("Please enter details!");
     const submitBtn = event.target.closest('button');
-    const orig = submitBtn.innerHTML; submitBtn.innerHTML='<i class="fas fa-spinner fa-spin" style="margin:0 auto;"></i>'; submitBtn.disabled=true;
+    const orig = submitBtn.innerHTML; submitBtn.innerHTML='<span class="btn-spinner" style="margin:0 auto;"></span>'; submitBtn.disabled=true;
     try {
         const trxId = "TRX-"+Math.floor(Math.random()*100000000);
         const payload = { details, status:'Pending', trxId, timestamp:Date.now() };
         if(window.updateScreenshotDataUrl) payload.screenshot = window.updateScreenshotDataUrl;
         await set(push(ref(db, `updateRequests/${window.currentProjectId}`)), payload);
         await notifyAdmin('New Update Request', `Project ${window.currentProjectId}: ${details.substring(0,50)}...`, 'update');
-        alert(`Request Submitted!\\nTRX ID: ${trxId}`);
+        alert(`Request Submitted!\nTRX ID: ${trxId}`);
         document.getElementById('update-details').value=''; removeUpdateScreenshot();
     } catch(e){ alert("Error submitting."); }
     finally { submitBtn.innerHTML=orig; submitBtn.disabled=false; }
 };
+
+window.goToAppUpdates = function() {
+    if(!window.currentProjectId) return;
+    openScreen('updates-dashboard-screen');
+    loadBillSummaryUD(window.currentProjectId); 
+    loadAppUpdates(window.currentProjectId);
+    switchUpdatesDashboardTab('appupdates');
+};
+
 function loadUpdatesHistory(pId) {
     onValue(ref(db, `updateRequests/${pId}`), snap => {
         let active='', archive='', ac=0;
@@ -1648,7 +1585,12 @@ function loadUpdatesHistory(pId) {
                 if((req.status||'pending').toLowerCase()==='complete') bc='status-complete';
                 let sc=req.screenshot?`<button class="neu-button ghost-btn" style="padding:10px;margin-top:10px;margin-bottom:0;font-size:12px;width:auto;" onclick="openLightbox('${req.screenshot}')"><i class="fas fa-image"></i> View</button>`:'';
                 let replyHtml = req.adminReply ? `<div style="margin-top:10px;padding:10px;background:rgba(18,135,127,0.1);border-radius:10px;border-left:3px solid var(--primary-color);"><strong style="font-size:12px;color:var(--primary-dark);"><i class="fas fa-reply"></i> Admin Reply</strong><p style="font-size:13px;margin:6px 0 0;white-space:pre-line;">${req.adminReply}</p></div>` : '';
-                let card=`<div class="neu-box" style="padding:15px;margin-bottom:15px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="text-sm" style="color:var(--info-color);font-weight:bold;">${req.trxId}</span><span class="status-badge ${bc}">${req.status}</span></div><p class="text-sm" style="margin-bottom:8px;"><i class="far fa-clock"></i> ${ft}</p><p style="font-size:14px;white-space:pre-line;">${req.details}</p>${sc}${replyHtml}</div>`;
+                
+                // Check if app is ready via admin action
+                let appReadyBtn = (req.appReady || req.appAttached || req.appReadyCreated) ? `<button class="neu-button green-btn" style="justify-content:center; padding:12px; margin-top:12px; margin-bottom:0; width:100%; font-size:14px; animation: pulse-green-btn 2s infinite;" onclick="goToAppUpdates()"><i class="fas fa-rocket" style="margin-right:8px;"></i> App is Ready - Download Now</button>` : '';
+
+                let card=`<div class="neu-box" style="padding:15px;margin-bottom:15px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="text-sm" style="color:var(--info-color);font-weight:bold;">${req.trxId||k}</span><span class="status-badge ${bc}">${req.status}</span></div><p class="text-sm" style="margin-bottom:8px;"><i class="far fa-clock"></i> ${ft}</p><p style="font-size:14px;white-space:pre-line;">${req.details}</p>${sc}${replyHtml}${appReadyBtn}</div>`;
+                
                 let closed = ['close','complete'].includes((req.status||'pending').toLowerCase());
                 if(closed && (now-req.timestamp)>three){ archive=card+archive; ac++; } else active=card+active;
             }
@@ -1702,10 +1644,16 @@ function loadComplaintsHistory(pId) {
             const data=snap.val(); const now=Date.now(); const three=3*24*60*60*1000;
             for(let k in data){
                 let c=data[k]; let t=new Date(c.timestamp).toLocaleDateString()+' '+new Date(c.timestamp).toLocaleTimeString();
-                let bc=(['resolved','close','complete'].includes(c.status.toLowerCase()))?'status-complete':'status-pending';
+                let bc=(['resolved','close','complete'].includes((c.status||'').toLowerCase()))?'status-complete':'status-pending';
                 let img=c.attachedImage?`<button class="neu-button ghost-btn" style="padding:10px;margin-top:10px;font-size:12px;width:auto;" onclick="openLightbox('${c.attachedImage}')"><i class="fas fa-image"></i> View</button>`:'';
-                let card=`<div class="neu-box" style="padding:15px;margin-bottom:15px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="text-sm" style="text-transform:capitalize;font-weight:bold;">${c.type} Issue</span><span class="status-badge ${bc}">${c.status}</span></div><p class="text-sm" style="margin-bottom:8px;"><i class="far fa-clock"></i> ${t}</p><p style="font-size:14px;white-space:pre-line;">${c.details}</p>${img}</div>`;
-                let closed=['resolved','close','complete'].includes(c.status.toLowerCase());
+                let replyHtml = c.adminReply ? `<div style="margin-top:10px;padding:10px;background:rgba(18,135,127,0.1);border-radius:10px;border-left:3px solid var(--primary-color);"><strong style="font-size:12px;color:var(--primary-dark);"><i class="fas fa-reply"></i> Admin Reply</strong><p style="font-size:13px;margin:6px 0 0;white-space:pre-line;">${c.adminReply}</p></div>` : '';
+                
+                // App Ready button check for complaints too
+                let appReadyBtn = (c.appReady || c.appAttached || c.appReadyCreated) ? `<button class="neu-button green-btn" style="justify-content:center; padding:12px; margin-top:12px; margin-bottom:0; width:100%; font-size:14px; animation: pulse-green-btn 2s infinite;" onclick="goToAppUpdates()"><i class="fas fa-rocket" style="margin-right:8px;"></i> App is Ready - Download Now</button>` : '';
+
+                let card=`<div class="neu-box" style="padding:15px;margin-bottom:15px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="text-sm" style="text-transform:capitalize;font-weight:bold;">${c.type} Issue</span><span class="status-badge ${bc}">${c.status}</span></div><p class="text-sm" style="margin-bottom:8px;"><i class="far fa-clock"></i> ${t}</p><p style="font-size:14px;white-space:pre-line;">${c.details}</p>${img}${replyHtml}${appReadyBtn}</div>`;
+                
+                let closed=['resolved','close','complete'].includes((c.status||'').toLowerCase());
                 if(closed && (now-c.timestamp)>three){ archive=card+archive; ac++; } else active=card+active;
             }
         }
@@ -1737,7 +1685,6 @@ function loadBillSummaryUD(pId) {
     });
 }
 
-// ==== APP UPDATE LIST (CHANGED ALERTS TO REAL DOWNLOAD METHOD) ==== //
 function loadAppUpdates(pId) {
     onValue(ref(db, `appUpdates/${pId}`), snap=>{
         let html='';
@@ -1752,14 +1699,10 @@ function loadAppUpdates(pId) {
     });
 }
 
-// ==== HIDDEN NATIVE REAL-TIME DOWNLOAD SYSTEM ==== //
 window.currentDownloadXHR = null;
 window.downloadUpdateFile = function(fileName) {
     if(!fileName || fileName === 'undefined') return alert("File not found!");
-    
     const fileUrl = 'Assets/' + fileName;
-
-    // Reset and open UI Modal
     document.getElementById('download-progress-modal').classList.add('active');
     document.getElementById('dl-filename').innerText = fileName;
     document.getElementById('dl-progress-bar').style.width = '0%';
@@ -1771,11 +1714,8 @@ window.downloadUpdateFile = function(fileName) {
 
     let startTime = new Date().getTime();
     let prevLoaded = 0;
-
     const xhr = new XMLHttpRequest();
     window.currentDownloadXHR = xhr;
-    
-    // Nocache parameter to make sure it tracks real file size correctly
     xhr.open('GET', fileUrl + '?nocache=' + new Date().getTime(), true);
     xhr.responseType = 'blob';
 
@@ -1784,12 +1724,10 @@ window.downloadUpdateFile = function(fileName) {
             let percentComplete = (e.loaded / e.total) * 100;
             document.getElementById('dl-progress-bar').style.width = percentComplete + '%';
             document.getElementById('dl-percent').innerText = Math.floor(percentComplete) + '%';
-
             let loadedMB = (e.loaded / (1024 * 1024)).toFixed(2);
             let totalMB = (e.total / (1024 * 1024)).toFixed(2);
             document.getElementById('dl-stats').innerText = `${loadedMB} MB / ${totalMB} MB`;
 
-            // Calculate current Speed
             let currentTime = new Date().getTime();
             let timeDiff = (currentTime - startTime) / 1000;
             if (timeDiff >= 0.5) { 
@@ -1803,30 +1741,17 @@ window.downloadUpdateFile = function(fileName) {
                 startTime = currentTime;
                 prevLoaded = e.loaded;
             }
-        } else {
-            // Agar server file size nah de to
-            let loadedMB = (e.loaded / (1024 * 1024)).toFixed(2);
-            document.getElementById('dl-stats').innerText = `${loadedMB} MB / ??? MB`;
-            document.getElementById('dl-progress-bar').style.width = '100%';
-            document.getElementById('dl-progress-bar').style.background = '#d6337e'; 
         }
     };
 
     xhr.onload = function() {
         if (xhr.status === 200 || xhr.status === 206) {
             document.getElementById('dl-percent').innerText = '100% - Saving to Device...';
-            
-            // Background main create blob for native download manager
             const blob = xhr.response;
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = fileName; // Download automatically is name se hoga jo admin dega
-            document.body.appendChild(a);
-            a.click();
-            
-            // Clean up cache & hide modal silently
+            a.style.display = 'none'; a.href = url; a.download = fileName;
+            document.body.appendChild(a); a.click();
             setTimeout(() => {
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
@@ -1834,16 +1759,14 @@ window.downloadUpdateFile = function(fileName) {
                 document.getElementById('download-progress-modal').classList.remove('active');
             }, 1000);
         } else {
-            alert("Download Failed! Status: " + xhr.status + ". Lagta hai file Assets folder mein majood nahi.");
+            alert("Download Failed! Status: " + xhr.status);
             document.getElementById('download-progress-modal').classList.remove('active');
         }
     };
-
     xhr.onerror = function() {
-        alert("Network Error ho gaya download karte waqt.");
+        alert("Network Error.");
         document.getElementById('download-progress-modal').classList.remove('active');
     };
-
     xhr.send();
 };
 
@@ -1855,8 +1778,6 @@ window.cancelDownload = function() {
     document.getElementById('download-progress-modal').classList.remove('active');
 };
 
-
-// Help bot
 const botReplies = {
     urdu: { greeting:"Hello! Main apki kya madad kar sakta hoon?", bill:"Bill check: Dashboard → Check Bills.", update:"Update: Dashboard → App Update Now.", complaint:"Complaint: Dashboard se Complaint option.", dashboard:"App Info aur Bell se notifications." },
     english: { greeting:"Hello! How can I assist?", bill:"Click Check Bills on Dashboard.", update:"Click App Update Now.", complaint:"Open Complaint screen.", dashboard:"App Info + Notification Bell." }
@@ -1869,7 +1790,7 @@ window.sendChatMsg = function(topic){
     const b=document.createElement('div'); b.className="chat-msg chat-bot clearfix"; b.innerHTML="<i class='fas fa-ellipsis-h fa-fade'></i>"; box.appendChild(b); box.scrollTop=box.scrollHeight;
     setTimeout(()=>{ b.innerHTML=botReplies[lang][topic]||'OK'; box.scrollTop=box.scrollHeight; },600);
 };
-// Image editor
+
 const editCanvas=document.getElementById('editCanvas'); const ctx=editCanvas.getContext('2d');
 let baseImage=null, strokes=[], currentStroke=null, drawing=false, activeColor='#ff3b30', pendingCallback=null;
 document.getElementById('color-swatches').addEventListener('click', e=>{
@@ -1955,17 +1876,11 @@ window.submitNewProject = async function() {
             pid = 'PROJ-' + year + Math.floor(100+Math.random()*900); tries++;
         }
         const userData = {
-            status: 'pending',
-            appName, userName, projType, purpose, details,
-            deadline, refLink, totalUsers,
-            callNum, phone: callNum, waNum, secNum,
-            appLogo: window._projLogoData || '',
-            logoSkipped: skipLogo || !window._projLogoData,
-            designPdf: window._projPdfData || '',
-            designPdfName: window._projPdfName || '',
-            pdfSkipped: !window._projPdfData,
-            timestamp: Date.now(),
-            createdAt: Date.now()
+            status: 'pending', appName, userName, projType, purpose, details,
+            deadline, refLink, totalUsers, callNum, phone: callNum, waNum, secNum,
+            appLogo: window._projLogoData || '', logoSkipped: skipLogo || !window._projLogoData,
+            designPdf: window._projPdfData || '', designPdfName: window._projPdfName || '', pdfSkipped: !window._projPdfData,
+            timestamp: Date.now(), createdAt: Date.now()
         };
         openScreen('loading-screen');
         document.getElementById('load-proj-name').innerText = appName;
@@ -1975,8 +1890,7 @@ window.submitNewProject = async function() {
         await set(ref(db, 'users/' + pid), userData);
         try {
             await push(ref(db, 'adminNotifications'), {
-                title: 'New Project Request',
-                message: appName + ' by ' + userName + ' (' + callNum + ')',
+                title: 'New Project Request', message: appName + ' by ' + userName + ' (' + callNum + ')',
                 type: 'project', projectId: pid, timestamp: Date.now(), read: false
             });
         } catch(e){}
@@ -2004,7 +1918,6 @@ window.submitNewProject = async function() {
             nextStep(1);
         }, 500);
     } catch(err) {
-        console.error(err);
         alert('Submit fail: ' + (err.message||err));
         openScreen('create-project-screen');
     } finally {
@@ -2087,8 +2000,6 @@ window.updateGlobalNotifBadge = function(count) {
     };
     start();
 })();
-console.log('MrCrazy Customer – Notif FAB + Full Create Project');
-
 </script>
 </body>
 </html>
