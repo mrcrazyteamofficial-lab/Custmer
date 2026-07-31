@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
-    <title>MrCrazy Customer App</title>
+    <title>MrCrazy Digital Hub</title>
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
       window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -40,6 +40,7 @@
             --accent-color: #f0973f; --danger-color: #ef4562;
             --info-color: #3567d6; --pink-color: #d6337e;
             --wa-green: #25D366; --wa-dark: #075E54;
+            --gold: #d4a017;
         }
         * { box-sizing: border-box; }
         body {
@@ -68,17 +69,17 @@
         .neu-box { background: var(--bg-color); border-radius: 18px; box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light); padding: 20px; margin-bottom: 20px; }
         .compact-box { padding: 14px 16px; margin-bottom: 15px; border-radius: 16px; }
         .neu-button {
-            border: none; outline: none; background: var(--bg-color); border-radius: 16px;
-            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
-            padding: 15px 16px; margin-bottom: 15px; font-size: 15px; font-weight: 600;
+            border: none; outline: none; background: var(--bg-color); border-radius: 12px;
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+            padding: 11px 14px; margin-bottom: 10px; font-size: 13.5px; font-weight: 600;
             font-family: 'Inter', sans-serif; color: var(--text-color); cursor: pointer;
             transition: all 0.15s ease; position: relative; display: flex; align-items: center; justify-content: space-between; width: 100%;
         }
-        .neu-button:active { box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light); transform: scale(0.99); }
-        .neu-button.primary-btn { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: #fff; box-shadow: 0 8px 18px rgba(18, 135, 127, 0.35); }
-        .neu-button.accent-btn { background: linear-gradient(135deg, var(--pink-color), #a8215f); color: #fff; box-shadow: 0 8px 18px rgba(214, 51, 126, 0.35); }
+        .neu-button:active { box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); transform: scale(0.99); }
+        .neu-button.primary-btn { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: #fff; box-shadow: 0 6px 14px rgba(18, 135, 127, 0.32); }
+        .neu-button.accent-btn { background: linear-gradient(135deg, var(--pink-color), #a8215f); color: #fff; box-shadow: 0 6px 14px rgba(214, 51, 126, 0.32); }
         .neu-button.ghost-btn { background: var(--bg-color); color: var(--info-color); border: 1.5px dashed #b7c2d4; box-shadow: none; }
-        .neu-button.green-btn { background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; box-shadow: 0 8px 18px rgba(37, 211, 102, 0.4); }
+        .neu-button.green-btn { background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; box-shadow: 0 6px 14px rgba(37, 211, 102, 0.35); }
         .neu-button:disabled { opacity: 0.45; cursor: not-allowed; }
         .neu-input {
             width: 100%; border: none; outline: none; background: var(--bg-color); border-radius: 12px;
@@ -97,8 +98,8 @@
         .circle-percent { position: absolute; font-size: 22px; font-weight: 800; color: var(--primary-dark); font-family: 'Poppins', sans-serif; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .badge { background: linear-gradient(135deg, #ff5f6d, #d6337e); color: white; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px; position: absolute; top: -6px; right: -6px; display: none; box-shadow: 2px 2px 6px rgba(0,0,0,0.25); }
-        .landscape-header { display: flex; align-items: center; gap: 15px; background: linear-gradient(150deg, #ffffff, #dde3ee); padding: 18px 20px; border-radius: 20px; box-shadow: 6px 6px 16px var(--shadow-dark), -6px -6px 16px var(--shadow-light); margin-bottom: 22px; position: relative; }
-        .profile-img, .app-logo { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 3px 3px 8px rgba(60,80,110,0.25); }
+        .landscape-header { display: flex; align-items: center; gap: 12px; background: linear-gradient(150deg, #ffffff, #dde3ee); padding: 12px 14px; border-radius: 16px; box-shadow: 5px 5px 12px var(--shadow-dark), -5px -5px 12px var(--shadow-light); margin-bottom: 12px; position: relative; }
+        .profile-img, .app-logo { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2.5px solid #fff; box-shadow: 2px 2px 6px rgba(60,80,110,0.22); }
         h2, h3, h4, p { margin: 0; padding: 0; }
         .text-sm { font-size: 12px; color: var(--text-muted); }
         .text-success { color: #1f9d67; font-weight: 600; }
@@ -232,7 +233,7 @@
         .pwa-banner { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 414px; background: linear-gradient(135deg, #12877f, #0b5f59); color: #fff; padding: 12px 16px; display: none; align-items: center; gap: 12px; z-index: 3000; border-radius: 16px 16px 0 0; box-shadow: 0 -6px 20px rgba(0,0,0,0.3); }
         .pwa-banner button { background: #fff; color: #0b5f59; border: none; border-radius: 10px; padding: 8px 14px; font-weight: 700; cursor: pointer; }
 
-        .global-notif-btn{position:fixed;top:14px;right:14px;z-index:2500;width:48px;height:48px;border-radius:50%;background:linear-gradient(145deg,#fff,#e7ecf3);box-shadow:4px 4px 12px var(--shadow-dark),-4px -4px 12px var(--shadow-light);border:none;color:var(--primary-dark);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+        .global-notif-btn{position:fixed;top:14px;left:14px;z-index:2500;width:48px;height:48px;border-radius:50%;background:linear-gradient(145deg,#fff,#e7ecf3);box-shadow:4px 4px 12px var(--shadow-dark),-4px -4px 12px var(--shadow-light);border:none;color:var(--primary-dark);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
         .global-notif-btn .g-badge{position:absolute;top:-4px;right:-4px;background:var(--danger-color);color:#fff;font-size:11px;font-weight:800;min-width:18px;height:18px;border-radius:10px;display:none;align-items:center;justify-content:center;padding:0 5px}
         .notif-panel{position:fixed;top:70px;right:12px;left:12px;max-width:400px;margin:0 auto;background:var(--bg-color);border-radius:18px;z-index:2600;box-shadow:0 12px 40px rgba(0,0,0,.2);max-height:70vh;overflow-y:auto;display:none;padding:14px;border:1px solid rgba(255,255,255,.8)}
         .notif-panel.open{display:block;animation:fadeIn .25s ease}
@@ -246,6 +247,276 @@
         .upload-zone{border:2px dashed rgba(18,135,127,.35);border-radius:14px;padding:16px;text-align:center;background:rgba(255,255,255,.5);margin-bottom:12px;cursor:pointer}
         .upload-zone img{max-width:80px;max-height:80px;border-radius:12px;margin-top:8px}
         .upload-zone .hint{font-size:12px;color:var(--text-muted)}
+
+        /* PART 1 NEW STYLES */
+        .combined-header-card {
+            display: flex; align-items: center; gap: 12px;
+            background: linear-gradient(150deg, #ffffff, #dde3ee);
+            padding: 12px 14px; border-radius: 16px;
+            box-shadow: 5px 5px 12px var(--shadow-dark), -5px -5px 12px var(--shadow-light);
+            margin-bottom: 14px; position: relative;
+        }
+        .combined-header-card .logos-wrap { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .combined-header-card .info-wrap { flex: 1; min-width: 0; }
+        .combined-header-card .info-wrap h3 { font-size: 14px; color: var(--primary-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .combined-header-card .info-wrap p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+        .combined-header-card .app-name-row { display: flex; align-items: center; gap: 6px; margin-top: 3px; flex-wrap: wrap; }
+        .combined-header-card .app-name-row strong { font-size: 13px; color: var(--text-color); }
+        .combined-header-card .info-link { font-size: 11px; color: var(--info-color); font-weight: 700; cursor: pointer; }
+
+        .dash-stats-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;
+        }
+        .dash-stat-card {
+            background: var(--bg-color); border-radius: 12px;
+            box-shadow: 3px 3px 8px var(--shadow-dark), -3px -3px 8px var(--shadow-light);
+            padding: 10px 12px; text-align: center;
+        }
+        .dash-stat-card .stat-num { font-size: 18px; font-weight: 800; color: var(--primary-dark); font-family: 'JetBrains Mono', monospace; }
+        .dash-stat-card .stat-label { font-size: 10px; color: var(--text-muted); font-weight: 600; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
+        .dash-stat-card.pending .stat-num { color: var(--accent-color); }
+        .dash-stat-card.complete .stat-num { color: #1f9d67; }
+        .dash-stat-card.updates .stat-num { color: var(--info-color); }
+        .dash-stat-card.complaints .stat-num { color: var(--pink-color); }
+
+        /* Care Bot Screen */
+        .care-bot-screen { padding: 0 !important; background: #f0f4f8; }
+        .care-bot-header {
+            background: linear-gradient(135deg, #12877f, #0b5f59); color: #fff;
+            padding: 14px 16px; display: flex; align-items: center; gap: 12px;
+            position: sticky; top: 0; z-index: 10;
+        }
+        .care-bot-header .back-care { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 36px; height: 36px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .care-bot-avatar { width: 40px; height: 40px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .care-bot-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .care-bot-info { flex: 1; }
+        .care-bot-info h4 { font-size: 15px; margin: 0; color: #fff; }
+        .care-bot-info p { font-size: 11px; color: rgba(255,255,255,0.75); margin: 0; }
+        .care-wa-btn {
+            background: #25D366; color: #fff; border: none; border-radius: 20px;
+            padding: 7px 12px; font-size: 11px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; gap: 5px; white-space: nowrap;
+            box-shadow: 0 3px 10px rgba(37,211,102,0.4);
+        }
+        .care-messages { flex: 1; overflow-y: auto; padding: 16px 12px; display: flex; flex-direction: column; gap: 10px; }
+        .care-msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 13.5px; line-height: 1.5; animation: msgIn 0.25s ease; }
+        .care-msg-bot { align-self: flex-start; background: #fff; color: #1a3c34; border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .care-msg-user { align-self: flex-end; background: linear-gradient(135deg, #12877f, #0b5f59); color: #fff; border-bottom-right-radius: 4px; }
+        .care-msg-bot .typing-dots { display: inline-flex; gap: 4px; }
+        .care-msg-bot .typing-dots span { width: 6px; height: 6px; background: #12877f; border-radius: 50%; animation: typingBounce 1.2s infinite; }
+        .care-msg-bot .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .care-msg-bot .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-5px); opacity: 1; } }
+        .care-quick-btns { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 12px 16px; background: #fff; border-top: 1px solid #e0e6ed; }
+        .care-quick-btn {
+            background: rgba(18,135,127,0.08); border: 1.5px solid rgba(18,135,127,0.3);
+            color: var(--primary-dark); border-radius: 20px; padding: 8px 14px;
+            font-size: 12.5px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+        }
+        .care-quick-btn:active { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+
+        .company-logo-login { width: 72px; height: 72px; border-radius: 18px; object-fit: cover; border: 3px solid #fff; box-shadow: 0 6px 18px rgba(18,135,127,0.3); margin-bottom: 12px; }
+
+        /* PART 2: Solved Popup + Rating */
+        .solved-overlay {
+            position: fixed; inset: 0; background: rgba(8,12,20,0.72);
+            display: none; align-items: center; justify-content: center;
+            z-index: 3200; padding: 20px; backdrop-filter: blur(6px);
+        }
+        .solved-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
+        .solved-box {
+            width: 100%; max-width: 340px; background: linear-gradient(160deg, #ffffff, #eef3f8);
+            border-radius: 24px; padding: 28px 22px 22px; text-align: center;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.35); position: relative;
+            animation: solvedPop 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes solvedPop {
+            0% { opacity: 0; transform: scale(0.6) translateY(40px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .solved-tick-wrap {
+            width: 78px; height: 78px; margin: 0 auto 16px; border-radius: 50%;
+            background: linear-gradient(135deg, #24b47e, #0f7a52);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 28px rgba(36,180,126,0.4);
+            animation: tickBounce 0.7s ease 0.2s both;
+        }
+        @keyframes tickBounce {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .solved-tick-wrap i { font-size: 36px; color: #fff; }
+        .solved-title { font-size: 18px; font-weight: 800; color: var(--primary-dark); margin-bottom: 6px; font-family: 'Poppins', sans-serif; }
+        .solved-trx {
+            display: inline-block; background: rgba(18,135,127,0.1); color: var(--primary-dark);
+            font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;
+            padding: 6px 14px; border-radius: 10px; margin: 8px 0 12px; letter-spacing: 0.5px;
+        }
+        .solved-urdu { font-size: 14px; color: var(--text-color); line-height: 1.6; margin-bottom: 18px; font-weight: 600; }
+        .solved-btns { display: flex; gap: 10px; }
+        .solved-btns button {
+            flex: 1; border: none; border-radius: 14px; padding: 13px; font-weight: 700;
+            font-size: 14px; cursor: pointer; font-family: 'Inter', sans-serif;
+        }
+        .solved-yes { background: linear-gradient(135deg, #24b47e, #0f7a52); color: #fff; box-shadow: 0 6px 16px rgba(36,180,126,0.35); }
+        .solved-no { background: rgba(0,0,0,0.06); color: var(--text-color); }
+
+        .rating-section { display: none; margin-top: 6px; animation: fadeIn 0.35s ease; }
+        .rating-section.show { display: block; }
+        .rating-prompt { font-size: 13.5px; color: var(--text-color); line-height: 1.55; margin-bottom: 14px; font-weight: 600; }
+        .star-row { display: flex; justify-content: center; gap: 10px; margin-bottom: 14px; }
+        .star-btn {
+            background: none; border: none; font-size: 32px; cursor: pointer;
+            color: #ccd5e3; transition: all 0.15s; padding: 0; line-height: 1;
+        }
+        .star-btn.active, .star-btn:hover { color: #f5a623; transform: scale(1.15); }
+        .rating-submit {
+            width: 100%; border: none; border-radius: 14px; padding: 13px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: #fff; font-weight: 700; font-size: 14px; cursor: pointer;
+            font-family: 'Inter', sans-serif; box-shadow: 0 6px 16px rgba(18,135,127,0.35);
+        }
+        .rating-thanks {
+            display: none; animation: fadeIn 0.4s ease;
+        }
+        .rating-thanks.show { display: block; }
+        .rating-thanks p { font-size: 15px; font-weight: 700; color: var(--primary-dark); line-height: 1.6; margin: 12px 0 0; }
+
+        .gold-notif-toast {
+            position: fixed; top: 70px; left: 12px; z-index: 2800;
+            background: linear-gradient(135deg, #d4a017, #b8860b); color: #fff;
+            padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: 700;
+            box-shadow: 0 6px 18px rgba(212,160,23,0.4); max-width: 200px;
+            display: none; animation: slideInLeft 0.4s ease;
+        }
+        .gold-notif-toast.show { display: block; }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* PART 3: Login rating badge */
+        .login-rating-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: linear-gradient(135deg, rgba(245,166,35,0.15), rgba(212,160,23,0.12));
+            border: 1.5px solid rgba(212,160,23,0.45); border-radius: 20px;
+            padding: 6px 14px; margin: 0 auto 18px; font-size: 13px; font-weight: 700;
+            color: #b8860b;
+        }
+        .login-rating-badge .stars-mini { color: #f5a623; letter-spacing: 1px; font-size: 14px; }
+        .login-rating-badge .rating-num { font-family: 'JetBrains Mono', monospace; color: var(--primary-dark); }
+        .login-rating-badge .rating-count { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+        .dash-rating-mini {
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            font-size: 12px; color: #b8860b; font-weight: 700; margin-bottom: 10px;
+        }
+        .dash-rating-mini .stars-mini { color: #f5a623; letter-spacing: 1px; }
+
+        /* PART 4: FAQ */
+        .faq-item {
+            background: #ffffff; border-radius: 14px;
+            box-shadow: 3px 3px 8px var(--shadow-dark), -3px -3px 8px var(--shadow-light);
+            margin-bottom: 10px; overflow: hidden; border: 1px solid rgba(0,0,0,0.06);
+        }
+        .faq-q {
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            padding: 13px 14px; cursor: pointer; font-weight: 700; font-size: 13.5px;
+            color: var(--primary-dark); user-select: none; background: #fff;
+        }
+        .faq-q i.chev { transition: transform 0.2s; font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
+        .faq-item.open .faq-q i.chev { transform: rotate(180deg); }
+        .faq-item.open .faq-q { background: rgba(18,135,127,0.06); }
+        .faq-a {
+            display: none !important; padding: 12px 14px 14px; font-size: 13px; line-height: 1.65;
+            color: #2c3544; background: #f7f9fc; border-top: 1px solid rgba(0,0,0,0.08);
+        }
+        .faq-item.open .faq-a { display: block !important; }
+        .faq-step { display: none; }
+        .faq-step.active { display: block; animation: fadeIn 0.3s ease; }
+
+        /* Feature tour */
+        .tour-overlay {
+            position: absolute; inset: 0; background: rgba(8,12,20,0.72);
+            z-index: 1800; display: none; border-radius: 26px;
+        }
+        .tour-overlay.show { display: block; }
+        .tour-highlight {
+            position: relative; z-index: 1801 !important;
+            box-shadow: 0 0 0 4px rgba(240,151,63,0.95), 0 0 0 9999px rgba(8,12,20,0.72) !important;
+            border-radius: 14px; pointer-events: auto !important;
+        }
+        .tour-new-badge {
+            position: absolute; top: -10px; right: 8px; z-index: 1802;
+            background: linear-gradient(135deg, #ff5f6d, #d6337e); color: #fff;
+            font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 10px;
+            letter-spacing: 0.5px; box-shadow: 0 3px 10px rgba(214,51,126,0.4);
+            animation: pulse-btn 1.5s infinite;
+        }
+        .tour-arrow {
+            position: absolute; z-index: 1803; color: #f0973f; font-size: 28px;
+            animation: tourArrowBounce 0.9s ease infinite; pointer-events: none;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+        }
+        @keyframes tourArrowBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(8px); }
+        }
+        .tour-tooltip {
+            position: fixed; z-index: 3200; left: 50%; bottom: 28px;
+            transform: translateX(-50%); width: calc(100% - 48px); max-width: 370px;
+            background: #fff; border-radius: 16px; padding: 16px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.3); text-align: center;
+        }
+        .tour-tooltip h4 { color: var(--primary-dark); font-size: 15px; margin-bottom: 6px; }
+        .tour-tooltip p { font-size: 12.5px; color: var(--text-color); line-height: 1.5; margin-bottom: 12px; }
+        .tour-tooltip .tour-btns { display: flex; gap: 8px; }
+        .tour-tooltip .tour-btns button {
+            flex: 1; border: none; border-radius: 12px; padding: 11px; font-weight: 700;
+            font-size: 13px; cursor: pointer; font-family: 'Inter', sans-serif;
+        }
+        .tour-next { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: #fff; }
+        .tour-skip { background: rgba(0,0,0,0.06); color: var(--text-color); }
+        body.tour-active .neu-button, body.tour-active .slime-bot { pointer-events: none; opacity: 0.35; }
+        body.tour-active .tour-highlight { opacity: 1 !important; pointer-events: auto !important; cursor: pointer; }
+        body.tour-active .tour-highlight.slime-bot { opacity: 1 !important; pointer-events: auto !important; }
+        body.tour-active .tour-highlight .neu-button { opacity: 1; pointer-events: none; }
+        .hours-card {
+            background: linear-gradient(145deg, rgba(18,135,127,0.08), rgba(18,135,127,0.03));
+            border: 1.5px solid rgba(18,135,127,0.25); border-radius: 16px;
+            padding: 16px; margin-bottom: 16px;
+        }
+        .hours-card h4 { color: var(--primary-dark); margin-bottom: 12px; font-size: 15px; }
+        .hours-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 13px;
+        }
+        .hours-row:last-child { border-bottom: none; }
+        .hours-row .day { font-weight: 700; color: var(--text-color); }
+        .hours-row .time { font-weight: 600; color: var(--primary-dark); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+        .hours-row .closed { color: var(--danger-color); font-weight: 700; }
+        .hours-note {
+            margin-top: 12px; font-size: 12px; color: var(--text-muted); line-height: 1.5;
+            background: rgba(255,255,255,0.6); border-radius: 10px; padding: 10px 12px;
+        }
+
+        /* PART 5: Friday Jummah */
+        .jummah-header {
+            margin-bottom: 14px; border-radius: 16px; overflow: hidden;
+            box-shadow: 5px 5px 14px var(--shadow-dark), -5px -5px 14px var(--shadow-light);
+            position: relative; background: #0a1628;
+        }
+        .jummah-header video {
+            width: 100%; display: block; border-radius: 16px;
+            aspect-ratio: 16 / 9; object-fit: cover; pointer-events: none;
+        }
+        .jummah-badge {
+            position: absolute; top: 10px; left: 10px;
+            background: rgba(18,135,127,0.9); color: #fff;
+            font-size: 11px; font-weight: 700; padding: 5px 12px;
+            border-radius: 20px; backdrop-filter: blur(4px);
+        }
+        .jummah-badge i { margin-right: 5px; }
     </style>
 </head>
 <body>
@@ -257,41 +528,75 @@
 
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="screen active">
-        <div style="text-align: center; margin-top: 30px; display:flex; flex-direction:column; flex:1;">
+        <div style="text-align: center; margin-top: 24px; display:flex; flex-direction:column; flex:1;">
             <div style="flex:1;">
-                <i class="fas fa-crown fa-4x" style="color: var(--accent-color); margin-bottom: 20px; filter: drop-shadow(0 6px 10px rgba(240,151,63,0.35));"></i>
-                <h2 style="margin-bottom: 8px; font-size: 24px; font-weight: 800; color: var(--primary-dark);">MrCrazy Customer</h2>
-                <p style="margin-bottom: 30px; color: var(--text-muted);">Welcome! Please enter your Project ID</p>
+                <img src="https://i.ibb.co/Ndnv3fy1/IMG-20260730-030751-992.png" alt="MrCrazy Digital Hub" class="company-logo-login" onerror="this.style.display='none'">
+                <h2 style="margin-bottom: 6px; font-size: 22px; font-weight: 800; color: var(--primary-dark);">MrCrazy Digital Hub</h2>
+                <p style="margin-bottom: 10px; color: var(--text-muted); font-size: 13.5px;">Welcome! Please enter your Project ID</p>
+                <div class="login-rating-badge" id="login-rating-badge">
+                    <span class="stars-mini" id="login-stars-mini">★★★★★</span>
+                    <span class="rating-num" id="login-rating-num">—</span>
+                    <span class="rating-count" id="login-rating-count">Loading...</span>
+                </div>
                 <div style="position:relative; margin-bottom:15px; text-align:left;">
                     <input type="text" id="projectIdInput" class="neu-input" style="margin-bottom:0;" placeholder="Project ID (e.g., PROJ-001)" onfocus="showSavedIds()">
                     <div id="saved-ids-dropdown" class="saved-ids-dropdown"></div>
                 </div>
-                <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-muted); margin-bottom:20px; justify-content:center; cursor:pointer;">
+                <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-muted); margin-bottom:18px; justify-content:center; cursor:pointer;">
                     <input type="checkbox" id="remember-me" style="accent-color:var(--primary-color); width:16px; height:16px;" checked> Remember me
                 </label>
                 <button class="neu-button primary-btn" id="login-btn" onclick="login()" style="justify-content: center;"><span id="login-btn-label">Login</span> <i class="fas fa-arrow-right" id="login-btn-icon" style="margin-left: 10px;"></i></button>
-                <div style="margin-top: 40px; padding: 20px; background: rgba(255,255,255,0.4); border-radius: 20px; border: 1px solid rgba(255,255,255,0.6);">
-                    <p style="font-size: 13px; color: var(--text-color); font-weight: 600; margin-bottom: 15px; line-height: 1.5;">
+                <div style="margin-top: 28px; padding: 16px; background: rgba(255,255,255,0.4); border-radius: 18px; border: 1px solid rgba(255,255,255,0.6);">
+                    <p style="font-size: 12.5px; color: var(--text-color); font-weight: 600; margin-bottom: 12px; line-height: 1.5;">
                         If you want to get a new app or website made, then get your new project developed below..
                     </p>
                     <button class="neu-button accent-btn create-btn-anim" onclick="openScreen('create-project-screen')" style="justify-content: center;">
                         <i class="fas fa-plus-circle" style="margin-right: 8px;"></i> Create new project
                     </button>
                 </div>
-                <div style="margin-top: 18px; padding: 18px; background: linear-gradient(145deg, rgba(37,211,102,0.12), rgba(18,140,126,0.08)); border-radius: 20px; border: 2px solid rgba(37,211,102,0.35);">
-                    <p style="font-size: 13px; color: var(--text-color); font-weight: 600; margin-bottom: 12px; line-height: 1.5;">
+                <div style="margin-top: 14px; padding: 16px; background: linear-gradient(145deg, rgba(37,211,102,0.12), rgba(18,140,126,0.08)); border-radius: 18px; border: 2px solid rgba(37,211,102,0.35);">
+                    <p style="font-size: 12.5px; color: var(--text-color); font-weight: 600; margin-bottom: 10px; line-height: 1.5;">
                        Need assistance, a quick answer, or live support? Reach out to us directly 24/7.
                     </p>
-                    <button class="neu-button green-btn contact-btn-anim" onclick="openContactFlow()" style="justify-content: center; margin-bottom: 0;">
-                        <i class="fas fa-comments" style="margin-right: 8px;"></i> Contact Us / Hum se Rabta
+                    <button class="neu-button green-btn contact-btn-anim" onclick="openCareBot()" style="justify-content: center; margin-bottom: 0;">
+                        <i class="fas fa-comments" style="margin-right: 8px;"></i> Contact Us
                     </button>
                 </div>
+                <button class="neu-button ghost-btn" onclick="openFaqFromLogin()" style="justify-content: center; margin-top: 12px; margin-bottom: 0;">
+                    <i class="fas fa-question-circle" style="margin-right: 8px;"></i> FAQ / Help Center
+                </button>
             </div>
             <div class="dev-credit"><i class="fas fa-code"></i> Developed by <strong>Muhammad Naeem</strong></div>
         </div>
     </div>
 
-    <!-- CONTACT GREETING -->
+    <!-- CARE BOT SCREEN (MrCrazy Customer Care) -->
+    <div id="care-bot-screen" class="screen care-bot-screen">
+        <div class="care-bot-header">
+            <button class="back-care" onclick="openScreen('login-screen')"><i class="fas fa-arrow-left"></i></button>
+            <div class="care-bot-avatar">
+                <img src="https://i.ibb.co/Ndnv3fy1/IMG-20260730-030751-992.png" alt="Care" onerror="this.parentElement.innerHTML='MC'">
+            </div>
+            <div class="care-bot-info">
+                <h4>MrCrazy Customer Care</h4>
+                <p>Online • Auto Reply</p>
+            </div>
+            <button class="care-wa-btn" onclick="openWhatsAppCare()">
+                <i class="fab fa-whatsapp"></i> Contact on WhatsApp
+            </button>
+        </div>
+        <div class="care-messages" id="care-messages"></div>
+        <div class="care-quick-btns" id="care-quick-btns">
+            <button class="care-quick-btn" onclick="careBotReply('contact')">How to Contact Us</button>
+            <button class="care-quick-btn" onclick="careBotReply('complaint')">How to File Complaint</button>
+            <button class="care-quick-btn" onclick="careBotReply('project')">How to Create New Project</button>
+            <button class="care-quick-btn" onclick="careBotReply('update')">How to Request Update</button>
+            <button class="care-quick-btn" onclick="careBotReply('hours')">Working Hours</button>
+            <button class="care-quick-btn" onclick="careBotReply('payment')">Payment / Bills</button>
+        </div>
+    </div>
+
+    <!-- CONTACT GREETING (kept for existing flow) -->
     <div id="contact-greeting-screen" class="screen">
         <div class="header-nav">
             <button class="neu-button back-btn" onclick="openScreen('login-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
@@ -528,47 +833,88 @@
 
     <!-- DASHBOARD -->
     <div id="dashboard-screen" class="screen">
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
-            <div style="position: relative; background: #ffffff; padding: 14px 16px; border-radius: 18px; box-shadow: 5px 5px 15px var(--shadow-dark), -5px -5px 15px var(--shadow-light); cursor: pointer; border: 2px solid var(--primary-color);" onclick="document.getElementById('notif-modal').classList.add('active')">
-                <i class="fas fa-bell" style="color: var(--primary-dark); font-size: 26px;"></i>
-                <span class="badge" id="main-bell-badge" style="top: -8px; right: -8px; font-size: 13px; padding: 4px 10px; border-radius: 20px; display: none;">0</span>
+        <div style="display: flex; justify-content: flex-start; margin-bottom: 10px;">
+            <div style="position: relative; background: #ffffff; padding: 10px 12px; border-radius: 14px; box-shadow: 4px 4px 10px var(--shadow-dark), -4px -4px 10px var(--shadow-light); cursor: pointer; border: 2px solid var(--primary-color);" onclick="document.getElementById('notif-modal').classList.add('active')">
+                <i class="fas fa-bell" style="color: var(--primary-dark); font-size: 20px;"></i>
+                <span class="badge" id="main-bell-badge" style="top: -6px; right: -6px; font-size: 11px; padding: 3px 8px; border-radius: 16px; display: none;">0</span>
             </div>
         </div>
+
+        <!-- COMBINED SINGLE HEADER CARD (Part 1) -->
         <div id="dashboard-normal-headers">
-            <div class="landscape-header">
-                <img id="dash-user-image" src="https://via.placeholder.com/60" class="profile-img" alt="User">
-                <div style="flex: 1;"><h3 id="dash-username">Loading...</h3><p class="text-sm" id="dash-phone">Loading...</p></div>
-            </div>
-            <div class="landscape-header" style="margin-bottom: 34px; padding: 10px 20px;">
-                <img id="dash-app-logo" src="https://via.placeholder.com/60" class="app-logo" alt="App">
-                <div style="flex: 1;"><p class="text-sm">Your App Name</p><h3 id="dash-app-name">Loading...</h3>
-                <span class="text-sm" style="color:var(--info-color); font-weight:700; cursor:pointer;" onclick="document.getElementById('app-info-modal').classList.add('active')"><i class="fas fa-info-circle"></i> App Info</span></div>
+            <div class="combined-header-card">
+                <div class="logos-wrap">
+                    <img id="dash-user-image" src="https://via.placeholder.com/42" class="profile-img" alt="User">
+                    <img id="dash-app-logo" src="https://via.placeholder.com/42" class="app-logo" alt="App">
+                </div>
+                <div class="info-wrap">
+                    <h3 id="dash-username">Loading...</h3>
+                    <p id="dash-phone">Loading...</p>
+                    <div class="app-name-row">
+                        <strong id="dash-app-name">Loading...</strong>
+                        <span class="info-link" onclick="document.getElementById('app-info-modal').classList.add('active')"><i class="fas fa-info-circle"></i> App Info</span>
+                    </div>
+                </div>
             </div>
         </div>
-        <div id="dashboard-maintenance-header" class="hidden" style="margin-bottom: 22px;">
-            <video src="Assets/Vid1.mp4" autoplay muted loop playsinline style="pointer-events:none; width:100%; border-radius:20px;"></video>
+
+        <!-- PART 5: Friday Jummah header (replaces owner card on Fridays) -->
+        <div id="dashboard-jummah-header" class="jummah-header hidden">
+            <span class="jummah-badge"><i class="fas fa-moon"></i> Jummah Mubarak</span>
+            <video id="jummah-video" src="Assets/Jummah.mp4" autoplay muted loop playsinline></video>
+            <audio id="jummah-audio" src="Assets/Jumah.mp3" loop></audio>
+        </div>
+
+        <div id="dashboard-maintenance-header" class="hidden" style="margin-bottom: 14px;">
+            <video src="Assets/Vid1.mp4" autoplay muted loop playsinline style="pointer-events:none; width:100%; border-radius:16px;"></video>
             <audio id="maintenance-audio" src="Assets/Aud1.mp3" loop></audio>
         </div>
+
+        <div class="dash-rating-mini" id="dash-rating-mini">
+            <span class="stars-mini" id="dash-stars-mini">★★★★★</span>
+            <span id="dash-rating-text">Rating: —</span>
+        </div>
+        <!-- STATS ROW (Part 1) -->
+        <div class="dash-stats-row" id="dash-stats-row">
+            <div class="dash-stat-card updates">
+                <div class="stat-num" id="stat-updates">0</div>
+                <div class="stat-label">Total Updates</div>
+            </div>
+            <div class="dash-stat-card complaints">
+                <div class="stat-num" id="stat-complaints">0</div>
+                <div class="stat-label">Total Complaints</div>
+            </div>
+            <div class="dash-stat-card pending">
+                <div class="stat-num" id="stat-pending">0</div>
+                <div class="stat-label">Total Pending</div>
+            </div>
+            <div class="dash-stat-card complete">
+                <div class="stat-num" id="stat-complete">0</div>
+                <div class="stat-label">Close / Complete</div>
+            </div>
+        </div>
+
         <div id="dashboard-buttons-section">
             <button class="neu-button" onclick="clearNotifAndOpen('bills', 'bills-screen')">
-                <div style="text-align: left; flex: 1;"><span><i class="fas fa-file-invoice-dollar" style="color: var(--primary-color); margin-right:10px;"></i> Check Bills</span>
-                <div id="dash-bill-preview" style="font-size: 12px; margin-top: 5px; color: var(--text-muted);">Current Bill: Loading...</div></div>
-                <i class="fas fa-chevron-right"></i><span class="badge" id="badge-bills">NEW</span>
+                <div style="text-align: left; flex: 1;"><span><i class="fas fa-file-invoice-dollar" style="color: var(--primary-color); margin-right:8px;"></i> Check Bills</span>
+                <div id="dash-bill-preview" style="font-size: 11px; margin-top: 3px; color: var(--text-muted);">Current Bill: Loading...</div></div>
+                <i class="fas fa-chevron-right" style="font-size:12px;"></i><span class="badge" id="badge-bills">NEW</span>
             </button>
             <button class="neu-button" onclick="clearNotifAndOpen('update', 'update-screen')">
-                <span><i class="fas fa-sync-alt" style="color: var(--info-color); margin-right:10px;"></i> App Update Now</span>
-                <i class="fas fa-chevron-right"></i><span class="badge" id="badge-update">NEW</span>
+                <span><i class="fas fa-sync-alt" style="color: var(--info-color); margin-right:8px;"></i> App Update Now</span>
+                <i class="fas fa-chevron-right" style="font-size:12px;"></i><span class="badge" id="badge-update">NEW</span>
             </button>
             <button class="neu-button" onclick="clearNotifAndOpen('complaint', 'complaint-screen')">
-                <span><i class="fas fa-headset" style="color: var(--pink-color); margin-right:10px;"></i> Complaint</span>
-                <i class="fas fa-chevron-right"></i><span class="badge" id="badge-complaint">NEW</span>
+                <span><i class="fas fa-headset" style="color: var(--pink-color); margin-right:8px;"></i> Complaint</span>
+                <i class="fas fa-chevron-right" style="font-size:12px;"></i><span class="badge" id="badge-complaint">NEW</span>
             </button>
             <button class="neu-button" onclick="openUpdatesDashboard()">
-                <div style="text-align: left; flex: 1;"><span><i class="fas fa-tachometer-alt" style="color: var(--accent-color); margin-right:10px;"></i> Dashboard</span>
-                <div style="font-size: 12px; margin-top: 5px; color: var(--text-muted);">Please click here &amp; check your updates</div></div>
-                <i class="fas fa-chevron-right"></i>
+                <div style="text-align: left; flex: 1;"><span><i class="fas fa-tachometer-alt" style="color: var(--accent-color); margin-right:8px;"></i> Dashboard</span>
+                <div style="font-size: 11px; margin-top: 3px; color: var(--text-muted);">Please click here &amp; check your updates</div></div>
+                <i class="fas fa-chevron-right" style="font-size:12px;"></i>
             </button>
         </div>
+
         <div id="dashboard-maintenance-card" class="hidden neu-box" style="text-align: center; border: 2px solid var(--accent-color);">
             <div style="background: rgba(31, 157, 103, 0.1); padding: 12px; border-radius: 12px; text-align: left; margin-bottom: 20px;">
                 <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
@@ -586,7 +932,7 @@
             <div style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: bold; color: var(--danger-color); margin-bottom: 15px;" id="maint-timer">00:00:00</div>
         </div>
         <div class="dev-credit" style="margin-top: auto;"><i class="fas fa-code"></i> Developed by <strong>Muhammad Naeem</strong></div>
-        <div class="slime-bot" onclick="openScreen('help-screen')"><i class="fas fa-robot"></i><span>Help</span></div>
+        <div class="slime-bot" onclick="window._faqBackScreen='dashboard-screen';goFaqStep(1);openScreen('help-screen')"><i class="fas fa-robot"></i><span>Help</span></div>
     </div>
 
     <!-- BILLS / PAYMENT / UPDATE / COMPLAINT / UPDATES DASH / HELP -->
@@ -725,24 +1071,103 @@
     </div>
 
     <div id="help-screen" class="screen">
-        <div class="header-nav" style="justify-content: space-between;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto; margin:0;"><i class="fas fa-arrow-left"></i></button>
-                <h3 style="margin: 0;">Help Center</h3>
+        <div class="header-nav">
+            <button class="neu-button back-btn" onclick="faqGoBack()" style="width: auto; margin:0;"><i class="fas fa-arrow-left"></i></button>
+            <h3 style="margin: 0;" id="faq-page-title">Working Hours</h3>
+        </div>
+
+        <!-- STEP 1: Hours only -->
+        <div id="faq-step-1" class="faq-step active">
+            <div class="hours-card">
+                <h4><i class="fas fa-clock" style="margin-right:8px;color:var(--primary-color);"></i>Our Working Hours</h4>
+                <div class="hours-row">
+                    <span class="day">Monday – Thursday</span>
+                    <span class="time">12:30 PM – 04:00 AM</span>
+                </div>
+                <div class="hours-row">
+                    <span class="day">Friday</span>
+                    <span class="time">03:00 PM – 04:00 AM</span>
+                </div>
+                <div class="hours-row">
+                    <span class="day">Saturday</span>
+                    <span class="time">12:30 PM – 04:00 AM</span>
+                </div>
+                <div class="hours-row">
+                    <span class="day">Sunday</span>
+                    <span class="closed">Closed</span>
+                </div>
+                <div class="hours-note">
+                    <i class="fas fa-info-circle" style="color:var(--info-color);margin-right:6px;"></i>
+                    You may submit <strong>complaints</strong> and <strong>update requests</strong> at any time. Our team processes them during the working hours listed above.
+                </div>
             </div>
-            <select id="chat-lang" class="neu-input" style="width: auto; padding: 5px 10px; margin: 0;" onchange="updateChatGreeting()">
-                <option value="urdu">Urdu</option>
-                <option value="english">English</option>
-            </select>
+            <button class="neu-button primary-btn" onclick="goFaqStep(2)" style="justify-content:center;margin-top:8px;margin-bottom:0;">
+                Next <i class="fas fa-arrow-right" style="margin-left:8px;"></i>
+            </button>
+            <div class="dev-credit" style="margin-top:20px;"><i class="fas fa-code"></i> Developed by <strong>Muhammad Naeem</strong></div>
         </div>
-        <div id="chat-box" style="flex: 1; overflow-y: auto; background: var(--bg-color); border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);">
-            <div class="chat-msg chat-bot clearfix" id="chat-greeting">Hello! Main apki kya madad kar sakta hoon?</div>
+
+        <!-- STEP 2: FAQ list -->
+        <div id="faq-step-2" class="faq-step">
+            <h4 style="font-size:14px;color:var(--primary-dark);margin-bottom:12px;"><i class="fas fa-question-circle" style="margin-right:6px;"></i>Frequently Asked Questions</h4>
+            <p class="text-sm" style="margin-bottom:12px;">Tap any question to see the answer.</p>
+
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this.parentElement)">How do I log in to my project? <i class="fas fa-chevron-down chev"></i></div>
+                <div class="faq-a">Enter your unique <strong>Project ID</strong> on the home screen and tap Login. Enable “Remember me” to save your ID for faster access next time. If your project is still pending approval, please wait 24–48 hours.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this.parentElement)">How can I request an app update? <i class="fas fa-chevron-down chev"></i></div>
+                <div class="faq-a">After login, open <strong>App Update Now</strong> from the Dashboard. Describe the changes you need, optionally attach a screenshot, and submit. You will receive a TRX ID to track your request. Status updates appear in Updates History.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this.parentElement)">How do I file a complaint? <i class="fas fa-chevron-down chev"></i></div>
+                <div class="faq-a">From the Dashboard, tap <strong>Complaint</strong>. Select the issue type (User, Deposit, Withdraw, Plan, or Other), fill in the required details, and submit. Our team will review and reply; you can follow progress in Your Complaints history.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this.parentElement)">How do I check or pay my bill? <i class="fas fa-chevron-down chev"></i></div>
+                <div class="faq-a">Open <strong>Check Bills</strong> on the Dashboard to view the current amount, date, and status. Tap <strong>Pay Bill</strong>, transfer via Meezan Bank or JazzCash, then enter your TRX ID. Status will move to Checking and then Paid after verification. You can also export a PDF summary.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this.parentElement)">How do I start a new project? <i class="fas fa-chevron-down chev"></i></div>
+                <div class="faq-a">On the login screen, tap <strong>Create new project</strong> and complete the 4-step form (details, deadline, contact info, logo/design). After submission you will receive a unique Project ID. Keep it safe for future logins.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this.parentElement)">How can I contact support? <i class="fas fa-chevron-down chev"></i></div>
+                <div class="faq-a">Use <strong>Contact Us</strong> on the login screen to open MrCrazy Customer Care (auto-reply bot), or tap <strong>Contact on WhatsApp</strong> for live assistance. WhatsApp: <strong>+977 976-1970136</strong>. You may also use live chat after phone login.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this.parentElement)">What happens when my request is completed? <i class="fas fa-chevron-down chev"></i></div>
+                <div class="faq-a">When an update or complaint is marked Close/Complete, the next time you log in you will see a confirmation popup with the TRX ID. You can confirm and leave a star rating to help us improve our service.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this.parentElement)">About MrCrazy Digital Hub <i class="fas fa-chevron-down chev"></i></div>
+                <div class="faq-a">MrCrazy Digital Hub is your client portal for project management, billing, updates, and support. We build websites and Android apps with ongoing maintenance. Developed by <strong>Muhammad Naeem</strong>.</div>
+            </div>
+
+            <div style="margin-top:16px;">
+                <button class="neu-button" onclick="goFaqStep(1)" style="justify-content:center;margin-bottom:8px;">
+                    <i class="fas fa-arrow-left" style="margin-right:8px;"></i> Back to Hours
+                </button>
+                <button class="neu-button green-btn" onclick="openCareBot()" style="justify-content:center;margin-bottom:8px;">
+                    <i class="fas fa-comments" style="margin-right:8px;"></i> Open Customer Care Bot
+                </button>
+                <button class="neu-button ghost-btn" onclick="openWhatsAppCare()" style="justify-content:center;margin-bottom:0;">
+                    <i class="fab fa-whatsapp" style="margin-right:8px;"></i> Contact on WhatsApp
+                </button>
+            </div>
+            <div class="dev-credit" style="margin-top:16px;"><i class="fas fa-code"></i> Developed by <strong>Muhammad Naeem</strong></div>
         </div>
-        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-            <button class="neu-button" style="width: 48%; padding: 10px; font-size: 13px; margin: 0; justify-content: center;" onclick="sendChatMsg('bill')">Bill Check/Pay</button>
-            <button class="neu-button" style="width: 48%; padding: 10px; font-size: 13px; margin: 0; justify-content: center;" onclick="sendChatMsg('update')">App Update</button>
-            <button class="neu-button" style="width: 100%; padding: 10px; font-size: 13px; margin: 0; justify-content: center;" onclick="sendChatMsg('complaint')">File a Complaint</button>
-            <button class="neu-button ghost-btn" style="width: 100%; padding: 10px; font-size: 13px; margin: 0; justify-content: center;" onclick="sendChatMsg('dashboard')"><i class="fas fa-bell" style="margin-right:8px;"></i> App Info & Notifications</button>
+    </div>
+</div>
+
+<!-- Feature Tour UI (inside mobile-container level - placed before closing body scripts) -->
+<div id="tour-ui" style="display:none;">
+    <div class="tour-tooltip" id="tour-tooltip">
+        <h4 id="tour-title">New Feature</h4>
+        <p id="tour-desc">Description</p>
+        <div class="tour-btns">
+            <button type="button" class="tour-next" id="tour-next-btn" onclick="nextTourStep()" style="width:100%;">Open</button>
         </div>
     </div>
 </div>
@@ -781,6 +1206,40 @@
         <button class="neu-button primary-btn" onclick="document.getElementById('congrats-modal').classList.remove('active')" style="justify-content:center; margin-top:20px; width:100%;">Close</button>
     </div>
 </div>
+
+<!-- PART 2: Solved Request Popup -->
+<div class="solved-overlay" id="solved-overlay">
+    <div class="solved-box" id="solved-box">
+        <div id="solved-main">
+            <div class="solved-tick-wrap"><i class="fas fa-check"></i></div>
+            <div class="solved-title">Your Request has been solved</div>
+            <div class="solved-trx" id="solved-trx">TRX-XXXX</div>
+            <div class="solved-urdu">کیا آپ کا پراجیکٹ اپ ڈیٹ ہو گیا ہے؟</div>
+            <div class="solved-btns">
+                <button class="solved-yes" onclick="solvedAnswer(true)">Yes</button>
+                <button class="solved-no" onclick="solvedAnswer(false)">Nahi</button>
+            </div>
+        </div>
+        <div class="rating-section" id="rating-section">
+            <div class="rating-prompt">محترم صارف اپنی قیمتی رائے دیجیے، ہماری سروس آپ کو کیسے لگی؟</div>
+            <div class="star-row" id="star-row">
+                <button type="button" class="star-btn" data-star="1" onclick="selectStar(1)">★</button>
+                <button type="button" class="star-btn" data-star="2" onclick="selectStar(2)">★</button>
+                <button type="button" class="star-btn" data-star="3" onclick="selectStar(3)">★</button>
+                <button type="button" class="star-btn" data-star="4" onclick="selectStar(4)">★</button>
+                <button type="button" class="star-btn" data-star="5" onclick="selectStar(5)">★</button>
+            </div>
+            <button class="rating-submit" onclick="submitRating()">Submit Rating</button>
+        </div>
+        <div class="rating-thanks" id="rating-thanks">
+            <div class="solved-tick-wrap" style="background:linear-gradient(135deg,#12877f,#0b5f59);"><i class="fas fa-heart"></i></div>
+            <p>معزز صارف آپ کی قیمتی رائے کا شکریہ<br>اللہ حافظ</p>
+        </div>
+    </div>
+</div>
+<audio id="notice-audio" src="Assets/Notice.mp3" preload="auto"></audio>
+<audio id="new-notif-audio" src="Assets/New.mp3" preload="auto"></audio>
+<div class="gold-notif-toast" id="gold-notif-toast"><i class="fas fa-bell" style="margin-right:6px;"></i><span id="gold-notif-text">Request Solved</span></div>
 
 <div class="simple-modal-overlay" id="download-progress-modal">
     <div class="simple-modal-box">
@@ -884,6 +1343,277 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch((e)=>console.warn('SW register fail', e));
 }
 
+/* ========== PART 1: CARE BOT ========== */
+window.openCareBot = function() {
+    openScreen('care-bot-screen');
+    const box = document.getElementById('care-messages');
+    box.innerHTML = '';
+    // Welcome with typing animation
+    const typing = document.createElement('div');
+    typing.className = 'care-msg care-msg-bot';
+    typing.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+    box.appendChild(typing);
+    box.scrollTop = box.scrollHeight;
+    setTimeout(() => {
+        typing.innerHTML = `Assalam o Alaikum! 👋<br><br>Welcome to <strong>MrCrazy Customer Care</strong>.<br>I am your virtual assistant. How can I help you today?<br><br>Please select an option below, or contact us on WhatsApp for live support.`;
+        box.scrollTop = box.scrollHeight;
+    }, 900);
+};
+window.openWhatsAppCare = function() {
+    const msg = encodeURIComponent('Assalam o Alaikum! I need assistance regarding MrCrazy Digital Hub.');
+    window.open('https://wa.me/9779761970136?text=' + msg, '_blank');
+};
+
+/* PART 5: Friday Jummah helpers */
+window.isJummahDay = function() {
+    // Friday only: local day === 5 (0=Sun ... 5=Fri), full day 12:00AM–11:59PM
+    return new Date().getDay() === 5;
+};
+window.stopJummahMedia = function() {
+    try {
+        const v = document.getElementById('jummah-video');
+        const a = document.getElementById('jummah-audio');
+        if (v) v.pause();
+        if (a) { a.pause(); a.currentTime = 0; }
+    } catch(e) {}
+};
+
+/* PART 4: FAQ helpers */
+window._faqBackScreen = 'login-screen';
+window.openFaqFromLogin = function() {
+    window._faqBackScreen = 'login-screen';
+    goFaqStep(1);
+    openScreen('help-screen');
+};
+window.faqGoBack = function() {
+    const step2 = document.getElementById('faq-step-2');
+    if (step2 && step2.classList.contains('active')) {
+        goFaqStep(1);
+        return;
+    }
+    if (window.currentProjectId && window._faqBackScreen === 'dashboard-screen') {
+        openScreen('dashboard-screen');
+    } else {
+        openScreen(window._faqBackScreen || 'login-screen');
+    }
+};
+window.goFaqStep = function(n) {
+    document.querySelectorAll('.faq-step').forEach(s => s.classList.remove('active'));
+    const step = document.getElementById('faq-step-' + n);
+    if (step) step.classList.add('active');
+    const title = document.getElementById('faq-page-title');
+    if (title) title.innerText = n === 1 ? 'Working Hours' : 'FAQ / Help Center';
+    // close all faq items when switching
+    document.querySelectorAll('.faq-item.open').forEach(x => x.classList.remove('open'));
+};
+window.toggleFaq = function(el) {
+    if (!el) return;
+    const wasOpen = el.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(x => x.classList.remove('open'));
+    if (!wasOpen) el.classList.add('open');
+};
+
+/* Feature Tour — new features highlight (once until admin reset) */
+window._tourSteps = [];
+window._tourIndex = 0;
+window._tourBadgeEls = [];
+window._tourArrowEls = [];
+
+/* Admin panel later: localStorage.removeItem('mrcrazy_feature_tour_v1') */
+window.resetFeatureTour = function() {
+    localStorage.removeItem('mrcrazy_feature_tour_v1');
+};
+
+window.startFeatureTour = function() {
+    if (localStorage.getItem('mrcrazy_feature_tour_v1') === '1') return;
+    const dash = document.getElementById('dashboard-screen');
+    if (!dash || !dash.classList.contains('active')) return;
+
+    window._tourSteps = [
+        {
+            el: document.getElementById('dash-rating-mini'),
+            title: 'NEW — Live Rating',
+            desc: 'Yahan company ki real average rating dikhti hai. Users ki star reviews se auto update hoti hai.'
+        },
+        {
+            el: document.getElementById('dash-stats-row'),
+            title: 'NEW — Quick Stats',
+            desc: 'Total Updates, Complaints, Pending aur Close/Complete ab ek nazar mein Dashboard par.'
+        },
+        {
+            el: document.getElementById('dashboard-normal-headers') || document.getElementById('dashboard-jummah-header'),
+            title: 'NEW — Combined Profile Card',
+            desc: 'Owner image, App logo, Name aur App Info ab ek compact card mein milte hain.'
+        },
+        {
+            el: document.querySelector('#dashboard-buttons-section'),
+            title: 'Buttons Updated',
+            desc: 'Buttons ab slim aur compact hain. Bills, Updates, Complaints yahan se open karein.'
+        },
+        {
+            el: document.querySelector('.slime-bot'),
+            title: 'NEW — Help Bot',
+            desc: 'Neeche right corner par Help Bot hai. Open par click karein — FAQ aur Working Hours yahan se milenge.'
+        }
+    ].filter(s => s.el);
+
+    if (!window._tourSteps.length) return;
+    window._tourIndex = 0;
+    document.body.classList.add('tour-active');
+    document.getElementById('tour-ui').style.display = 'block';
+    showTourStep();
+};
+
+function clearTourHighlights() {
+    document.querySelectorAll('.tour-highlight').forEach(el => {
+        el.classList.remove('tour-highlight');
+        el.onclick = el._tourPrevOnclick || null;
+        delete el._tourPrevOnclick;
+    });
+    window._tourBadgeEls.forEach(b => b.remove());
+    window._tourArrowEls.forEach(a => a.remove());
+    window._tourBadgeEls = [];
+    window._tourArrowEls = [];
+}
+
+function showTourStep() {
+    clearTourHighlights();
+    const step = window._tourSteps[window._tourIndex];
+    if (!step || !step.el) { endFeatureTour(); return; }
+
+    step.el.classList.add('tour-highlight');
+    const cs = window.getComputedStyle(step.el);
+    if (cs.position === 'static') step.el.style.position = 'relative';
+
+    // Click highlighted area → next step
+    step.el._tourPrevOnclick = step.el.onclick;
+    step.el.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        nextTourStep();
+    };
+
+    const badge = document.createElement('span');
+    badge.className = 'tour-new-badge';
+    badge.innerText = 'NEW';
+    step.el.appendChild(badge);
+    window._tourBadgeEls.push(badge);
+
+    const arrow = document.createElement('div');
+    arrow.className = 'tour-arrow';
+    arrow.innerHTML = '<i class="fas fa-arrow-down"></i>';
+    if (step.el.classList.contains('slime-bot')) {
+        arrow.style.top = '-40px';
+        arrow.style.left = '50%';
+        arrow.style.marginLeft = '-14px';
+    } else {
+        arrow.style.top = '-36px';
+        arrow.style.left = '50%';
+        arrow.style.marginLeft = '-14px';
+    }
+    step.el.appendChild(arrow);
+    window._tourArrowEls.push(arrow);
+
+    document.getElementById('tour-title').innerText = step.title;
+    document.getElementById('tour-desc').innerText = step.desc;
+    const nextBtn = document.getElementById('tour-next-btn');
+    if (nextBtn) nextBtn.innerText = (window._tourIndex >= window._tourSteps.length - 1) ? 'Finish' : 'Open';
+
+    try { step.el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(e) {}
+}
+
+window.nextTourStep = function() {
+    window._tourIndex++;
+    if (window._tourIndex >= window._tourSteps.length) {
+        endFeatureTour();
+        return;
+    }
+    showTourStep();
+};
+
+window.endFeatureTour = function() {
+    clearTourHighlights();
+    document.body.classList.remove('tour-active');
+    const ui = document.getElementById('tour-ui');
+    if (ui) ui.style.display = 'none';
+    localStorage.setItem('mrcrazy_feature_tour_v1', '1');
+    // Tour finish → auto open Help bot section
+    window._faqBackScreen = 'dashboard-screen';
+    if (typeof goFaqStep === 'function') goFaqStep(1);
+    openScreen('help-screen');
+};
+const careReplies = {
+    contact: `📞 <strong>How to Contact Us</strong><br><br>
+• Use this Care Bot for instant auto-replies<br>
+• Click <strong>Contact on WhatsApp</strong> (top right) for live chat<br>
+• WhatsApp: +977 976-1970136<br>
+• You can also login with Project ID and use live chat from Dashboard<br><br>
+We respond as soon as possible during working hours.`,
+    complaint: `📋 <strong>How to File a Complaint</strong><br><br>
+1. Login with your <strong>Project ID</strong><br>
+2. On Dashboard, tap <strong>Complaint</strong><br>
+3. Select issue type (User / Deposit / Withdraw / Plan / Other)<br>
+4. Fill details and submit<br>
+5. You will receive status updates and admin reply in history<br><br>
+Complaints are reviewed carefully by our team.`,
+    project: `🚀 <strong>How to Create a New Project</strong><br><br>
+1. On Login screen, tap <strong>Create new project</strong><br>
+2. Fill Step 1: Project name, type, purpose, details<br>
+3. Step 2: Deadline & reference<br>
+4. Step 3: Your contact info<br>
+5. Step 4: Logo / design (optional)<br>
+6. Submit — you will receive a unique Project ID<br><br>
+Keep your Project ID safe for future login.`,
+    update: `🔄 <strong>How to Request an Update</strong><br><br>
+1. Login with Project ID<br>
+2. Dashboard → <strong>App Update Now</strong><br>
+3. Describe the features / changes you need<br>
+4. Optionally attach a screenshot<br>
+5. Submit — you will get a TRX ID<br>
+6. Track status in Updates History<br><br>
+When complete, you will see a notification.`,
+    hours: `🕐 <strong>Working Hours</strong><br><br>
+• <strong>Monday – Thursday:</strong> 12:30 PM – 04:00 AM<br>
+• <strong>Friday:</strong> 03:00 PM – 04:00 AM<br>
+• <strong>Sunday:</strong> Closed<br><br>
+You may submit complaints & update requests anytime. We process them during working hours.`,
+    payment: `💳 <strong>Payment & Bills</strong><br><br>
+1. Login → Dashboard → <strong>Check Bills</strong><br>
+2. View current bill amount & status<br>
+3. Tap <strong>Pay Bill</strong><br>
+4. Transfer via Meezan Bank or JazzCash<br>
+5. Enter TRX ID and submit<br>
+6. Status will change to Checking → Paid after verification<br><br>
+You can also download bill summary as PDF.`
+};
+window.careBotReply = function(key) {
+    const box = document.getElementById('care-messages');
+    const userLabels = {
+        contact: 'How to Contact Us',
+        complaint: 'How to File Complaint',
+        project: 'How to Create New Project',
+        update: 'How to Request Update',
+        hours: 'Working Hours',
+        payment: 'Payment / Bills'
+    };
+    // User bubble
+    const u = document.createElement('div');
+    u.className = 'care-msg care-msg-user';
+    u.innerText = userLabels[key] || key;
+    box.appendChild(u);
+    box.scrollTop = box.scrollHeight;
+    // Typing
+    const typing = document.createElement('div');
+    typing.className = 'care-msg care-msg-bot';
+    typing.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+    box.appendChild(typing);
+    box.scrollTop = box.scrollHeight;
+    setTimeout(() => {
+        typing.innerHTML = careReplies[key] || 'Sorry, I could not understand. Please try another option or contact on WhatsApp.';
+        box.scrollTop = box.scrollHeight;
+    }, 700 + Math.random() * 400);
+};
+
 (function startBroadcastListener() {
     const tryStart = () => {
         if (typeof window.fbOnValue === 'undefined' || typeof window.fbRef === 'undefined' || typeof window.db === 'undefined') {
@@ -900,8 +1630,9 @@ if ('serviceWorker' in navigator) {
             for (const n of items) {
                 lastSeenTs = Math.max(lastSeenTs, n.ts || 0);
                 localStorage.setItem('broadcastLastTs', String(lastSeenTs));
-                const title = n.title || 'MrCrazy';
+                const title = n.title || 'MrCrazy Digital Hub';
                 const body = n.body || n.message || '';
+                if (typeof playNewNotifSound === 'function') playNewNotifSound();
                 if (typeof showInAppToast === 'function') showInAppToast(title, body);
                 if (typeof showSystemNotification === 'function') {
                     showSystemNotification(title, body);
@@ -911,8 +1642,8 @@ if ('serviceWorker' in navigator) {
                             const reg = await navigator.serviceWorker.ready;
                             reg.showNotification(title, {
                                 body,
-                                icon: 'https://via.placeholder.com/192/12877f/ffffff?text=MC',
-                                badge: 'https://via.placeholder.com/96/12877f/ffffff?text=MC',
+                                icon: 'https://i.ibb.co/Ndnv3fy1/IMG-20260730-030751-992.png',
+                                badge: 'https://i.ibb.co/Ndnv3fy1/IMG-20260730-030751-992.png',
                                 vibrate: [160, 80, 160],
                                 tag: 'broadcast-' + (n.id || Date.now()),
                                 renotify: true,
@@ -942,6 +1673,23 @@ async function notifyAdmin(title, message, type='general') {
 window.openScreen = function(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+    // Part 5: pause Jummah audio/video when leaving dashboard
+    if (id !== 'dashboard-screen' && typeof stopJummahMedia === 'function') {
+        stopJummahMedia();
+    } else if (id === 'dashboard-screen' && typeof isJummahDay === 'function' && isJummahDay()) {
+        try {
+            const jummahHeader = document.getElementById('dashboard-jummah-header');
+            const jummahVideo = document.getElementById('jummah-video');
+            const jummahAudio = document.getElementById('jummah-audio');
+            const normalHeaders = document.getElementById('dashboard-normal-headers');
+            if (jummahHeader && !jummahHeader.classList.contains('hidden')) {
+                if (jummahVideo) jummahVideo.play().catch(()=>{});
+                if (jummahAudio) jummahAudio.play().catch(()=>{});
+            } else if (jummahHeader && normalHeaders && normalHeaders.classList.contains('hidden') === false) {
+                // already normal
+            }
+        } catch(e) {}
+    }
 };
 window.copyText = function(text, btn) {
     navigator.clipboard.writeText(text);
@@ -1137,8 +1885,9 @@ function startUserNotificationListener(phone) {
         if(!items.length) return;
         const latest = items[0];
         update(ref(db, `userNotifications/${phone}/${latest.id}`), { read: true }).catch(()=>{});
+        if (typeof playNewNotifSound === 'function') playNewNotifSound();
         showInAppToast(latest.title || 'Notification', latest.body || '');
-        showSystemNotification(latest.title || 'MrCrazy', latest.body || '');
+        showSystemNotification(latest.title || 'MrCrazy Digital Hub', latest.body || '');
     });
 }
 window.showInAppToast = function(title, body) {
@@ -1164,14 +1913,14 @@ window.showSystemNotification = async function(title, body) {
                 const reg = await navigator.serviceWorker.ready;
                 reg.showNotification(title, {
                     body,
-                    icon: 'https://via.placeholder.com/192/12877f/ffffff?text=MC',
-                    badge: 'https://via.placeholder.com/96/12877f/ffffff?text=MC',
+                    icon: 'https://i.ibb.co/Ndnv3fy1/IMG-20260730-030751-992.png',
+                    badge: 'https://i.ibb.co/Ndnv3fy1/IMG-20260730-030751-992.png',
                     vibrate: [120, 60, 120],
                     tag: 'mrcrazy-admin-' + Date.now(),
                     renotify: true
                 });
             } else {
-                new Notification(title, { body, icon: 'https://via.placeholder.com/192/12877f/ffffff?text=MC' });
+                new Notification(title, { body, icon: 'https://i.ibb.co/Ndnv3fy1/IMG-20260730-030751-992.png' });
             }
         }
     } catch(e) {}
@@ -1361,6 +2110,234 @@ window.submitFeedback = async function(type) {
     setTimeout(()=>openScreen('chat-dashboard-screen'), 2500);
 };
 
+/* ========== PART 3: New.mp3 + Global Rating ========== */
+window.playNewNotifSound = function() {
+    try {
+        const a = document.getElementById('new-notif-audio');
+        if (a) { a.currentTime = 0; a.play().catch(()=>{}); }
+    } catch(e) {}
+};
+
+function starsString(avg) {
+    const full = Math.round(avg);
+    let s = '';
+    for (let i = 1; i <= 5; i++) s += i <= full ? '★' : '☆';
+    return s;
+}
+
+window.loadGlobalRating = function() {
+    onValue(ref(db, 'allRatings'), (snap) => {
+        let total = 0, count = 0;
+        if (snap.exists()) {
+            Object.values(snap.val()).forEach(r => {
+                const s = Number(r.stars) || 0;
+                if (s >= 1 && s <= 5) { total += s; count++; }
+            });
+        }
+        const avg = count > 0 ? (total / count) : 0;
+        const avgTxt = count > 0 ? avg.toFixed(1) : '—';
+        const stars = count > 0 ? starsString(avg) : '★★★★★';
+
+        const loginStars = document.getElementById('login-stars-mini');
+        const loginNum = document.getElementById('login-rating-num');
+        const loginCount = document.getElementById('login-rating-count');
+        if (loginStars) loginStars.innerText = stars;
+        if (loginNum) loginNum.innerText = avgTxt;
+        if (loginCount) loginCount.innerText = count > 0 ? `(${count} reviews)` : 'No ratings yet';
+
+        const dashStars = document.getElementById('dash-stars-mini');
+        const dashText = document.getElementById('dash-rating-text');
+        if (dashStars) dashStars.innerText = stars;
+        if (dashText) dashText.innerText = count > 0 ? `Rating: ${avgTxt} (${count})` : 'Rating: —';
+    });
+};
+// Start rating listener early
+setTimeout(() => { try { loadGlobalRating(); } catch(e) {} }, 800);
+
+/* ========== PART 2: Solved Popup + Rating ========== */
+window._pendingSolvedQueue = [];
+window._currentSolvedItem = null;
+window._selectedStars = 0;
+
+function getSeenSolvedKey(pId) {
+    return 'solvedSeen_' + pId;
+}
+function getSeenSet(pId) {
+    try { return JSON.parse(localStorage.getItem(getSeenSolvedKey(pId)) || '[]'); } catch(e) { return []; }
+}
+function markSolvedSeen(pId, key) {
+    const arr = getSeenSet(pId);
+    if (!arr.includes(key)) { arr.push(key); localStorage.setItem(getSeenSolvedKey(pId), JSON.stringify(arr.slice(-80))); }
+}
+
+async function checkSolvedRequests(pId) {
+    if (!pId) return;
+    const seen = getSeenSet(pId);
+    const queue = [];
+
+    try {
+        const uSnap = await get(ref(db, `updateRequests/${pId}`));
+        if (uSnap.exists()) {
+            Object.entries(uSnap.val()).forEach(([k, r]) => {
+                const st = (r.status || '').toLowerCase();
+                if ((st === 'close' || st === 'complete') && !seen.includes('u_' + k)) {
+                    queue.push({ type: 'update', key: 'u_' + k, trxId: r.trxId || k, status: r.status });
+                }
+            });
+        }
+    } catch(e) {}
+
+    try {
+        const cSnap = await get(ref(db, `complaints/${pId}`));
+        if (cSnap.exists()) {
+            Object.entries(cSnap.val()).forEach(([k, c]) => {
+                const st = (c.status || '').toLowerCase();
+                if (['resolved', 'close', 'complete'].includes(st) && !seen.includes('c_' + k)) {
+                    queue.push({ type: 'complaint', key: 'c_' + k, trxId: c.trxId || c.transactionId || k, status: c.status });
+                }
+            });
+        }
+    } catch(e) {}
+
+    if (!queue.length) return;
+    window._pendingSolvedQueue = queue;
+    showNextSolvedPopup();
+}
+
+function showNextSolvedPopup() {
+    if (!window._pendingSolvedQueue.length) return;
+    const item = window._pendingSolvedQueue.shift();
+    window._currentSolvedItem = item;
+
+    document.getElementById('solved-trx').innerText = item.trxId || 'N/A';
+    document.getElementById('solved-main').style.display = 'block';
+    document.getElementById('rating-section').classList.remove('show');
+    document.getElementById('rating-thanks').classList.remove('show');
+    window._selectedStars = 0;
+    document.querySelectorAll('#star-row .star-btn').forEach(b => b.classList.remove('active'));
+
+    const overlay = document.getElementById('solved-overlay');
+    overlay.classList.add('show');
+
+    // Play Notice.mp3
+    try {
+        const audio = document.getElementById('notice-audio');
+        if (audio) { audio.currentTime = 0; audio.play().catch(()=>{}); }
+    } catch(e) {}
+
+    // Gold toast left side
+    const toast = document.getElementById('gold-notif-toast');
+    document.getElementById('gold-notif-text').innerText = 'Request Solved • ' + (item.trxId || '');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4500);
+
+    // Mark as seen so it doesn't repeat
+    if (window.currentProjectId) markSolvedSeen(window.currentProjectId, item.key);
+}
+
+window.solvedAnswer = function(yes) {
+    if (yes) {
+        document.getElementById('solved-main').style.display = 'none';
+        document.getElementById('rating-section').classList.add('show');
+        document.getElementById('rating-thanks').classList.remove('show');
+    } else {
+        document.getElementById('solved-overlay').classList.remove('show');
+        setTimeout(() => showNextSolvedPopup(), 300);
+    }
+};
+
+window.selectStar = function(n) {
+    window._selectedStars = n;
+    document.querySelectorAll('#star-row .star-btn').forEach(b => {
+        const v = Number(b.getAttribute('data-star'));
+        b.classList.toggle('active', v <= n);
+    });
+};
+
+window.submitRating = async function() {
+    if (!window._selectedStars) return alert('Please select 1 to 5 stars.');
+    const item = window._currentSolvedItem || {};
+    try {
+        await push(ref(db, 'ratings/' + (window.currentProjectId || 'unknown')), {
+            stars: window._selectedStars,
+            type: item.type || 'general',
+            trxId: item.trxId || '',
+            key: item.key || '',
+            timestamp: Date.now()
+        });
+        // also store under global for average
+        await push(ref(db, 'allRatings'), {
+            projectId: window.currentProjectId || '',
+            stars: window._selectedStars,
+            timestamp: Date.now()
+        });
+    } catch(e) { console.warn(e); }
+
+    document.getElementById('rating-section').classList.remove('show');
+    document.getElementById('rating-thanks').classList.add('show');
+    setTimeout(() => {
+        document.getElementById('solved-overlay').classList.remove('show');
+        setTimeout(() => showNextSolvedPopup(), 350);
+    }, 2800);
+};
+
+/* ========== STATS LOADER (Part 1) ========== */
+function loadDashboardStats(pId) {
+    let updatesTotal = 0, complaintsTotal = 0, pending = 0, complete = 0;
+    onValue(ref(db, `updateRequests/${pId}`), snap => {
+        updatesTotal = 0; pending = 0; complete = 0;
+        if(snap.exists()){
+            Object.values(snap.val()).forEach(r => {
+                updatesTotal++;
+                const st = (r.status||'pending').toLowerCase();
+                if(st === 'pending' || st === 'working') pending++;
+                if(st === 'close' || st === 'complete') complete++;
+            });
+        }
+        // also recount complaints into pending/complete
+        get(ref(db, `complaints/${pId}`)).then(cSnap => {
+            complaintsTotal = 0;
+            if(cSnap.exists()){
+                Object.values(cSnap.val()).forEach(c => {
+                    complaintsTotal++;
+                    const st = (c.status||'pending').toLowerCase();
+                    if(st === 'pending' || st === 'working') pending++;
+                    if(['resolved','close','complete'].includes(st)) complete++;
+                });
+            }
+            document.getElementById('stat-updates').innerText = updatesTotal;
+            document.getElementById('stat-complaints').innerText = complaintsTotal;
+            document.getElementById('stat-pending').innerText = pending;
+            document.getElementById('stat-complete').innerText = complete;
+        });
+    });
+    onValue(ref(db, `complaints/${pId}`), snap => {
+        // trigger recount via updates listener path - simple re-call
+        get(ref(db, `updateRequests/${pId}`)).then(() => {
+            // force a soft refresh by reading both
+            let uT=0, cT=0, p=0, c=0;
+            get(ref(db, `updateRequests/${pId}`)).then(uSnap => {
+                if(uSnap.exists()) Object.values(uSnap.val()).forEach(r=>{
+                    uT++; const st=(r.status||'pending').toLowerCase();
+                    if(st==='pending'||st==='working') p++;
+                    if(st==='close'||st==='complete') c++;
+                });
+                get(ref(db, `complaints/${pId}`)).then(cSnap => {
+                    if(cSnap.exists()) Object.values(cSnap.val()).forEach(r=>{
+                        cT++; const st=(r.status||'pending').toLowerCase();
+                        if(st==='pending'||st==='working') p++;
+                        if(['resolved','close','complete'].includes(st)) c++;
+                    });
+                    document.getElementById('stat-updates').innerText = uT;
+                    document.getElementById('stat-complaints').innerText = cT;
+                    document.getElementById('stat-pending').innerText = p;
+                    document.getElementById('stat-complete').innerText = c;
+                });
+            });
+        });
+    });
+}
+
 window.login = async function() {
     const pId = document.getElementById('projectIdInput').value.trim();
     if(!pId) return alert("Please enter Project ID");
@@ -1404,9 +2381,18 @@ window.login = async function() {
             const isMaintenance = data.maintenance && data.maintenance.active;
             const normalHeaders = document.getElementById('dashboard-normal-headers');
             const maintHeader = document.getElementById('dashboard-maintenance-header');
+            const jummahHeader = document.getElementById('dashboard-jummah-header');
             const normalBtns = document.getElementById('dashboard-buttons-section');
             const maintCard = document.getElementById('dashboard-maintenance-card');
             const maintAudio = document.getElementById('maintenance-audio');
+            const jummahVideo = document.getElementById('jummah-video');
+            const jummahAudio = document.getElementById('jummah-audio');
+            const isFridayToday = (typeof isJummahDay === 'function') ? isJummahDay() : (new Date().getDay() === 5);
+
+            // stop jummah media by default
+            try { if (jummahVideo) { jummahVideo.pause(); } if (jummahAudio) { jummahAudio.pause(); jummahAudio.currentTime = 0; } } catch(e) {}
+            if (jummahHeader) jummahHeader.classList.add('hidden');
+
             if(isMaintenance) {
                 normalHeaders.classList.add('hidden'); normalBtns.classList.add('hidden');
                 maintHeader.classList.remove('hidden'); maintCard.classList.remove('hidden');
@@ -1428,9 +2414,24 @@ window.login = async function() {
                     }, 1000);
                 }
             } else {
-                normalHeaders.classList.remove('hidden'); normalBtns.classList.remove('hidden');
                 maintHeader.classList.add('hidden'); maintCard.classList.add('hidden');
                 maintAudio.pause(); clearInterval(maintTimerInterval);
+                normalBtns.classList.remove('hidden');
+
+                // Part 5: Friday → show Jummah video instead of owner/app card
+                if (isFridayToday) {
+                    normalHeaders.classList.add('hidden');
+                    if (jummahHeader) {
+                        jummahHeader.classList.remove('hidden');
+                        try {
+                            if (jummahVideo) { jummahVideo.currentTime = 0; jummahVideo.muted = true; jummahVideo.play().catch(()=>{}); }
+                            if (jummahAudio) { jummahAudio.currentTime = 0; jummahAudio.play().catch(()=>{}); }
+                        } catch(e) {}
+                    }
+                } else {
+                    normalHeaders.classList.remove('hidden');
+                    if (jummahHeader) jummahHeader.classList.add('hidden');
+                }
             }
 
             let notiCount = 0; let notifs = data.notifications || {}; let nHtml = '';
@@ -1448,7 +2449,12 @@ window.login = async function() {
             document.getElementById('notif-list').innerHTML = nHtml || '<p class="text-sm text-center">No new notifications.</p>';
             if(onLoginScreen){
                 loadBills(pId); loadUpdatesHistory(pId); loadComplaintsHistory(pId);
+                loadDashboardStats(pId);
                 openScreen('dashboard-screen'); resetLoginBtn();
+                // Part 2: check for newly closed/completed requests
+                setTimeout(() => checkSolvedRequests(pId), 600);
+                // Feature tour for new UI (once until admin reset)
+                setTimeout(() => { if (typeof startFeatureTour === 'function') startFeatureTour(); }, 1400);
             }
         } else {
             if(document.getElementById('login-screen').classList.contains('active')){
@@ -1586,7 +2592,6 @@ function loadUpdatesHistory(pId) {
                 let sc=req.screenshot?`<button class="neu-button ghost-btn" style="padding:10px;margin-top:10px;margin-bottom:0;font-size:12px;width:auto;" onclick="openLightbox('${req.screenshot}')"><i class="fas fa-image"></i> View</button>`:'';
                 let replyHtml = req.adminReply ? `<div style="margin-top:10px;padding:10px;background:rgba(18,135,127,0.1);border-radius:10px;border-left:3px solid var(--primary-color);"><strong style="font-size:12px;color:var(--primary-dark);"><i class="fas fa-reply"></i> Admin Reply</strong><p style="font-size:13px;margin:6px 0 0;white-space:pre-line;">${req.adminReply}</p></div>` : '';
                 
-                // Check if app is ready via admin action
                 let appReadyBtn = (req.appReady || req.appAttached || req.appReadyCreated) ? `<button class="neu-button green-btn" style="justify-content:center; padding:12px; margin-top:12px; margin-bottom:0; width:100%; font-size:14px; animation: pulse-green-btn 2s infinite;" onclick="goToAppUpdates()"><i class="fas fa-rocket" style="margin-right:8px;"></i> App is Ready - Download Now</button>` : '';
 
                 let card=`<div class="neu-box" style="padding:15px;margin-bottom:15px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="text-sm" style="color:var(--info-color);font-weight:bold;">${req.trxId||k}</span><span class="status-badge ${bc}">${req.status}</span></div><p class="text-sm" style="margin-bottom:8px;"><i class="far fa-clock"></i> ${ft}</p><p style="font-size:14px;white-space:pre-line;">${req.details}</p>${sc}${replyHtml}${appReadyBtn}</div>`;
@@ -1648,7 +2653,6 @@ function loadComplaintsHistory(pId) {
                 let img=c.attachedImage?`<button class="neu-button ghost-btn" style="padding:10px;margin-top:10px;font-size:12px;width:auto;" onclick="openLightbox('${c.attachedImage}')"><i class="fas fa-image"></i> View</button>`:'';
                 let replyHtml = c.adminReply ? `<div style="margin-top:10px;padding:10px;background:rgba(18,135,127,0.1);border-radius:10px;border-left:3px solid var(--primary-color);"><strong style="font-size:12px;color:var(--primary-dark);"><i class="fas fa-reply"></i> Admin Reply</strong><p style="font-size:13px;margin:6px 0 0;white-space:pre-line;">${c.adminReply}</p></div>` : '';
                 
-                // App Ready button check for complaints too
                 let appReadyBtn = (c.appReady || c.appAttached || c.appReadyCreated) ? `<button class="neu-button green-btn" style="justify-content:center; padding:12px; margin-top:12px; margin-bottom:0; width:100%; font-size:14px; animation: pulse-green-btn 2s infinite;" onclick="goToAppUpdates()"><i class="fas fa-rocket" style="margin-right:8px;"></i> App is Ready - Download Now</button>` : '';
 
                 let card=`<div class="neu-box" style="padding:15px;margin-bottom:15px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="text-sm" style="text-transform:capitalize;font-weight:bold;">${c.type} Issue</span><span class="status-badge ${bc}">${c.status}</span></div><p class="text-sm" style="margin-bottom:8px;"><i class="far fa-clock"></i> ${t}</p><p style="font-size:14px;white-space:pre-line;">${c.details}</p>${img}${replyHtml}${appReadyBtn}</div>`;
@@ -1990,9 +2994,10 @@ window.updateGlobalNotifBadge = function(count) {
             if(newest && (newest.ts||0) > lastPopupTs) {
                 lastPopupTs = newest.ts||0;
                 localStorage.setItem('broadcastLastPopupTs', String(lastPopupTs));
+                if (typeof window.playNewNotifSound === 'function') window.playNewNotifSound();
                 window.showNotifPopup(newest.title||'Notification', newest.body||newest.message||'');
                 if(typeof window.showSystemNotification === 'function') {
-                    window.showSystemNotification(newest.title||'MrCrazy', newest.body||newest.message||'');
+                    window.showSystemNotification(newest.title||'MrCrazy Digital Hub', newest.body||newest.message||'');
                 }
             }
             if(window._notifPanelOpen) window.renderGlobalNotifList();
