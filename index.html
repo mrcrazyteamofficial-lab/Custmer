@@ -517,12 +517,127 @@
             border-radius: 20px; backdrop-filter: blur(4px);
         }
         .jummah-badge i { margin-right: 5px; }
+
+        /* ========== NEW UPDATES (Logout + Bell Shake + Clear Back) ========== */
+        .logout-btn {
+            width: auto !important;
+            margin: 0 !important;
+            padding: 10px 16px !important;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ef4562, #c0392b) !important;
+            color: #fff !important;
+            box-shadow: 0 4px 14px rgba(239, 70, 98, 0.35) !important;
+            font-size: 13px !important;
+            font-weight: 700;
+            display: inline-flex !important;
+            align-items: center;
+            gap: 7px;
+            border: none;
+            cursor: pointer;
+        }
+        .logout-btn:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(239, 70, 98, 0.3) !important;
+        }
+        @keyframes bell-shake {
+            0%, 100% { transform: rotate(0deg); }
+            10% { transform: rotate(14deg); }
+            20% { transform: rotate(-12deg); }
+            30% { transform: rotate(10deg); }
+            40% { transform: rotate(-8deg); }
+            50% { transform: rotate(6deg); }
+            60% { transform: rotate(-4deg); }
+            70% { transform: rotate(2deg); }
+            80% { transform: rotate(0deg); }
+        }
+        .bell-shake {
+            animation: bell-shake 0.85s ease-in-out;
+        }
+        /* Small right-side project bells */
+        .project-bell-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(18,135,127,0.1);
+            color: var(--primary-dark);
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .project-bell-wrap .p-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--danger-color);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 800;
+            min-width: 14px;
+            height: 14px;
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 0 3px;
+        }
+        /* Clear visible Back buttons */
+        .header-nav .back-btn,
+        .back-btn {
+            min-width: 46px !important;
+            min-height: 44px !important;
+            width: auto !important;
+            padding: 10px 14px !important;
+            margin-bottom: 0 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 6px;
+            background: #ffffff !important;
+            color: var(--primary-dark) !important;
+            box-shadow: 4px 4px 10px var(--shadow-dark), -4px -4px 10px var(--shadow-light) !important;
+            border: 1.5px solid rgba(18,135,127,0.3) !important;
+            border-radius: 12px !important;
+            font-size: 15px !important;
+            font-weight: 700;
+        }
+        .header-nav .back-btn i,
+        .back-btn i {
+            font-size: 16px;
+            color: var(--primary-dark);
+        }
+        .header-nav .back-btn:active,
+        .back-btn:active {
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light) !important;
+        }
+        .dash-top-row {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .main-bell-box {
+            position: relative;
+            background: #ffffff;
+            padding: 10px 12px;
+            border-radius: 14px;
+            box-shadow: 4px 4px 10px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
+            cursor: pointer;
+            border: 2px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
 <div class="mobile-container">
 
-    <button type="button" class="global-notif-btn" id="global-notif-btn" onclick="toggleNotifPanel()" title="Notifications"><i class="fas fa-bell"></i><span class="g-badge" id="global-notif-badge">0</span></button>
+    <button type="button" class="global-notif-btn" id="global-notif-btn" onclick="toggleNotifPanel()" title="Notifications"><i class="fas fa-bell" id="global-bell-icon"></i><span class="g-badge" id="global-notif-badge">0</span></button>
     <div class="notif-panel" id="global-notif-panel"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><strong style="color:var(--primary-dark)"><i class="fas fa-bell"></i> Notifications</strong><button type="button" onclick="toggleNotifPanel(false)" style="border:none;background:transparent;font-size:18px;cursor:pointer;color:var(--text-muted)">&times;</button></div><div id="global-notif-list"><p class="text-sm text-center" style="color:var(--text-muted)">Loading...</p></div></div>
     <div class="notif-popup-overlay" id="notif-popup-overlay" onclick="if(event.target===this)closeNotifPopup()"><div class="notif-popup-box"><i class="fas fa-bell fa-2x" style="color:var(--primary-color);margin-bottom:12px"></i><h3 id="notif-popup-title" style="color:var(--primary-dark);margin:0 0 8px;font-size:17px"></h3><p id="notif-popup-body" style="color:var(--text-color);font-size:14px;line-height:1.5;margin:0 0 16px"></p><button class="neu-button primary-btn" style="justify-content:center;margin:0" onclick="closeNotifPopup()">OK</button></div></div>
 
@@ -599,7 +714,7 @@
     <!-- CONTACT GREETING (kept for existing flow) -->
     <div id="contact-greeting-screen" class="screen">
         <div class="header-nav">
-            <button class="neu-button back-btn" onclick="openScreen('login-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
+            <button class="neu-button back-btn" onclick="openScreen('login-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i> Back</button>
             <h3>Contact Us</h3>
         </div>
         <div class="contact-welcome-box">
@@ -626,7 +741,7 @@
     <!-- CONTACT AUTH -->
     <div id="contact-auth-screen" class="screen">
         <div class="header-nav">
-            <button class="neu-button back-btn" onclick="openScreen('contact-greeting-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
+            <button class="neu-button back-btn" onclick="openScreen('contact-greeting-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i> Back</button>
             <h3 id="auth-title">Login / Signup</h3>
         </div>
         <div style="display: flex; gap: 10px; margin-bottom: 18px;">
@@ -679,7 +794,7 @@
     <!-- CHAT DASHBOARD -->
     <div id="chat-dashboard-screen" class="screen">
         <div class="header-nav">
-            <button class="neu-button back-btn" onclick="openScreen('login-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
+            <button class="neu-button back-btn" onclick="openScreen('login-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i> Back</button>
             <h3>My Support</h3>
         </div>
         <div class="chat-dash-header">
@@ -741,7 +856,7 @@
     <!-- CREATE PROJECT -->
     <div id="create-project-screen" class="screen">
         <div class="header-nav">
-            <button class="neu-button back-btn" onclick="openScreen('login-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
+            <button class="neu-button back-btn" onclick="openScreen('login-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i> Back</button>
             <h3>Start New Project</h3>
         </div>
         <div class="neu-box">
@@ -833,11 +948,15 @@
 
     <!-- DASHBOARD -->
     <div id="dashboard-screen" class="screen">
-        <div style="display: flex; justify-content: flex-start; margin-bottom: 10px;">
-            <div style="position: relative; background: #ffffff; padding: 10px 12px; border-radius: 14px; box-shadow: 4px 4px 10px var(--shadow-dark), -4px -4px 10px var(--shadow-light); cursor: pointer; border: 2px solid var(--primary-color);" onclick="document.getElementById('notif-modal').classList.add('active')">
-                <i class="fas fa-bell" style="color: var(--primary-dark); font-size: 20px;"></i>
+        <!-- NEW: Top row — Notification bell + Logout (both right side) -->
+        <div class="dash-top-row">
+            <div class="main-bell-box" id="main-bell-wrap" onclick="document.getElementById('notif-modal').classList.add('active')" title="Notifications">
+                <i class="fas fa-bell" style="color: var(--primary-dark); font-size: 20px;" id="main-bell-icon"></i>
                 <span class="badge" id="main-bell-badge" style="top: -6px; right: -6px; font-size: 11px; padding: 3px 8px; border-radius: 16px; display: none;">0</span>
             </div>
+            <button type="button" class="logout-btn" onclick="logout()" title="Logout / Back to Home">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
         </div>
 
         <!-- COMBINED SINGLE HEADER CARD (Part 1) -->
@@ -938,7 +1057,7 @@
     <!-- BILLS / PAYMENT / UPDATE / COMPLAINT / UPDATES DASH / HELP -->
     <div id="bills-screen" class="screen">
         <div class="header-nav" style="margin-bottom: 10px;">
-            <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto; padding: 10px 15px; margin-bottom: 0;"><i class="fas fa-arrow-left"></i></button>
+            <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto; padding: 10px 15px; margin-bottom: 0;"><i class="fas fa-arrow-left"></i> Back</button>
             <h3 style="font-size: 18px;">Billing Details</h3>
         </div>
         <div id="pdf-content-area">
@@ -969,7 +1088,7 @@
 
     <div id="payment-screen" class="screen">
         <div class="header-nav" style="margin-bottom: 10px;">
-            <button class="neu-button back-btn" onclick="openScreen('bills-screen')" style="width: auto; padding: 10px 15px; margin-bottom: 0;"><i class="fas fa-arrow-left"></i></button>
+            <button class="neu-button back-btn" onclick="openScreen('bills-screen')" style="width: auto; padding: 10px 15px; margin-bottom: 0;"><i class="fas fa-arrow-left"></i> Back</button>
             <h3 style="font-size: 18px;">Pay Bill</h3>
         </div>
         <div class="neu-box compact-box" style="text-align: center; background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white;">
@@ -1000,7 +1119,7 @@
 
     <div id="update-screen" class="screen">
         <div class="header-nav" style="margin-bottom: 10px;">
-            <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto; padding: 10px 15px; margin-bottom: 0;"><i class="fas fa-arrow-left"></i></button>
+            <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto; padding: 10px 15px; margin-bottom: 0;"><i class="fas fa-arrow-left"></i> Back</button>
             <h3 style="font-size: 18px;">App Update</h3>
         </div>
         <div class="neu-box compact-box">
@@ -1023,7 +1142,7 @@
 
     <div id="complaint-screen" class="screen">
         <div class="header-nav" style="margin-bottom: 10px;">
-            <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto; padding: 10px 15px; margin-bottom: 0;"><i class="fas fa-arrow-left"></i></button>
+            <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto; padding: 10px 15px; margin-bottom: 0;"><i class="fas fa-arrow-left"></i> Back</button>
             <h3 style="font-size: 18px;">File a Complaint</h3>
         </div>
         <div class="neu-box compact-box">
@@ -1059,7 +1178,7 @@
 
     <div id="updates-dashboard-screen" class="screen">
         <div class="header-nav">
-            <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i></button>
+            <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width: auto;"><i class="fas fa-arrow-left"></i> Back</button>
             <h3>Dashboard</h3>
         </div>
         <div class="ud-tabs">
@@ -1072,7 +1191,7 @@
 
     <div id="help-screen" class="screen">
         <div class="header-nav">
-            <button class="neu-button back-btn" onclick="faqGoBack()" style="width: auto; margin:0;"><i class="fas fa-arrow-left"></i></button>
+            <button class="neu-button back-btn" onclick="faqGoBack()" style="width: auto; margin:0;"><i class="fas fa-arrow-left"></i> Back</button>
             <h3 style="margin: 0;" id="faq-page-title">Working Hours</h3>
         </div>
 
@@ -1342,6 +1461,42 @@ window.installPWA = async function() {
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch((e)=>console.warn('SW register fail', e));
 }
+
+/* ========== NEW: Logout + Bell Shake ========== */
+window.logout = function() {
+    window.currentProjectId = "";
+    try {
+        if (typeof stopJummahMedia === 'function') stopJummahMedia();
+        const maintAudio = document.getElementById('maintenance-audio');
+        if (maintAudio) { maintAudio.pause(); maintAudio.currentTime = 0; }
+        clearInterval(maintTimerInterval);
+    } catch(e) {}
+    openScreen('login-screen');
+    const inp = document.getElementById('projectIdInput');
+    if (inp) inp.value = '';
+};
+
+window.triggerBellShake = function() {
+    const icons = [
+        document.getElementById('main-bell-icon'),
+        document.getElementById('global-bell-icon'),
+        document.querySelector('#global-notif-btn i')
+    ];
+    icons.forEach(el => {
+        if (!el) return;
+        el.classList.remove('bell-shake');
+        void el.offsetWidth;
+        el.classList.add('bell-shake');
+        setTimeout(() => { try { el.classList.remove('bell-shake'); } catch(e){} }, 900);
+    });
+    // also shake small project bells if present
+    document.querySelectorAll('.project-bell-wrap i').forEach(el => {
+        el.classList.remove('bell-shake');
+        void el.offsetWidth;
+        el.classList.add('bell-shake');
+        setTimeout(() => { try { el.classList.remove('bell-shake'); } catch(e){} }, 900);
+    });
+};
 
 /* ========== PART 1: CARE BOT ========== */
 window.openCareBot = function() {
@@ -1633,6 +1788,7 @@ window.careBotReply = function(key) {
                 const title = n.title || 'MrCrazy Digital Hub';
                 const body = n.body || n.message || '';
                 if (typeof playNewNotifSound === 'function') playNewNotifSound();
+                if (typeof triggerBellShake === 'function') triggerBellShake();
                 if (typeof showInAppToast === 'function') showInAppToast(title, body);
                 if (typeof showSystemNotification === 'function') {
                     showSystemNotification(title, body);
@@ -1863,7 +2019,10 @@ async function loadUserProjects(phone) {
             ? projectIds.map(id => `
                 <div class="project-card-mini" style="justify-content:space-between;">
                     <div class="mono" style="font-size:14px;font-weight:700;color:var(--primary-dark);">${id}</div>
-                    <i class="fas fa-check-circle" style="color:#1f9d67;"></i>
+                    <div class="project-bell-wrap" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="p-badge">0</span>
+                    </div>
                 </div>`).join('')
             : '<p class="text-sm">Is number se koi Project ID linked nahi mila.</p>';
     } catch(e){
@@ -1886,6 +2045,7 @@ function startUserNotificationListener(phone) {
         const latest = items[0];
         update(ref(db, `userNotifications/${phone}/${latest.id}`), { read: true }).catch(()=>{});
         if (typeof playNewNotifSound === 'function') playNewNotifSound();
+        if (typeof triggerBellShake === 'function') triggerBellShake();
         showInAppToast(latest.title || 'Notification', latest.body || '');
         showSystemNotification(latest.title || 'MrCrazy Digital Hub', latest.body || '');
     });
@@ -2445,7 +2605,11 @@ window.login = async function() {
                 nHtml += `<div class="neu-box" style="padding:12px;margin-bottom:10px;cursor:pointer;" onclick="clearNotifAndOpen('complaint','complaint-screen')"><i class="fas fa-headset" style="color:var(--pink-color);margin-right:8px;"></i> Admin replied to Complaint</div>`; }
             else document.getElementById('badge-complaint').style.display='none';
             const bellBadge = document.getElementById('main-bell-badge');
-            if(notiCount>0){ bellBadge.style.display='flex'; bellBadge.innerText=notiCount; } else bellBadge.style.display='none';
+            if(notiCount>0){ 
+                bellBadge.style.display='flex'; 
+                bellBadge.innerText=notiCount; 
+                if (typeof triggerBellShake === 'function') triggerBellShake();
+            } else bellBadge.style.display='none';
             document.getElementById('notif-list').innerHTML = nHtml || '<p class="text-sm text-center">No new notifications.</p>';
             if(onLoginScreen){
                 loadBills(pId); loadUpdatesHistory(pId); loadComplaintsHistory(pId);
@@ -2995,6 +3159,7 @@ window.updateGlobalNotifBadge = function(count) {
                 lastPopupTs = newest.ts||0;
                 localStorage.setItem('broadcastLastPopupTs', String(lastPopupTs));
                 if (typeof window.playNewNotifSound === 'function') window.playNewNotifSound();
+                if (typeof window.triggerBellShake === 'function') window.triggerBellShake();
                 window.showNotifPopup(newest.title||'Notification', newest.body||newest.message||'');
                 if(typeof window.showSystemNotification === 'function') {
                     window.showSystemNotification(newest.title||'MrCrazy Digital Hub', newest.body||newest.message||'');
