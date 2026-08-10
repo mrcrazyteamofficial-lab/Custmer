@@ -632,6 +632,129 @@
             align-items: center;
             justify-content: center;
         }
+        .icon-action-btn {
+            width: 44px; height: 44px; border-radius: 14px; border: none;
+            background: #fff; color: var(--primary-dark); font-size: 16px;
+            box-shadow: 3px 3px 8px var(--shadow-dark), -3px -3px 8px var(--shadow-light);
+            cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+        }
+        .announce-banner {
+            display: none; background: linear-gradient(135deg, #3567d6, #1f3f9c); color: #fff;
+            border-radius: 14px; padding: 12px 14px; margin-bottom: 12px; font-size: 13px;
+            font-weight: 600; line-height: 1.45; position: relative;
+        }
+        .announce-banner.show { display: block; animation: fadeIn 0.3s ease; }
+        .announce-banner .ab-close {
+            position: absolute; top: 8px; right: 10px; background: rgba(255,255,255,0.2);
+            border: none; color: #fff; width: 26px; height: 26px; border-radius: 50%;
+            cursor: pointer; font-size: 12px;
+        }
+        .filter-row { display: flex; gap: 8px; margin: 10px 0 12px; flex-wrap: wrap; }
+        .filter-btn {
+            border: none; background: #fff; border-radius: 20px; padding: 7px 12px;
+            font-size: 12px; font-weight: 600; color: var(--text-muted); cursor: pointer;
+            box-shadow: 2px 2px 6px var(--shadow-dark), -2px -2px 6px var(--shadow-light);
+        }
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: #fff; box-shadow: 0 4px 12px rgba(18,135,127,0.3);
+        }
+        .empty-state {
+            text-align: center; padding: 28px 16px; color: var(--text-muted);
+        }
+        .empty-state i { font-size: 36px; margin-bottom: 12px; color: #b7c2d4; display: block; }
+        .empty-state p { font-size: 13px; margin-bottom: 14px; line-height: 1.5; }
+        .settings-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 14px;
+        }
+        .settings-row:last-child { border-bottom: none; }
+        .settings-row .label { font-weight: 600; color: var(--text-color); display: flex; align-items: center; gap: 10px; }
+        .settings-row .label i { color: var(--primary-color); width: 20px; text-align: center; }
+        .toggle-switch {
+            width: 46px; height: 26px; background: #ccd5e3; border-radius: 20px;
+            position: relative; cursor: pointer; transition: 0.2s;
+        }
+        .toggle-switch.on { background: var(--primary-color); }
+        .toggle-switch::after {
+            content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px;
+            background: #fff; border-radius: 50%; transition: 0.2s;
+        }
+        .toggle-switch.on::after { left: 23px; }
+        .activity-item {
+            display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05);
+            font-size: 12.5px; align-items: flex-start;
+        }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-dot {
+            width: 8px; height: 8px; border-radius: 50%; background: var(--primary-color);
+            margin-top: 5px; flex-shrink: 0;
+        }
+        .doc-card {
+            display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+            background: #fff; border-radius: 14px; margin-bottom: 10px;
+            box-shadow: 3px 3px 8px var(--shadow-dark), -3px -3px 8px var(--shadow-light);
+        }
+        .doc-card i { font-size: 22px; color: var(--danger-color); }
+        .doc-card .doc-info { flex: 1; }
+        .doc-card .doc-info strong { display: block; font-size: 13px; color: var(--primary-dark); }
+        .doc-card .doc-info span { font-size: 11px; color: var(--text-muted); }
+        .share-pid-box {
+            background: rgba(18,135,127,0.08); border: 1.5px dashed rgba(18,135,127,0.35);
+            border-radius: 14px; padding: 14px; text-align: center; margin-bottom: 14px;
+        }
+        .share-pid-box .pid-val {
+            font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 800;
+            color: var(--primary-dark); letter-spacing: 1px; margin: 8px 0;
+        }
+        .last-login-chip {
+            font-size: 11px; color: var(--text-muted); text-align: center; margin-bottom: 8px;
+        }
+        /* Dark mode */
+        body.dark-mode {
+            --bg-color: #1a2332; --text-color: #e2e8f0; --text-muted: #94a3b8;
+            --shadow-light: #243044; --shadow-dark: #0f1620;
+        }
+        body.dark-mode .mobile-container { background: var(--bg-color); }
+        body.dark-mode .neu-box, body.dark-mode .compact-box,
+        body.dark-mode .combined-header-card, body.dark-mode .dash-stat-card,
+        body.dark-mode .main-bell-box, body.dark-mode .icon-action-btn,
+        body.dark-mode .faq-item, body.dark-mode .faq-q,
+        body.dark-mode .doc-card, body.dark-mode .filter-btn {
+            background: #243044; color: var(--text-color);
+        }
+        body.dark-mode .neu-input, body.dark-mode .neu-button {
+            background: #243044; color: var(--text-color);
+        }
+        body.dark-mode .neu-button.primary-btn { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: #fff; }
+        body.dark-mode .neu-button.accent-btn { background: linear-gradient(135deg, var(--pink-color), #a8215f); color: #fff; }
+        body.dark-mode .neu-button.green-btn { background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; }
+        body.dark-mode .logout-btn { background: linear-gradient(135deg, #ef4562, #c0392b) !important; color: #fff !important; }
+        body.dark-mode .settings-row { border-color: rgba(255,255,255,0.08); }
+        body.dark-mode .announce-banner { background: linear-gradient(135deg, #1e3a8a, #1e40af); }
+        body.dark-mode .faq-a { background: #1a2332; color: #cbd5e1; }
+        body.dark-mode .empty-state i { color: #475569; }
+        body.dark-mode .share-pid-box { background: rgba(18,135,127,0.15); }
+        body.dark-mode .simple-modal-box { background: #243044; color: var(--text-color); }
+        .lang-btn-group { display: flex; gap: 6px; }
+        .lang-btn {
+            border: 1.5px solid #ccd5e3; background: #fff; border-radius: 10px;
+            padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; color: var(--text-muted);
+        }
+        .lang-btn.active { border-color: var(--primary-color); background: rgba(18,135,127,0.1); color: var(--primary-dark); }
+        body.dark-mode .lang-btn { background: #1a2332; border-color: #334155; color: #94a3b8; }
+        body.dark-mode .lang-btn.active { background: rgba(18,135,127,0.25); color: #5eead4; border-color: var(--primary-color); }
+        .version-box {
+            text-align: center; padding: 12px; background: rgba(18,135,127,0.06);
+            border-radius: 12px; margin-top: 10px; font-size: 12px; color: var(--text-muted);
+        }
+        .version-box strong { color: var(--primary-dark); }
+        .rating-reminder {
+            display: none; background: linear-gradient(135deg, rgba(245,166,35,0.15), rgba(212,160,23,0.1));
+            border: 1.5px solid rgba(212,160,23,0.4); border-radius: 14px; padding: 12px 14px;
+            margin-bottom: 12px; font-size: 13px; font-weight: 600; color: #b8860b;
+        }
+        .rating-reminder.show { display: block; }
     </style>
 </head>
 <body>
@@ -948,15 +1071,36 @@
 
     <!-- DASHBOARD -->
     <div id="dashboard-screen" class="screen">
-        <!-- NEW: Top row — Notification bell + Logout (both right side) -->
-        <div class="dash-top-row">
-            <div class="main-bell-box" id="main-bell-wrap" onclick="document.getElementById('notif-modal').classList.add('active')" title="Notifications">
-                <i class="fas fa-bell" style="color: var(--primary-dark); font-size: 20px;" id="main-bell-icon"></i>
-                <span class="badge" id="main-bell-badge" style="top: -6px; right: -6px; font-size: 11px; padding: 3px 8px; border-radius: 16px; display: none;">0</span>
+        <!-- Top row: Refresh + Settings (left) | Bell + Logout (right) -->
+        <div class="dash-top-row" style="justify-content:space-between;">
+            <div style="display:flex;gap:8px;align-items:center;">
+                <button type="button" class="icon-action-btn" onclick="refreshDashboard()" title="Refresh"><i class="fas fa-sync-alt" id="refresh-icon"></i></button>
+                <button type="button" class="icon-action-btn" onclick="openScreen('settings-screen')" title="Settings"><i class="fas fa-cog"></i></button>
             </div>
-            <button type="button" class="logout-btn" onclick="logout()" title="Logout / Back to Home">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <div class="main-bell-box" id="main-bell-wrap" onclick="document.getElementById('notif-modal').classList.add('active')" title="Notifications">
+                    <i class="fas fa-bell" style="color: var(--primary-dark); font-size: 20px;" id="main-bell-icon"></i>
+                    <span class="badge" id="main-bell-badge" style="top: -6px; right: -6px; font-size: 11px; padding: 3px 8px; border-radius: 16px; display: none;">0</span>
+                </div>
+                <button type="button" class="logout-btn" onclick="logout()" title="Logout / Back to Home">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <div class="last-login-chip" id="last-login-chip">Last login: —</div>
+
+        <!-- Admin announcement banner -->
+        <div class="announce-banner" id="announce-banner">
+            <button type="button" class="ab-close" onclick="dismissAnnounce()"><i class="fas fa-times"></i></button>
+            <div id="announce-text">Loading announcement...</div>
+        </div>
+
+        <!-- Rating reminder -->
+        <div class="rating-reminder" id="rating-reminder">
+            <i class="fas fa-star" style="margin-right:6px;"></i>
+            <span id="rating-reminder-text">Aapki request complete ho chuki hai — please rating dein!</span>
+            <button type="button" class="neu-button primary-btn" style="margin:10px 0 0;padding:8px;font-size:12px;justify-content:center;" onclick="openPendingRating()">Rate Now</button>
         </div>
 
         <!-- COMBINED SINGLE HEADER CARD (Part 1) -->
@@ -1137,6 +1281,12 @@
             <button class="neu-button primary-btn" onclick="submitUpdate()" style="justify-content: center; margin-bottom: 0;">Submit Request <i class="fas fa-paper-plane" style="margin-left:10px;"></i></button>
         </div>
         <h4 style="margin-top: 10px; font-size: 15px;">Updates History</h4>
+        <div class="filter-row" id="update-filter-row">
+            <button type="button" class="filter-btn active" data-filter="all" onclick="filterHistory('update', 'all', this)">All</button>
+            <button type="button" class="filter-btn" data-filter="pending" onclick="filterHistory('update', 'pending', this)">Pending</button>
+            <button type="button" class="filter-btn" data-filter="working" onclick="filterHistory('update', 'working', this)">Working</button>
+            <button type="button" class="filter-btn" data-filter="complete" onclick="filterHistory('update', 'complete', this)">Complete</button>
+        </div>
         <div id="update-history-list" style="margin-top: 10px; padding-bottom: 20px;"></div>
     </div>
 
@@ -1173,6 +1323,12 @@
             <button id="submit-complaint-btn" class="neu-button accent-btn hidden" onclick="submitComplaint()" style="justify-content: center; margin-top: 5px; margin-bottom: 0;">Submit to Admin</button>
         </div>
         <h4 style="margin-top: 10px; font-size: 15px;">Your Complaints</h4>
+        <div class="filter-row" id="complaint-filter-row">
+            <button type="button" class="filter-btn active" data-filter="all" onclick="filterHistory('complaint', 'all', this)">All</button>
+            <button type="button" class="filter-btn" data-filter="pending" onclick="filterHistory('complaint', 'pending', this)">Pending</button>
+            <button type="button" class="filter-btn" data-filter="working" onclick="filterHistory('complaint', 'working', this)">Working</button>
+            <button type="button" class="filter-btn" data-filter="complete" onclick="filterHistory('complaint', 'complete', this)">Resolved</button>
+        </div>
         <div id="complaint-history-list" style="margin-top: 10px; padding-bottom: 20px;"></div>
     </div>
 
@@ -1276,6 +1432,80 @@
                 </button>
             </div>
             <div class="dev-credit" style="margin-top:16px;"><i class="fas fa-code"></i> Developed by <strong>Muhammad Naeem</strong></div>
+        </div>
+    </div>
+
+    <!-- SETTINGS SCREEN -->
+    <div id="settings-screen" class="screen">
+        <div class="header-nav">
+            <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width:auto;"><i class="fas fa-arrow-left"></i> Back</button>
+            <h3>Settings</h3>
+        </div>
+
+        <div class="share-pid-box">
+            <div class="text-sm">Your Project ID</div>
+            <div class="pid-val" id="settings-pid">—</div>
+            <div style="display:flex;gap:8px;justify-content:center;margin-top:8px;">
+                <button type="button" class="neu-button primary-btn" style="width:auto;padding:8px 14px;margin:0;font-size:12px;" onclick="copyProjectId()"><i class="fas fa-copy"></i> Copy</button>
+                <button type="button" class="neu-button green-btn" style="width:auto;padding:8px 14px;margin:0;font-size:12px;" onclick="shareProjectId()"><i class="fab fa-whatsapp"></i> Share</button>
+            </div>
+        </div>
+
+        <div class="neu-box compact-box">
+            <h4 style="color:var(--primary-dark);margin-bottom:8px;"><i class="fas fa-user-cog" style="margin-right:6px;"></i> Preferences</h4>
+            <div class="settings-row">
+                <span class="label"><i class="fas fa-moon"></i> Dark Mode</span>
+                <div class="toggle-switch" id="dark-toggle" onclick="toggleDarkMode()"></div>
+            </div>
+            <div class="settings-row">
+                <span class="label"><i class="fas fa-language"></i> Language</span>
+                <div class="lang-btn-group">
+                    <button type="button" class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
+                    <button type="button" class="lang-btn" id="lang-ur" onclick="setLang('ur')">UR</button>
+                </div>
+            </div>
+            <div class="settings-row">
+                <span class="label"><i class="fas fa-fingerprint"></i> Biometric Login</span>
+                <div class="toggle-switch" id="bio-toggle" onclick="toggleBiometric()"></div>
+            </div>
+        </div>
+
+        <div class="neu-box compact-box">
+            <h4 style="color:var(--primary-dark);margin-bottom:8px;"><i class="fas fa-history" style="margin-right:6px;"></i> Recent Activity</h4>
+            <div id="activity-log-list">
+                <p class="text-sm">No recent activity.</p>
+            </div>
+        </div>
+
+        <button class="neu-button" onclick="openScreen('documents-screen')" style="justify-content:space-between;">
+            <span><i class="fas fa-folder-open" style="color:var(--info-color);margin-right:8px;"></i> Documents & Files</span>
+            <i class="fas fa-chevron-right" style="font-size:12px;"></i>
+        </button>
+
+        <div class="version-box">
+            <div>App Version <strong id="app-version-label">2.5.0</strong></div>
+            <div style="margin-top:6px;font-size:11px;" id="whats-new-snippet">What's New: Settings, Dark Mode, Filters, Share ID & more.</div>
+            <button type="button" class="neu-button ghost-btn" style="margin-top:10px;padding:8px;font-size:12px;justify-content:center;" onclick="showWhatsNew()">View full changelog</button>
+        </div>
+
+        <button class="neu-button logout-btn" onclick="logout()" style="justify-content:center;margin-top:12px;width:100%;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+        <div class="dev-credit" style="margin-top:16px;"><i class="fas fa-code"></i> Developed by <strong>Muhammad Naeem</strong></div>
+    </div>
+
+    <!-- DOCUMENTS SCREEN -->
+    <div id="documents-screen" class="screen">
+        <div class="header-nav">
+            <button class="neu-button back-btn" onclick="openScreen('settings-screen')" style="width:auto;"><i class="fas fa-arrow-left"></i> Back</button>
+            <h3>Documents</h3>
+        </div>
+        <p class="text-sm" style="margin-bottom:12px;">Contracts, invoices aur important files yahan milengi.</p>
+        <div id="documents-list">
+            <div class="empty-state">
+                <i class="fas fa-folder-open"></i>
+                <p>Abhi koi document available nahi.<br>Admin upload karne ke baad yahan dikhega.</p>
+            </div>
         </div>
     </div>
 </div>
@@ -1474,6 +1704,287 @@ window.logout = function() {
     openScreen('login-screen');
     const inp = document.getElementById('projectIdInput');
     if (inp) inp.value = '';
+};
+
+/* ========== NEW FEATURES: Settings, Dark Mode, Filters, Share, Activity, Announcements ========== */
+window.APP_VERSION = '2.5.0';
+window._currentLang = localStorage.getItem('mrcrazy_lang') || 'en';
+window._historyCache = { update: [], complaint: [] };
+window._historyFilter = { update: 'all', complaint: 'all' };
+window._pendingRatingItem = null;
+
+// Init dark mode + biometric preference on load
+(function initPrefs() {
+    if (localStorage.getItem('mrcrazy_dark') === '1') {
+        document.body.classList.add('dark-mode');
+    }
+    if (localStorage.getItem('mrcrazy_bio') === '1') {
+        setTimeout(() => {
+            const t = document.getElementById('bio-toggle');
+            if (t) t.classList.add('on');
+        }, 300);
+    }
+    setTimeout(() => {
+        const dt = document.getElementById('dark-toggle');
+        if (dt && document.body.classList.contains('dark-mode')) dt.classList.add('on');
+        const lang = localStorage.getItem('mrcrazy_lang') || 'en';
+        document.getElementById('lang-en')?.classList.toggle('active', lang === 'en');
+        document.getElementById('lang-ur')?.classList.toggle('active', lang === 'ur');
+        const ver = document.getElementById('app-version-label');
+        if (ver) ver.innerText = window.APP_VERSION;
+    }, 400);
+})();
+
+window.toggleDarkMode = function() {
+    document.body.classList.toggle('dark-mode');
+    const on = document.body.classList.contains('dark-mode');
+    localStorage.setItem('mrcrazy_dark', on ? '1' : '0');
+    const t = document.getElementById('dark-toggle');
+    if (t) t.classList.toggle('on', on);
+};
+
+window.toggleBiometric = function() {
+    const t = document.getElementById('bio-toggle');
+    if (!t) return;
+    t.classList.toggle('on');
+    const on = t.classList.contains('on');
+    localStorage.setItem('mrcrazy_bio', on ? '1' : '0');
+    if (on) {
+        // Best-effort WebAuthn / device biometric preference
+        if (window.PublicKeyCredential) {
+            alert(window._currentLang === 'ur'
+                ? 'Biometric login is device par enable ho jayegi jab supported hoga.'
+                : 'Biometric preference saved. Will use device biometrics when supported.');
+        } else {
+            alert('This device does not support WebAuthn biometrics. Preference saved for future.');
+        }
+    }
+};
+
+window.setLang = function(lang) {
+    window._currentLang = lang;
+    localStorage.setItem('mrcrazy_lang', lang);
+    document.getElementById('lang-en')?.classList.toggle('active', lang === 'en');
+    document.getElementById('lang-ur')?.classList.toggle('active', lang === 'ur');
+    // Lightweight UI string updates
+    const map = {
+        en: {
+            loginTitle: 'Welcome! Please enter your Project ID',
+            loginBtn: 'Login',
+            createProj: 'Create new project',
+            contactUs: 'Contact Us',
+            faqHelp: 'FAQ / Help Center'
+        },
+        ur: {
+            loginTitle: 'خوش آمدید! اپنا Project ID درج کریں',
+            loginBtn: 'لاگ اِن',
+            createProj: 'نیا پراجیکٹ بنائیں',
+            contactUs: 'ہم سے رابطہ',
+            faqHelp: 'مدد / سوالات'
+        }
+    };
+    const s = map[lang] || map.en;
+    const welcome = document.querySelector('#login-screen p');
+    if (welcome && welcome.innerText.includes('Project ID') || welcome?.innerText.includes('پراجیکٹ')) {
+        welcome.innerText = s.loginTitle;
+    }
+    const lbl = document.getElementById('login-btn-label');
+    if (lbl) lbl.innerText = s.loginBtn;
+};
+
+window.copyProjectId = function() {
+    const pid = window.currentProjectId || '';
+    if (!pid) return alert('No Project ID');
+    navigator.clipboard.writeText(pid).then(() => alert('Project ID copied: ' + pid)).catch(() => alert(pid));
+};
+
+window.shareProjectId = function() {
+    const pid = window.currentProjectId || '';
+    if (!pid) return alert('No Project ID');
+    const msg = encodeURIComponent('My MrCrazy Digital Hub Project ID: ' + pid);
+    window.open('https://wa.me/?text=' + msg, '_blank');
+};
+
+window.refreshDashboard = function() {
+    if (!window.currentProjectId) return;
+    const icon = document.getElementById('refresh-icon');
+    if (icon) { icon.classList.add('fa-spin'); setTimeout(() => icon.classList.remove('fa-spin'), 1200); }
+    const pId = window.currentProjectId;
+    try {
+        loadBills(pId);
+        loadUpdatesHistory(pId);
+        loadComplaintsHistory(pId);
+        loadDashboardStats(pId);
+        loadAnnouncements();
+        checkRatingReminder(pId);
+        updateLastLoginChip();
+        logActivity('Dashboard refreshed');
+    } catch(e) { console.warn(e); }
+};
+
+window.logActivity = function(text) {
+    try {
+        const key = 'mrcrazy_activity_' + (window.currentProjectId || 'guest');
+        let arr = JSON.parse(localStorage.getItem(key) || '[]');
+        arr.unshift({ text, ts: Date.now() });
+        arr = arr.slice(0, 20);
+        localStorage.setItem(key, JSON.stringify(arr));
+        renderActivityLog();
+    } catch(e) {}
+};
+
+window.renderActivityLog = function() {
+    const el = document.getElementById('activity-log-list');
+    if (!el) return;
+    const key = 'mrcrazy_activity_' + (window.currentProjectId || 'guest');
+    let arr = [];
+    try { arr = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) {}
+    if (!arr.length) {
+        el.innerHTML = '<div class="empty-state" style="padding:16px;"><i class="fas fa-history"></i><p>No recent activity yet.</p></div>';
+        return;
+    }
+    el.innerHTML = arr.slice(0, 8).map(a => {
+        const t = new Date(a.ts).toLocaleString();
+        return `<div class="activity-item"><div class="activity-dot"></div><div><strong>${a.text}</strong><div class="text-sm">${t}</div></div></div>`;
+    }).join('');
+};
+
+window.updateLastLoginChip = function() {
+    const chip = document.getElementById('last-login-chip');
+    if (!chip) return;
+    const prev = localStorage.getItem('mrcrazy_last_login');
+    const now = Date.now();
+    if (prev) {
+        chip.innerText = 'Last login: ' + new Date(Number(prev)).toLocaleString();
+    } else {
+        chip.innerText = 'Welcome — first login recorded';
+    }
+    localStorage.setItem('mrcrazy_last_login', String(now));
+};
+
+window.loadAnnouncements = function() {
+    const banner = document.getElementById('announce-banner');
+    const textEl = document.getElementById('announce-text');
+    if (!banner || !textEl) return;
+    const dismissed = localStorage.getItem('mrcrazy_announce_dismiss');
+    try {
+        onValue(ref(db, 'announcements/active'), snap => {
+            if (!snap.exists()) { banner.classList.remove('show'); return; }
+            const a = snap.val();
+            const id = a.id || a.ts || 'default';
+            if (dismissed === String(id)) { banner.classList.remove('show'); return; }
+            textEl.innerHTML = (a.title ? '<strong>' + a.title + '</strong><br>' : '') + (a.body || a.message || '');
+            banner.dataset.announceId = id;
+            banner.classList.add('show');
+        });
+    } catch(e) {
+        // fallback demo if no firebase path
+    }
+};
+
+window.dismissAnnounce = function() {
+    const banner = document.getElementById('announce-banner');
+    if (!banner) return;
+    const id = banner.dataset.announceId || 'default';
+    localStorage.setItem('mrcrazy_announce_dismiss', String(id));
+    banner.classList.remove('show');
+};
+
+window.filterHistory = function(type, filter, btn) {
+    window._historyFilter[type] = filter;
+    const row = document.getElementById(type + '-filter-row');
+    if (row) {
+        row.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+    }
+    renderFilteredHistory(type);
+};
+
+window.renderFilteredHistory = function(type) {
+    const listId = type === 'update' ? 'update-history-list' : 'complaint-history-list';
+    const el = document.getElementById(listId);
+    if (!el) return;
+    const items = window._historyCache[type] || [];
+    const f = window._historyFilter[type] || 'all';
+    const filtered = items.filter(it => {
+        if (f === 'all') return true;
+        const st = (it.status || 'pending').toLowerCase();
+        if (f === 'pending') return st === 'pending';
+        if (f === 'working') return st === 'working';
+        if (f === 'complete') return ['close', 'complete', 'resolved'].includes(st);
+        return true;
+    });
+    if (!filtered.length) {
+        el.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>No ${f === 'all' ? '' : f + ' '}items found.<br>Submit a new request from Dashboard.</p>
+            <button class="neu-button primary-btn" style="justify-content:center;max-width:220px;margin:0 auto;" onclick="openScreen('${type === 'update' ? 'update-screen' : 'complaint-screen'}')">Create New</button></div>`;
+        return;
+    }
+    el.innerHTML = filtered.map(it => it.html).join('');
+};
+
+window.checkRatingReminder = async function(pId) {
+    const box = document.getElementById('rating-reminder');
+    if (!box || !pId) return;
+    // If solved popup queue has items or local pending rating
+    const seenKey = 'solvedSeen_' + pId;
+    let seen = [];
+    try { seen = JSON.parse(localStorage.getItem(seenKey) || '[]'); } catch(e) {}
+    let found = null;
+    try {
+        const uSnap = await get(ref(db, `updateRequests/${pId}`));
+        if (uSnap.exists()) {
+            Object.entries(uSnap.val()).forEach(([k, r]) => {
+                const st = (r.status || '').toLowerCase();
+                if ((st === 'close' || st === 'complete') && !seen.includes('rated_u_' + k) && !found) {
+                    found = { type: 'update', key: 'u_' + k, trxId: r.trxId || k };
+                }
+            });
+        }
+    } catch(e) {}
+    if (found) {
+        window._pendingRatingItem = found;
+        document.getElementById('rating-reminder-text').innerText =
+            'Request ' + (found.trxId || '') + ' complete — please rating dein!';
+        box.classList.add('show');
+    } else {
+        box.classList.remove('show');
+    }
+};
+
+window.openPendingRating = function() {
+    const item = window._pendingRatingItem;
+    if (!item) return;
+    window._pendingSolvedQueue = [item];
+    if (typeof showNextSolvedPopup === 'function') showNextSolvedPopup();
+};
+
+window.showWhatsNew = function() {
+    alert('What\'s New in v' + window.APP_VERSION + ':\n\n• Settings screen\n• Dark Mode\n• Language toggle (EN/UR)\n• Share / Copy Project ID\n• Pull refresh button\n• History filters\n• Empty states\n• Announcements banner\n• Activity log\n• Documents section\n• Rating reminder\n• Last login info\n• Biometric preference');
+};
+
+window.loadDocuments = function(pId) {
+    const list = document.getElementById('documents-list');
+    if (!list || !pId) return;
+    list.innerHTML = '<p class="text-sm"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+    get(ref(db, `documents/${pId}`)).then(snap => {
+        if (!snap.exists()) {
+            list.innerHTML = `<div class="empty-state"><i class="fas fa-folder-open"></i><p>Abhi koi document available nahi.<br>Admin upload karne ke baad yahan dikhega.</p></div>`;
+            return;
+        }
+        const items = Object.values(snap.val()).sort((a,b)=>(b.ts||0)-(a.ts||0));
+        list.innerHTML = items.map(d => `
+            <div class="doc-card">
+                <i class="fas fa-file-pdf"></i>
+                <div class="doc-info">
+                    <strong>${d.title || d.name || 'Document'}</strong>
+                    <span>${d.date ? new Date(d.date).toLocaleDateString() : ''} ${d.size || ''}</span>
+                </div>
+                ${d.url ? `<a href="${d.url}" target="_blank" class="neu-button primary-btn" style="width:auto;padding:8px 12px;margin:0;font-size:12px;"><i class="fas fa-download"></i></a>` : ''}
+            </div>
+        `).join('');
+    }).catch(() => {
+        list.innerHTML = `<div class="empty-state"><i class="fas fa-folder-open"></i><p>Documents load nahi ho sake.</p></div>`;
+    });
 };
 
 window.triggerBellShake = function() {
@@ -1829,6 +2340,23 @@ async function notifyAdmin(title, message, type='general') {
 window.openScreen = function(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+
+    // Global notification icon: ONLY show on login / first screen
+    try {
+        const globalBtn = document.getElementById('global-notif-btn');
+        const globalPanel = document.getElementById('global-notif-panel');
+        if (globalBtn) {
+            if (id === 'login-screen') {
+                globalBtn.style.display = 'flex';
+            } else {
+                globalBtn.style.display = 'none';
+                // close panel if open when leaving login
+                if (globalPanel) globalPanel.classList.remove('open');
+                window._notifPanelOpen = false;
+            }
+        }
+    } catch(e) {}
+
     // Part 5: pause Jummah audio/video when leaving dashboard
     if (id !== 'dashboard-screen' && typeof stopJummahMedia === 'function') {
         stopJummahMedia();
@@ -1845,6 +2373,22 @@ window.openScreen = function(id) {
                 // already normal
             }
         } catch(e) {}
+    }
+
+    // Settings / Documents data refresh
+    if (id === 'settings-screen') {
+        const pidEl = document.getElementById('settings-pid');
+        if (pidEl) pidEl.innerText = window.currentProjectId || '—';
+        if (typeof renderActivityLog === 'function') renderActivityLog();
+        const ver = document.getElementById('app-version-label');
+        if (ver) ver.innerText = window.APP_VERSION || '2.5.0';
+        const dt = document.getElementById('dark-toggle');
+        if (dt) dt.classList.toggle('on', document.body.classList.contains('dark-mode'));
+        const bt = document.getElementById('bio-toggle');
+        if (bt) bt.classList.toggle('on', localStorage.getItem('mrcrazy_bio') === '1');
+    }
+    if (id === 'documents-screen' && window.currentProjectId && typeof loadDocuments === 'function') {
+        loadDocuments(window.currentProjectId);
     }
 };
 window.copyText = function(text, btn) {
@@ -2619,6 +3163,15 @@ window.login = async function() {
                 setTimeout(() => checkSolvedRequests(pId), 600);
                 // Feature tour for new UI (once until admin reset)
                 setTimeout(() => { if (typeof startFeatureTour === 'function') startFeatureTour(); }, 1400);
+                // New features
+                try {
+                    updateLastLoginChip();
+                    loadAnnouncements();
+                    checkRatingReminder(pId);
+                    logActivity('Logged in to project ' + pId);
+                    const pidEl = document.getElementById('settings-pid');
+                    if (pidEl) pidEl.innerText = pId;
+                } catch(e) {}
             }
         } else {
             if(document.getElementById('login-screen').classList.contains('active')){
@@ -2744,29 +3297,34 @@ window.goToAppUpdates = function() {
 
 function loadUpdatesHistory(pId) {
     onValue(ref(db, `updateRequests/${pId}`), snap => {
-        let active='', archive='', ac=0;
+        const cache = [];
+        let archive='', ac=0;
         if(snap.exists()){
             const data=snap.val(); const now=Date.now(); const three=3*24*60*60*1000;
             for(let k in data){
                 let req=data[k]; let t=new Date(req.timestamp); let ft=t.toLocaleDateString()+' '+t.toLocaleTimeString();
+                let st=(req.status||'pending').toLowerCase();
                 let bc='status-pending';
-                if((req.status||'pending').toLowerCase()==='working') bc='status-working';
-                if((req.status||'pending').toLowerCase()==='close') bc='status-close';
-                if((req.status||'pending').toLowerCase()==='complete') bc='status-complete';
+                if(st==='working') bc='status-working';
+                if(st==='close') bc='status-close';
+                if(st==='complete') bc='status-complete';
                 let sc=req.screenshot?`<button class="neu-button ghost-btn" style="padding:10px;margin-top:10px;margin-bottom:0;font-size:12px;width:auto;" onclick="openLightbox('${req.screenshot}')"><i class="fas fa-image"></i> View</button>`:'';
                 let replyHtml = req.adminReply ? `<div style="margin-top:10px;padding:10px;background:rgba(18,135,127,0.1);border-radius:10px;border-left:3px solid var(--primary-color);"><strong style="font-size:12px;color:var(--primary-dark);"><i class="fas fa-reply"></i> Admin Reply</strong><p style="font-size:13px;margin:6px 0 0;white-space:pre-line;">${req.adminReply}</p></div>` : '';
-                
                 let appReadyBtn = (req.appReady || req.appAttached || req.appReadyCreated) ? `<button class="neu-button green-btn" style="justify-content:center; padding:12px; margin-top:12px; margin-bottom:0; width:100%; font-size:14px; animation: pulse-green-btn 2s infinite;" onclick="goToAppUpdates()"><i class="fas fa-rocket" style="margin-right:8px;"></i> App is Ready - Download Now</button>` : '';
-
                 let card=`<div class="neu-box" style="padding:15px;margin-bottom:15px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="text-sm" style="color:var(--info-color);font-weight:bold;">${req.trxId||k}</span><span class="status-badge ${bc}">${req.status}</span></div><p class="text-sm" style="margin-bottom:8px;"><i class="far fa-clock"></i> ${ft}</p><p style="font-size:14px;white-space:pre-line;">${req.details}</p>${sc}${replyHtml}${appReadyBtn}</div>`;
-                
-                let closed = ['close','complete'].includes((req.status||'pending').toLowerCase());
-                if(closed && (now-req.timestamp)>three){ archive=card+archive; ac++; } else active=card+active;
+                let closed = ['close','complete'].includes(st);
+                if(closed && (now-req.timestamp)>three){ archive=card+archive; ac++; }
+                else cache.push({ status: st, html: card, ts: req.timestamp||0 });
             }
         }
-        let final = active||'<p class="text-sm">No recent history.</p>';
-        if(ac>0) final += `<div style="margin-top:25px;"><button class="neu-button ghost-btn" onclick="document.getElementById('updates-archive').classList.toggle('hidden')" style="justify-content:center;"><i class="fas fa-archive"></i> Archived (${ac})</button><div id="updates-archive" class="hidden">${archive}</div></div>`;
-        document.getElementById('update-history-list').innerHTML = final;
+        cache.sort((a,b)=> (b.ts||0)-(a.ts||0));
+        window._historyCache.update = cache;
+        if (typeof renderFilteredHistory === 'function') renderFilteredHistory('update');
+        else {
+            let final = cache.map(c=>c.html).join('') || `<div class="empty-state"><i class="fas fa-inbox"></i><p>No update requests yet.<br>Tap below to submit your first request.</p><button class="neu-button primary-btn" style="justify-content:center;max-width:220px;margin:0 auto;" onclick="openScreen('update-screen')">Request Update</button></div>`;
+            if(ac>0) final += `<div style="margin-top:25px;"><button class="neu-button ghost-btn" onclick="document.getElementById('updates-archive').classList.toggle('hidden')" style="justify-content:center;"><i class="fas fa-archive"></i> Archived (${ac})</button><div id="updates-archive" class="hidden">${archive}</div></div>`;
+            document.getElementById('update-history-list').innerHTML = final;
+        }
     });
 }
 window.toggleComplaintFields = function() {
@@ -2808,26 +3366,31 @@ window.submitComplaint = function() {
 };
 function loadComplaintsHistory(pId) {
     onValue(ref(db, `complaints/${pId}`), snap=>{
-        let active='', archive='', ac=0;
+        const cache = [];
+        let archive='', ac=0;
         if(snap.exists()){
             const data=snap.val(); const now=Date.now(); const three=3*24*60*60*1000;
             for(let k in data){
                 let c=data[k]; let t=new Date(c.timestamp).toLocaleDateString()+' '+new Date(c.timestamp).toLocaleTimeString();
-                let bc=(['resolved','close','complete'].includes((c.status||'').toLowerCase()))?'status-complete':'status-pending';
+                let st=(c.status||'pending').toLowerCase();
+                let bc=(['resolved','close','complete'].includes(st))?'status-complete':(st==='working'?'status-working':'status-pending');
                 let img=c.attachedImage?`<button class="neu-button ghost-btn" style="padding:10px;margin-top:10px;font-size:12px;width:auto;" onclick="openLightbox('${c.attachedImage}')"><i class="fas fa-image"></i> View</button>`:'';
                 let replyHtml = c.adminReply ? `<div style="margin-top:10px;padding:10px;background:rgba(18,135,127,0.1);border-radius:10px;border-left:3px solid var(--primary-color);"><strong style="font-size:12px;color:var(--primary-dark);"><i class="fas fa-reply"></i> Admin Reply</strong><p style="font-size:13px;margin:6px 0 0;white-space:pre-line;">${c.adminReply}</p></div>` : '';
-                
                 let appReadyBtn = (c.appReady || c.appAttached || c.appReadyCreated) ? `<button class="neu-button green-btn" style="justify-content:center; padding:12px; margin-top:12px; margin-bottom:0; width:100%; font-size:14px; animation: pulse-green-btn 2s infinite;" onclick="goToAppUpdates()"><i class="fas fa-rocket" style="margin-right:8px;"></i> App is Ready - Download Now</button>` : '';
-
                 let card=`<div class="neu-box" style="padding:15px;margin-bottom:15px;"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span class="text-sm" style="text-transform:capitalize;font-weight:bold;">${c.type} Issue</span><span class="status-badge ${bc}">${c.status}</span></div><p class="text-sm" style="margin-bottom:8px;"><i class="far fa-clock"></i> ${t}</p><p style="font-size:14px;white-space:pre-line;">${c.details}</p>${img}${replyHtml}${appReadyBtn}</div>`;
-                
-                let closed=['resolved','close','complete'].includes((c.status||'').toLowerCase());
-                if(closed && (now-c.timestamp)>three){ archive=card+archive; ac++; } else active=card+active;
+                let closed=['resolved','close','complete'].includes(st);
+                if(closed && (now-c.timestamp)>three){ archive=card+archive; ac++; }
+                else cache.push({ status: st, html: card, ts: c.timestamp||0 });
             }
         }
-        let final=active||'<p class="text-sm">No recent complaints.</p>';
-        if(ac>0) final+=`<div style="margin-top:25px;"><button class="neu-button ghost-btn" onclick="document.getElementById('complaint-archive').classList.toggle('hidden')" style="justify-content:center;"><i class="fas fa-archive"></i> Archived (${ac})</button><div id="complaint-archive" class="hidden">${archive}</div></div>`;
-        document.getElementById('complaint-history-list').innerHTML=final;
+        cache.sort((a,b)=> (b.ts||0)-(a.ts||0));
+        window._historyCache.complaint = cache;
+        if (typeof renderFilteredHistory === 'function') renderFilteredHistory('complaint');
+        else {
+            let final=cache.map(c=>c.html).join('')||`<div class="empty-state"><i class="fas fa-inbox"></i><p>No complaints yet.<br>Need help? File a complaint from Dashboard.</p><button class="neu-button accent-btn" style="justify-content:center;max-width:220px;margin:0 auto;" onclick="openScreen('complaint-screen')">File Complaint</button></div>`;
+            if(ac>0) final+=`<div style="margin-top:25px;"><button class="neu-button ghost-btn" onclick="document.getElementById('complaint-archive').classList.toggle('hidden')" style="justify-content:center;"><i class="fas fa-archive"></i> Archived (${ac})</button><div id="complaint-archive" class="hidden">${archive}</div></div>`;
+            document.getElementById('complaint-history-list').innerHTML=final;
+        }
     });
 }
 window.openUpdatesDashboard = function() {
