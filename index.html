@@ -755,7 +755,18 @@
             margin-bottom: 12px; font-size: 13px; font-weight: 600; color: #b8860b;
         }
         .rating-reminder.show { display: block; }
-    </style>
+    
+@keyframes appsPulse {
+  0%,100% { transform: scale(1); box-shadow: 0 4px 12px rgba(239,69,98,0.35); }
+  50% { transform: scale(1.06); box-shadow: 0 6px 18px rgba(239,69,98,0.55); }
+}
+#apps-store-entry.tour-highlight {
+  outline: 3px solid #12877f !important;
+  box-shadow: 0 0 0 6px rgba(18,135,127,0.25), 8px 8px 24px rgba(60,80,110,0.2) !important;
+  z-index: 1200 !important;
+}
+
+</style>
 </head>
 <body>
 <div class="mobile-container">
@@ -792,7 +803,20 @@
                         <i class="fas fa-plus-circle" style="margin-right: 8px;"></i> Create new project
                     </button>
                 </div>
-                <div style="margin-top: 14px; padding: 16px; background: linear-gradient(145deg, rgba(37,211,102,0.12), rgba(18,140,126,0.08)); border-radius: 18px; border: 2px solid rgba(37,211,102,0.35);">
+                <!-- Apps Store entry -->
+                <div class="app-store-entry" id="apps-store-entry" onclick="openAppStore()" style="margin-top:16px;padding:18px 16px;border-radius:20px;cursor:pointer;background:linear-gradient(145deg,#ffffff,#e8eef6);box-shadow:8px 8px 20px rgba(60,80,110,0.18),-6px -6px 16px rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.8);position:relative;">
+                    <span class="apps-store-new-mark" id="apps-store-new-mark" style="position:absolute;top:10px;right:12px;background:linear-gradient(135deg,#ef4562,#d6337e);color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:999px;letter-spacing:0.4px;box-shadow:0 4px 12px rgba(239,69,98,0.4);animation:appsPulse 1.6s ease-in-out infinite;">NEW</span>
+                    <div style="display:flex;align-items:center;gap:14px;">
+                        <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#12877f,#0b5f59);display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;box-shadow:4px 4px 12px rgba(18,135,127,0.35);"><i class="fas fa-store"></i></div>
+                        <div style="flex:1;text-align:left;">
+                            <div style="font-size:15px;font-weight:800;color:var(--primary-dark);letter-spacing:-0.02em;">Apps Store</div>
+                            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;font-weight:600;">Download our Application</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="color:var(--primary-color);font-size:14px;"></i>
+                    </div>
+                </div>
+                <!-- Contact + FAQ at bottom -->
+                <div style="margin-top: 18px; padding: 16px; background: linear-gradient(145deg, rgba(37,211,102,0.12), rgba(18,140,126,0.08)); border-radius: 18px; border: 2px solid rgba(37,211,102,0.35);">
                     <p style="font-size: 12.5px; color: var(--text-color); font-weight: 600; margin-bottom: 10px; line-height: 1.5;">
                        Need assistance, a quick answer, or live support? Reach out to us directly 24/7.
                     </p>
@@ -1436,6 +1460,54 @@
     </div>
 
     <!-- SETTINGS SCREEN -->
+    <!-- ========== APPS STORE ========== -->
+    <div id="appstore-name-screen" class="screen">
+        <div class="header" style="display:flex;align-items:center;gap:10px;">
+            <button class="neu-button back-btn" onclick="openScreen('login-screen')" style="width:auto;"><i class="fas fa-arrow-left"></i> Back</button>
+            <h3 style="margin:0;">Apps Store</h3>
+        </div>
+        <div style="padding:24px 16px;text-align:center;">
+            <div style="width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#12877f,#0b5f59);display:flex;align-items:center;justify-content:center;color:#fff;font-size:32px;margin:0 auto 16px;box-shadow:6px 6px 16px rgba(18,135,127,0.3);"><i class="fas fa-store"></i></div>
+            <h2 style="color:var(--primary-dark);font-size:20px;margin-bottom:6px;">Our Official Application</h2>
+            <p style="color:var(--text-muted);font-size:13px;margin-bottom:20px;">Apna naam enter karein taake aapko personalized experience mile</p>
+            <input type="text" id="appstore-user-name" class="neu-input" placeholder="Your Name" style="text-align:center;font-weight:600;">
+            <button class="neu-button primary-btn" onclick="submitAppStoreName()" style="justify-content:center;margin-top:14px;">Continue <i class="fas fa-arrow-right" style="margin-left:8px;"></i></button>
+        </div>
+    </div>
+
+    <div id="appstore-dashboard-screen" class="screen">
+        <div class="header" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <button class="neu-button back-btn" onclick="openScreen('login-screen')" style="width:auto;"><i class="fas fa-arrow-left"></i></button>
+                <div>
+                    <h3 style="margin:0;font-size:16px;">Apps Store</h3>
+                    <div style="font-size:12px;color:var(--text-muted);" id="appstore-hello">Hello</div>
+                </div>
+            </div>
+        </div>
+        <div style="padding:12px 16px 24px;">
+            <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;font-weight:600;">Our Official Applications</p>
+            <div id="appstore-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"></div>
+            <div id="appstore-empty" class="text-sm text-center" style="color:var(--text-muted);padding:30px;display:none;">Abhi koi app available nahi</div>
+        </div>
+    </div>
+
+    <div id="appstore-detail-screen" class="screen">
+        <div class="header" style="display:flex;align-items:center;gap:10px;">
+            <button class="neu-button back-btn" onclick="openScreen('appstore-dashboard-screen')" style="width:auto;"><i class="fas fa-arrow-left"></i></button>
+            <h3 style="margin:0;font-size:16px;" id="app-detail-title">App</h3>
+        </div>
+        <div style="padding:16px;padding-bottom:40px;" id="app-detail-body"></div>
+    </div>
+
+    <div id="appstore-download-flow-screen" class="screen">
+        <div class="header" style="display:flex;align-items:center;gap:10px;">
+            <button class="neu-button back-btn" onclick="openScreen('appstore-detail-screen')" style="width:auto;"><i class="fas fa-arrow-left"></i></button>
+            <h3 style="margin:0;font-size:16px;">Download</h3>
+        </div>
+        <div style="padding:20px 16px;" id="download-flow-body"></div>
+    </div>
+
     <div id="settings-screen" class="screen">
         <div class="header-nav">
             <button class="neu-button back-btn" onclick="openScreen('dashboard-screen')" style="width:auto;"><i class="fas fa-arrow-left"></i> Back</button>
@@ -2386,6 +2458,12 @@ window.openScreen = function(id) {
         if (dt) dt.classList.toggle('on', document.body.classList.contains('dark-mode'));
         const bt = document.getElementById('bio-toggle');
         if (bt) bt.classList.toggle('on', localStorage.getItem('mrcrazy_bio') === '1');
+    }
+    if (id === 'appstore-dashboard-screen' && typeof renderAppStoreGrid === 'function') renderAppStoreGrid();
+    if (id === 'appstore-name-screen') {
+        const saved = localStorage.getItem('mrcrazy_appstore_name') || '';
+        const inp = document.getElementById('appstore-user-name');
+        if (inp && saved) inp.value = saved;
     }
     if (id === 'documents-screen' && window.currentProjectId && typeof loadDocuments === 'function') {
         loadDocuments(window.currentProjectId);
@@ -3733,6 +3811,357 @@ window.updateGlobalNotifBadge = function(count) {
     };
     start();
 })();
+
+
+/* ========== APPS STORE TOUR + AUDIO ========== */
+window._appsAudio = null;
+window.playAppsAudio = function(file) {
+    try {
+        if (window._appsAudio) {
+            try { window._appsAudio.pause(); } catch(e) {}
+            window._appsAudio = null;
+        }
+        const src = 'assets/' + file;
+        const a = new Audio(src);
+        window._appsAudio = a;
+        a.play().catch(function(err) {
+            console.warn('Apps audio play blocked or missing:', src, err);
+        });
+    } catch (e) {
+        console.warn('Apps audio', e);
+    }
+};
+
+window.startAppsStoreTour = function() {
+    if (localStorage.getItem('mrcrazy_apps_store_tour_v1') === '1') return;
+    const el = document.getElementById('apps-store-entry');
+    if (!el) return;
+    // Only on login home
+    const login = document.getElementById('login-screen');
+    if (!login || !login.classList.contains('active')) return;
+
+    // Reuse tour UI if present
+    const ui = document.getElementById('tour-ui');
+    const titleEl = document.getElementById('tour-title');
+    const descEl = document.getElementById('tour-desc');
+    const nextBtn = document.getElementById('tour-next-btn');
+
+    document.body.classList.add('tour-active');
+    el.classList.add('tour-highlight');
+    const cs = window.getComputedStyle(el);
+    if (cs.position === 'static') el.style.position = 'relative';
+
+    if (ui) ui.style.display = 'block';
+    if (titleEl) titleEl.innerText = 'NEW — Apps Store';
+    if (descEl) descEl.innerText = 'Yahan se aap hamari Official Apps download kar sakte hain. Apps Store open karein — naam likhein, apps dekhein aur Download Now se install karein.';
+    if (nextBtn) {
+        nextBtn.innerText = 'Got it';
+        nextBtn.onclick = function() { endAppsStoreTour(); };
+    }
+
+    // Badge already on entry; ensure mark visible
+    const mark = document.getElementById('apps-store-new-mark');
+    if (mark) mark.style.display = 'inline-block';
+
+    try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(e) {}
+
+    // Tap entry during tour = end tour then open store
+    el._appsTourPrev = el.onclick;
+    el.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        endAppsStoreTour();
+        openAppStore();
+    };
+};
+
+window.endAppsStoreTour = function() {
+    const el = document.getElementById('apps-store-entry');
+    if (el) {
+        el.classList.remove('tour-highlight');
+        if (el._appsTourPrev !== undefined) {
+            el.onclick = el._appsTourPrev;
+            delete el._appsTourPrev;
+        } else {
+            el.onclick = function() { openAppStore(); };
+        }
+    }
+    document.body.classList.remove('tour-active');
+    const ui = document.getElementById('tour-ui');
+    // Only hide if dashboard feature tour is not running
+    if (ui && localStorage.getItem('mrcrazy_feature_tour_v1') === '1') {
+        // ok
+    }
+    if (ui) ui.style.display = 'none';
+    localStorage.setItem('mrcrazy_apps_store_tour_v1', '1');
+    // Keep NEW mark for a while; hide after tour ends optional
+    // mark stays so user still sees Apps Store is new
+};
+
+// Auto-start Apps Store tour for new users on first paint / login screen
+(function scheduleAppsStoreTour() {
+    function tryStart() {
+        if (localStorage.getItem('mrcrazy_apps_store_tour_v1') === '1') return;
+        const login = document.getElementById('login-screen');
+        if (login && login.classList.contains('active')) {
+            setTimeout(function() {
+                if (typeof startAppsStoreTour === 'function') startAppsStoreTour();
+            }, 900);
+        }
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', tryStart);
+    } else {
+        tryStart();
+    }
+    // Also when returning to login-screen
+    const _origOpen = window.openScreen;
+    if (typeof _origOpen === 'function' && !window._appsTourOpenHooked) {
+        window._appsTourOpenHooked = true;
+        window.openScreen = function(id) {
+            const r = _origOpen.apply(this, arguments);
+            if (id === 'login-screen' && localStorage.getItem('mrcrazy_apps_store_tour_v1') !== '1') {
+                setTimeout(function() {
+                    if (typeof startAppsStoreTour === 'function') startAppsStoreTour();
+                }, 500);
+            }
+            if (id === 'appstore-name-screen') {
+                if (typeof playAppsAudio === 'function') playAppsAudio('Name.mp3');
+            }
+            if (id === 'appstore-dashboard-screen') {
+                // Dashboard audio only when coming from name submit (flag)
+                if (window._playDashAudioOnce) {
+                    window._playDashAudioOnce = false;
+                    if (typeof playAppsAudio === 'function') playAppsAudio('Dashboard.mp3');
+                }
+            }
+            return r;
+        };
+    }
+})();
+
+/* ========== APPS STORE ========== */
+window._appStoreApps = [];
+window._appStoreSettings = { whatsappChannel: '' };
+window._currentAppId = null;
+window._dlFlowStep = 1;
+
+function parseAppStoreSnap(snap) {
+    if (!snap || !snap.exists()) {
+        window._appStoreApps = [];
+        if (typeof window.renderAppStoreGrid === 'function') window.renderAppStoreGrid();
+        return;
+    }
+    const val = snap.val() || {};
+    window._appStoreApps = Object.entries(val).map(([id, v]) => ({ id, ...(v || {}) }))
+        .filter(a => a && a.name)
+        .sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0) || String(a.name).localeCompare(String(b.name)));
+    if (typeof window.renderAppStoreGrid === 'function') window.renderAppStoreGrid();
+}
+
+function loadAppStoreData() {
+    try {
+        const root = (window.db) || (typeof firebase !== 'undefined' && firebase.database ? firebase.database() : null);
+        if (!root) {
+            console.warn('AppStore: Firebase DB not ready');
+            return;
+        }
+        root.ref('appStore/apps').on('value', parseAppStoreSnap, (err) => console.warn('AppStore apps error', err));
+        root.ref('appStore/settings').on('value', (snap) => {
+            window._appStoreSettings = (snap && snap.exists()) ? (snap.val() || {}) : {};
+        }, (err) => console.warn('AppStore settings error', err));
+    } catch (e) {
+        console.warn('AppStore load', e);
+    }
+}
+// Run after Firebase init (this script is already after init)
+loadAppStoreData();
+
+window.openAppStore = function() {
+    // end tour if running
+    try { if (typeof endAppsStoreTour === 'function') endAppsStoreTour(); } catch(e) {}
+    // ensure latest data
+    try {
+        const root = (window.db) || firebase.database();
+        root.ref('appStore/apps').once('value').then(parseAppStoreSnap);
+    } catch (e) {}
+    const name = (localStorage.getItem('mrcrazy_appstore_name') || '').trim();
+    if (name) {
+        openScreen('appstore-dashboard-screen');
+        const hello = document.getElementById('appstore-hello');
+        if (hello) hello.innerText = 'Hello, ' + name;
+        if (typeof window.renderAppStoreGrid === 'function') window.renderAppStoreGrid();
+    } else {
+        openScreen('appstore-name-screen');
+    }
+};
+
+window.submitAppStoreName = function() {
+    const n = (document.getElementById('appstore-user-name').value || '').trim();
+    if (!n) {
+        if (typeof showToast === 'function') showToast('Please enter your name');
+        else alert('Please enter your name');
+        return;
+    }
+    localStorage.setItem('mrcrazy_appstore_name', n);
+    window._playDashAudioOnce = true;
+    openScreen('appstore-dashboard-screen');
+    const hello = document.getElementById('appstore-hello');
+    if (hello) hello.innerText = 'Hello, ' + n;
+    renderAppStoreGrid();
+};
+
+window.renderAppStoreGrid = function() {
+    const grid = document.getElementById('appstore-grid');
+    const empty = document.getElementById('appstore-empty');
+    if (!grid) return;
+    const apps = window._appStoreApps || [];
+    if (!apps.length) {
+        grid.innerHTML = '';
+        if (empty) empty.style.display = 'block';
+        return;
+    }
+    if (empty) empty.style.display = 'none';
+    grid.innerHTML = apps.map(a => {
+        const icon = a.iconUrl
+            ? '<img src="' + a.iconUrl + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">'
+            : '<i class="fas fa-mobile-alt" style="font-size:28px;color:#12877f;"></i>';
+        return '<div onclick="openAppDetail(\'' + a.id + '\')" style="background:linear-gradient(145deg,#fff,#eef2f7);border-radius:16px;padding:14px 12px;box-shadow:6px 6px 14px rgba(60,80,110,0.12),-4px -4px 10px rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.8);cursor:pointer;text-align:center;">' +
+            '<div style="width:56px;height:56px;margin:0 auto 10px;border-radius:14px;background:#f0f4f8;display:flex;align-items:center;justify-content:center;overflow:hidden;">' + icon + '</div>' +
+            '<div style="font-size:13px;font-weight:800;color:var(--primary-dark);line-height:1.25;margin-bottom:4px;">' + (a.name || 'App') + '</div>' +
+            '<div style="font-size:11px;color:var(--text-muted);font-weight:600;">v' + (a.version || '1.0') + ' · ' + (a.sizeMb || '?') + ' MB</div>' +
+            '</div>';
+    }).join('');
+};
+
+window.openAppDetail = function(appId) {
+    const app = (window._appStoreApps || []).find(a => a.id === appId);
+    if (!app) return;
+    window._currentAppId = appId;
+    document.getElementById('app-detail-title').innerText = app.name || 'App';
+    const body = document.getElementById('app-detail-body');
+    const icon = app.iconUrl
+        ? '<img src="' + app.iconUrl + '" style="width:72px;height:72px;border-radius:18px;object-fit:cover;box-shadow:4px 4px 12px rgba(0,0,0,0.12);">'
+        : '<div style="width:72px;height:72px;border-radius:18px;background:linear-gradient(135deg,#12877f,#0b5f59);display:flex;align-items:center;justify-content:center;color:#fff;font-size:30px;"><i class="fas fa-mobile-alt"></i></div>';
+
+    const noteHtml = (app.noteHtml || app.note || '')
+        ? '<div style="margin:16px 0;padding:14px;background:rgba(18,135,127,0.06);border-radius:14px;border-left:4px solid #12877f;">' +
+          '<div style="font-size:12px;font-weight:800;color:#0b5f59;margin-bottom:8px;"><i class="fas fa-sticky-note"></i> NOTE</div>' +
+          '<div style="font-size:13px;line-height:1.55;color:var(--text-color);word-wrap:break-word;">' + (app.noteHtml || escapeAppHtml(app.note)) + '</div></div>'
+        : '';
+
+    const whatsNew = (app.whatsNewHtml || app.whatsNew || '')
+        ? '<div style="margin:16px 0;padding:14px;background:#fff;border-radius:14px;box-shadow:4px 4px 12px rgba(60,80,110,0.08);">' +
+          '<div style="font-size:12px;font-weight:800;color:var(--primary-dark);margin-bottom:8px;"><i class="fas fa-sparkles"></i> What\'s New</div>' +
+          '<div style="font-size:13px;line-height:1.55;">' + (app.whatsNewHtml || escapeAppHtml(app.whatsNew)) + '</div></div>'
+        : '';
+
+    let shots = '';
+    const ss = app.screenshots || [];
+    if (ss.length) {
+        shots = '<div style="margin:16px 0;"><div style="font-size:12px;font-weight:800;color:var(--primary-dark);margin-bottom:8px;"><i class="fas fa-images"></i> Screenshots</div>' +
+            '<div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;">' +
+            ss.map(u => '<img src="' + u + '" style="height:180px;border-radius:12px;border:1px solid #e2e8f0;flex-shrink:0;" onerror="this.style.display=\'none\'">').join('') +
+            '</div></div>';
+    }
+
+    body.innerHTML =
+        '<div style="text-align:center;margin-bottom:16px;">' + icon +
+        '<h2 style="margin:12px 0 4px;font-size:20px;color:var(--primary-dark);">' + (app.name || '') + '</h2>' +
+        '<div style="font-size:13px;color:var(--text-muted);font-weight:600;">Version ' + (app.version || '1.0') + ' · ' + (app.sizeMb || '?') + ' MB</div>' +
+        '<div style="font-size:12px;color:var(--text-muted);margin-top:4px;"><i class="fas fa-download"></i> ' + (app.downloads || 0) + ' downloads</div></div>' +
+        noteHtml + whatsNew + shots +
+        '<button class="neu-button primary-btn" style="justify-content:center;margin-top:8px;" onclick="startDownloadFlow()"><i class="fas fa-download" style="margin-right:8px;"></i> Download Now</button>';
+
+    openScreen('appstore-detail-screen');
+};
+
+function escapeAppHtml(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+window.startDownloadFlow = function() {
+    window._dlFlowStep = 1;
+    renderDownloadFlow();
+    openScreen('appstore-download-flow-screen');
+};
+
+window.renderDownloadFlow = function() {
+    const body = document.getElementById('download-flow-body');
+    if (!body) return;
+    const step = window._dlFlowStep || 1;
+    if (step === 1) {
+        body.innerHTML =
+            '<div style="text-align:center;padding:10px 0;">' +
+            '<div style="font-size:40px;margin-bottom:12px;">📋</div>' +
+            '<h3 style="color:var(--primary-dark);margin-bottom:10px;font-size:17px;">Zaroori Notes</h3>' +
+            '<p style="font-size:14px;line-height:1.6;color:var(--text-color);margin-bottom:20px;font-weight:600;">کیا آپ نے ہمارے تمام ضروری نوٹس پڑھ لیے ہیں؟</p>' +
+            '<button class="neu-button primary-btn" style="justify-content:center;margin-bottom:10px;" onclick="downloadFlowAnswer(true)">ہاں · Haan</button>' +
+            '<button class="neu-button ghost-btn" style="justify-content:center;" onclick="downloadFlowAnswer(false)">نہیں · Nahi</button></div>';
+    } else if (step === 2) {
+        if (typeof playAppsAudio === 'function') playAppsAudio('Wh.mp3');
+        body.innerHTML =
+            '<div style="text-align:center;padding:10px 0;">' +
+            '<div style="font-size:40px;margin-bottom:12px;color:#25D366;"><i class="fab fa-whatsapp"></i></div>' +
+            '<h3 style="color:var(--primary-dark);margin-bottom:10px;font-size:17px;">WhatsApp Updates</h3>' +
+            '<p style="font-size:14px;line-height:1.6;color:var(--text-color);margin-bottom:20px;font-weight:600;">Hamari applications har maheenay update hoti rehti hain — kya aap fori updates ke liye hamara WhatsApp channel join karna chahte hain?"   </p>' +
+            '<button class="neu-button green-btn" style="justify-content:center;margin-bottom:10px;" onclick="downloadFlowWhatsApp(true)">ہاں · Join Channel</button>' +
+            '<button class="neu-button ghost-btn" style="justify-content:center;" onclick="downloadFlowWhatsApp(false)">نہیں · Skip</button></div>';
+    } else {
+        body.innerHTML =
+            '<div style="text-align:center;padding:10px 0;">' +
+            '<div style="font-size:40px;margin-bottom:12px;">⬇️</div>' +
+            '<h3 style="color:var(--primary-dark);margin-bottom:10px;">Ready to Download</h3>' +
+            '<p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Download link open ho raha hai...</p>' +
+            '<button class="neu-button primary-btn" style="justify-content:center;" onclick="finishDownloadLink()">Open Download Link</button></div>';
+        setTimeout(finishDownloadLink, 600);
+    }
+};
+
+window.downloadFlowAnswer = function(yes) {
+    if (!yes) {
+        showPopupOrToast('Pehle note padh lein, phir Download Now dobara try karein.');
+        openScreen('appstore-detail-screen');
+        return;
+    }
+    window._dlFlowStep = 2;
+    renderDownloadFlow();
+};
+
+window.downloadFlowWhatsApp = function(yes) {
+    if (yes) {
+        const link = (window._appStoreSettings && window._appStoreSettings.whatsappChannel) || '';
+        if (link) window.open(link, '_blank');
+        else showPopupOrToast('WhatsApp channel link admin ne abhi set nahi kiya.');
+    }
+    window._dlFlowStep = 3;
+    renderDownloadFlow();
+};
+
+window.finishDownloadLink = function() {
+    const app = (window._appStoreApps || []).find(a => a.id === window._currentAppId);
+    if (!app || !app.downloadUrl) {
+        showPopupOrToast('Download link available nahi hai.');
+        return;
+    }
+    // increment downloads best-effort
+    try {
+        if (window.fbRef && window.db && window.fbUpdate) {
+            const cur = parseInt(app.downloads || 0, 10) + 1;
+            window.fbUpdate(window.fbRef(window.db, 'appStore/apps/' + app.id), { downloads: cur });
+        } else if (typeof firebase !== 'undefined' && firebase.database) {
+            const cur = parseInt(app.downloads || 0, 10) + 1;
+            firebase.database().ref('appStore/apps/' + app.id + '/downloads').set(cur);
+        }
+    } catch (e) {}
+    window.open(app.downloadUrl, '_blank');
+};
+
+function showPopupOrToast(msg) {
+    if (typeof showToast === 'function') showToast(msg);
+    else if (typeof showPopupAlert === 'function') showPopupAlert('Dough Art', msg, false);
+    else alert(msg);
+}
 </script>
 </body>
 </html>
